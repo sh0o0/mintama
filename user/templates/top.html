@@ -1,0 +1,16 @@
+{% extends 'logged_in_base.html' %}
+
+{% block body %}
+
+
+<div class="development">
+  <a class="development__link development__link--create"
+  href="{% url 'development:create_development' %}">チーム開発を始める</a>
+  <a class="development__link development__link--search"
+  href="{% url 'development:search_development' %}">チーム開発に参加する</a>
+</div>
+
+{% endblock body %}
+
+  </body>
+</html>
