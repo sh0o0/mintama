@@ -73,7 +73,11 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
-      }
+      },
+      {
+      test: /\.(css|sass)$/,
+      loader: ['node-sass', 'sass-loader']
+      },
     ]
   },
   resolve: {
