@@ -27,8 +27,8 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/', include(urls, namespace='user')),
+    path('spots/', include(router.urls)),
+    path('api/', include('user.urls', namespace='user')),
     path('', TemplateView.as_view(template_name='index.html'), name='Home'),
 ]
 

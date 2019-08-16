@@ -1,3 +1,4 @@
+import os
 import logging
 
 from django.shortcuts import render, resolve_url
@@ -8,8 +9,12 @@ from django.contrib.auth.views import (LoginView as SuperLoginView,
                                        PasswordChangeDoneView)
 from django.views import generic
 from django.urls import reverse_lazy
+from django.conf import settings
+from django.http.response import HttpResponse
+from rest_framework import viewsets
 
 from .models import User
+from .serializers import UserSerializer
 from .forms import RegistrationForm, LoginForm
 
 
@@ -44,6 +49,7 @@ class LoginView(SuperLoginView):
 class LogoutView(SuperLogoutView):
     template_name = 'logout.html'
 
+
 class TopView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'top.html'
     redirect_field_name = 'redirect_to'
@@ -51,3 +57,10 @@ class TopView(LoginRequiredMixin, generic.TemplateView):
     def get(self, request, *args, **kwargs):
         logger.info('info is logged')
         return super().get(request, *args, **kwargs)
+
+
+class UserViewset(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    filter_fields = ['id', 'title', 'email',]

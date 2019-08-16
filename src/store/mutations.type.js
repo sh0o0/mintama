@@ -1,0 +1,5 @@
+export const FETCH_START = "loadingOn"
+export const FETCH_END = "loadingOff"
+export const SET_ERROR = "setError"
+export const SET_A_SPOT = "setACat"
+export const SET_SPOTS = "setCats"
