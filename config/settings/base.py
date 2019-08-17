@@ -146,38 +146,28 @@ LOGGING = {
             'format': '[%(server_time)s] %(message)s',
         },
         'verbose': {
-            'format': '%(levelname)s %(levelno)s %(asctime)s %(module)s '
+            'format': '%(levelname)s %(asctime)s %(module)s '
                       '%(process)d %(thread)d %(name)s %(filename)s %(funcName)s %(message)s',
-        },
-        'chat_verbose': {
-            'format': '%(levelname)s = %(levelno)s %(asctime)s'
-                      '%(name)s %(filename)s %(funcName)s %(message)s',
         },
     },
     'handlers': {
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
         'file': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
+            'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            # 'filename': os.path.join(BASE_DIR, 'logfile/logger.log'),
+            'filename': os.path.join(BASE_DIR, 'logfile/logger.log'),
         },
         'console': {
             'level': 'INFO',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-        },
-        'chat_console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'chat_verbose',
-        },
-        'django.server': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'django.server',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -195,22 +185,14 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
-        #追加
-        'users': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'chat': {
-            'handlers': ['chat_console'],
+        #Add by app bellow.
+        'user': {
+            'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
-        }
+        },
     }
 }
-
-
-# PACKAGE_ROOT = BASE_DIR
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -219,7 +201,6 @@ WEBPACK_LOADER = {
     },
 
 }
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
