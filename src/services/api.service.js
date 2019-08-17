@@ -10,7 +10,9 @@ const ApiService = {
   },
 
   get (resource, slug='') {
-    return axios.get(`${resource}\\${slug}`).catch((error) => {
+    return axios
+      .get(`${resource}\\${slug}`)
+      .catch((error) => {
         throw new Error(`ApiService ${error}`)
       })
   },

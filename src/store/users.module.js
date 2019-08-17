@@ -3,20 +3,20 @@ import {FETCH_A_SPOT, FETCH_SPOTS} from './actions.type'
 import {FETCH_START, FETCH_END, SET_A_SPOT, SET_SPOTS, SET_ERROR} from './mutations.type'
 
 const state = {
-  spots: [],
-  spot: {},
+  users: [],
+  user: {},
   loading: false
 }
 
 const getters = {
   currentSpot(state) {
-    return state.spot
+    return state.user
   },
-  spots(state) {
-    return state.spots
+  users(state) {
+    return state.users
   },
   ifLoading(state) {
-    return
+    return loading
   }
 }
 
@@ -24,11 +24,11 @@ const actions = {
   [FETCH_SPOTS](context, payload) {
     context.commit(FETCH_START)
     return ApiService
-      .get(`spots`)
+      .get(`api/user`)
       .then((response) => {
         console.log('status:', response.status);
-        console.log('body:', response.data);
-        context.commit(SET_SPOTS, response.data.spots);
+        console.log('body:', response.data.results);
+        context.commit(SET_SPOTS, response.data.results);
         context.commit(FETCH_END)
       })
       .catch((response) => {
@@ -37,13 +37,13 @@ const actions = {
   },
   [FETCH_A_SPOT](context, payload) {
     context.commit(FETCH_START)
-    const {spot_id} = payload
+    const {user_id} = 1 //payload
     return ApiService
-      .get(`spots/${spot_id}`)
+      .get(`api/user/${user_id}`)
       .then((response) => {
         console.log('status:', response.status);
-        console.log('body:', response.data);
-        context.commit(SET_A_SPOT, response.data.spots);
+        console.log('body:', response);
+        context.commit(SET_A_SPOT, response.data.users);
         context.commit(FETCH_END)
       })
       .catch(((response) => {
@@ -60,11 +60,11 @@ const mutations = {
     state.loading = false
   },
   [SET_A_SPOT](state, pSpot) {
-    state.spot = pSpot
+    state.user = pSpot
     state.errors = {}
   },
-  [SET_SPOTS](state, pSpots) {
-    state.spots = pSpots
+  [SET_SPOTS](state, users) {
+    state.users = users
     state.errors = {}
   },
   [SET_ERROR](state) {

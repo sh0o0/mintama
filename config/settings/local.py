@@ -11,9 +11,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mintama_db',
         'USER': 'nakar0',
+        'PASSWORD': 'ara!75395',
         'HOST': 'localhost',
         'PORT': 3306,
-        'PASSWORD': 'ara!75395',
         'TEST': {
             'NAME': 'test_mintama_db'
         }
@@ -46,4 +46,3 @@ DEBUG_TOOLBAR_PANELS = [
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
-

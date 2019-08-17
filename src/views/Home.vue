@@ -2,7 +2,7 @@
   <section class="container">
     <h1>スポット一覧</h1>
     <spotList></spotList>
-    <redirectButton></redirectButton>
+    <redirectButton pathname="user"></redirectButton>
   </section>
 </template>
 

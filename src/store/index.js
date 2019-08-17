@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import spots from './spots.module'
+import users from './users.module'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    spots
+    users
   }
 })
