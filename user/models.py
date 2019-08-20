@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid as uuid_lib
 
-from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, CATEGORY_CHOICIES
+from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, CATEGORY_CHOICIES, REFERENCE_EVALUATION
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -76,6 +76,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     objects = UserManager()
 
+    #Will implement the following
+    # diaries_num = models.IntegerField(
+    #     blank=True,
+    #     null=True,
+    # )
+    # saved_diaries = models.ManyToManyField(
+    #     Diary,
+    #     blank=True,
+    #     null=True,
+    # )
+    # good_diaries = models.ManyToManyField(
+    #     Diary,
+    #     blank=True,
+    #     null=True,
+    # )
+    # praised_diaries = models.ManyToManyField(
+    #     Diary,
+    #     blank=True,
+    #     null=True,
+    # )
+
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -92,3 +113,52 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class Reference(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='references',
+    )
+    title = models.CharField(
+        max_length=100,
+    )
+    content = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+    )
+    link = models.URLField(
+        blank=True,
+        null=True,
+    )
+    evaluation = models.IntegerField(
+        choices=REFERENCE_EVALUATION
+    )
+
+
+class MainlyLearning(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='mainly_learning',
+    )
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICIES,
+    )
+
+
+class Portfolio(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='portfolios'
+    )
+    title = models.CharField(
+        max_length=100,
+    )
+    content = models.TextField()
+
+    link = models.URLField()

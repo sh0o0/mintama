@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'webpack_loader',
     'rest_framework',
     'django_filters',
+    'social_django',
     'user',
+    'socials',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -201,6 +205,7 @@ WEBPACK_LOADER = {
     },
 
 }
+
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
@@ -217,3 +222,27 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 3
 }
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.open_id.OpenIdAuth',  # for Google authentication
+    'social_core.backends.google.GoogleOpenId',  # for Google authentication
+    'social_core.backends.google.GoogleOAuth2',  # for Google authentication
+    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/' # リダイレクトURL
+
+SOCIAL_AUTH_TWITTER_KEY = 'ZxUTtXRbZaVoYci63NzimtwdV' # Consumer Key (API Key)
+SOCIAL_AUTH_TWITTER_SECRET = 'A0PKtinPm1A42nyfpqF2eZ0DnlmKYPChdVLpEOZrf1xpKE2TvG' # Consumer Secret (API Secret)
+SOCIAL_AUTH_TWITTER_TOKEN = '1146720903956324352-p8ERhR12omHwzfNdH6OmWPO9Z1hpD8'
+SOCIAL_AUTH_TWITTER_TOKEN_SECRET = 'hAqdK0uTfgIwJeqG50VRyMUB2aitnWCPcCLVzeloa2hfz'
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '977351626022-emiufr5nj55jqtttntup7dur3v6apd64.apps.googleusercontent.com'  #Paste CLient Key
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'XnlrZX1XVhaPPo4agvb4IKAN' #Paste Secret Key
+
+SOCIAL_AUTH_GITHUB_KEY = '1c53b75c8d033879cb7c'
+SOCIAL_AUTH_GITHUB_SECRET = 'b2dccb2088b3373b57fc4b3e3793cec8ea3f9cdb'

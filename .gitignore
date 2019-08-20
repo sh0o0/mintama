@@ -1,2 +1,4 @@
 /logfile
-/node_modules
+.idea
+__pycache__
+/node_mudules

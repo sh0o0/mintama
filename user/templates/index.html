@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>mintama</title>
+  </head>
+  <body>
+    {% load render_bundle from webpack_loader %}
+    <div id="app">
+      <app></app>
+    </div>
+        <div>
+      <p><b>ScreenName</b>:{{ user.access_token.screen_name }}</p>
+        <p><b>UserId</b>:{{ user.access_token.user_id }}</p>
+        <p><b>OAuthTokenSecret</b>:{{ user.access_token.oauth_token_secret }}</p>
+        <p><b>OAuthToken</b>:{{ user.access_token.oauth_token }}</p>
+        <p><b>AuthTime</b>:{{ user.extra_data.auth_time }}</p>
+
+
+    </div>
+
+    {% render_bundle 'main' %}
+  </body>
+</html>

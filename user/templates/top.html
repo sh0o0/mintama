@@ -3,11 +3,8 @@
 {% block body %}
 
 
-<div class="development">
-  <a class="development__link development__link--create"
-  href="{% url 'development:create_development' %}">チーム開発を始める</a>
-  <a class="development__link development__link--search"
-  href="{% url 'development:search_development' %}">チーム開発に参加する</a>
+<div>
+  <a href="{% url 'user:logout' %}"></a>
 </div>
 
 {% endblock body %}

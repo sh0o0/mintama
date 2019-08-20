@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+
+    <title>{% block title %}{% endblock title %}</title>
+
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+  </head>
+  <body>
+    {% block body %}{% endblock body %}
+
+    {% block script %}{% endblock script %}
+
+  </body>
+</html>

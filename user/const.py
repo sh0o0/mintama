@@ -2,7 +2,7 @@ import mysql.connector
 
 
 def get_category():
-    conn = mysql.connector.connect(host='localhost', user='nakar0', password='ara!75395', database='mintama_db')
+    conn = mysql.connector.connect(host='localhost', user='nakar0', password='12345', database='mintama_db')
     cursor = conn.cursor()
     
     cursor.execute('SELECT * FROM category')
@@ -69,9 +69,22 @@ RESIDENCE_CHOICIES = [
 ]
 
 CRACK_LEVEL_CHOICIES = [
-  (1, '基礎学習完了'),
-  (2, '簡単なポートフォリオの作成'),
-  (1, 'サービスを公開'),
-  (1, '転職活動中・職探し真っ最中'),
-  (1, 'すでにプログラマーとして活動中'),
+    (1, '基礎学習完了'),
+    (2, '簡単なポートフォリオの作成'),
+    (1, 'サービスを公開'),
+    (1, '転職活動中・職探し真っ最中'),
+    (1, 'すでにプログラマーとして活動中'),
+]
+
+REFERENCE_EVALUATION = [
+    (0.5, '0.5'),
+    (1.0, '1.0'),
+    (1.5, '1.5'),
+    (2.0, '2.0'),
+    (2.5, '2.5'),
+    (3.0, '3.0'),
+    (3.5, '3.5'),
+    (4.0, '4.0'),
+    (4.5, '4.5'),
+    (5.0, '5.0'),
 ]
