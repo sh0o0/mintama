@@ -5,8 +5,6 @@
     <title>{% block title %}{% endblock title %}</title>
 
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
-    <link rel="stylesheet" href="{% static 'css/master.css' %}">
     {% block css %}{% endblock css %}
 
   </head>
@@ -35,7 +33,11 @@
 
     {% block body %}{% endblock body %}
 
-      {% block script %}{% endblock script %}
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    {% block scripts %}{% endblock scripts %}
 
 
   </body>

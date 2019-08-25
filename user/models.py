@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid as uuid_lib
 
-from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, CATEGORY_CHOICIES, REFERENCE_EVALUATION
+from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, CATEGORY_CHOICIES, REFERENCE_EVALUATION_CHOICIES
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -32,7 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     sex = models.CharField(
         max_length=5,
-        blank=False,
+        blank=True,
         choices=[('men', '男性'), ('women', '女性')],
     )
     residence = models.CharField(
@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     learning_started_date = models.DateField(
         blank=True,
         null=True,
-        help_text=_('When your start learning')
+        help_text=_('When your start learning'),
     )
     crack_level = models.CharField(
         max_length=50,
@@ -134,7 +134,7 @@ class Reference(models.Model):
         null=True,
     )
     evaluation = models.IntegerField(
-        choices=REFERENCE_EVALUATION
+        choices=REFERENCE_EVALUATION_CHOICIES
     )
 
 

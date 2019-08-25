@@ -18,7 +18,6 @@ def get_category():
 CATEGORY_CHOICIES = get_category()
 
 RESIDENCE_CHOICIES = [
-    ('未選択', "------"),
     ('北海道', '北海道'),
     ('青森県', '青森県'),
     ('岩手県', '岩手県'),
@@ -71,12 +70,12 @@ RESIDENCE_CHOICIES = [
 CRACK_LEVEL_CHOICIES = [
     (1, '基礎学習完了'),
     (2, '簡単なポートフォリオの作成'),
-    (1, 'サービスを公開'),
-    (1, '転職活動中・職探し真っ最中'),
-    (1, 'すでにプログラマーとして活動中'),
+    (3, 'サービスを公開'),
+    (4, '転職活動中・職探し真っ最中'),
+    (5, 'すでにプログラマーとして活動中'),
 ]
 
-REFERENCE_EVALUATION = [
+REFERENCE_EVALUATION_CHOICIES = [
     (0.5, '0.5'),
     (1.0, '1.0'),
     (1.5, '1.5'),

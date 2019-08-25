@@ -150,8 +150,7 @@ LOGGING = {
             'format': '[%(server_time)s] %(message)s',
         },
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(name)s %(filename)s %(funcName)s %(message)s',
+            'format': '%(levelname)s %(asctime)s Name: %(name)s Func: %(funcName)s %(message)s',
         },
     },
     'handlers': {
