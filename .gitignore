@@ -2,3 +2,5 @@
 .idea
 __pycache__
 /node_mudules
+
+/.idea/workspace.xml

@@ -17,7 +17,7 @@ from rest_framework import viewsets
 from social_django.models import UserSocialAuth
 
 from .serializers import UserSerializer
-from .forms import SignupForm, EntryUserDetailForm, LoginForm, CheckUsernameForm, CheckPasswordForm
+from .forms import SignupForm, EntryUserDetailForm, MainlyLearningFormset, LoginForm, CheckUsernameForm, CheckPasswordForm
 
 
 logger = logging.getLogger(__name__)
@@ -36,11 +36,13 @@ class SignupView(generic.CreateView):
 
     def form_valid(self, form):
         result = super().form_valid(form)
+
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
         auth_user = authenticate(username=username, password=password)
         if auth_user is not None:
             login(self.request, auth_user)
+            logger.info('complete User create and login User:%s', auth_user)
         return result
 
 
@@ -51,20 +53,31 @@ class EntryUserDetailView(generic.FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['entry_user_detail_form'] = EntryUserDetailForm()
+        context['mainly_learning_formset'] = MainlyLearningFormset()
         return context
-
-    def form_valid(self, form):
-        return render(self.request, 'entry_user_detail.html', {'entry_user_detail_form': form})
 
 
 class EntryUserDetailConfirmView(generic.FormView):
     form_class = EntryUserDetailForm
 
+    def post(self, request, *args, **kwargs):
+        super_result = super().post(request, *args, **kwargs)
+        return super_result
+
     def form_valid(self, form):
-        return render(self.request, 'entry_user_detail_confirm.html', {'entry_user_detail_form': form})
+        logger.info('EntryUserDetailConfirmView is valid True')
+        user = self.request.user
+        formset = MainlyLearningFormset(self.request.POST, instance=user)
+        if formset.is_valid():
+            formset.save()
+        forms = {'entry_user_detail_form': form, 'mainly_learning_formset': formset}
+        return render(self.request, 'entry_user_detail_confirm.html', forms)
 
     def form_invalid(self, form):
-        return render(self.request, 'entry_user_detail.html', {'entry_user_detail_form': form})
+        logger.info('EntryUserDetailConfirmView is valid False')
+        formset = MainlyLearningFormset(self.request.POST)
+        forms = {'entry_user_detail_form': form, 'mainly_learning_formset': formset}
+        return render(self.request, 'entry_user_detail.html', forms)
 
 
 class AddUserDetailView(generic.UpdateView):
@@ -74,6 +87,7 @@ class AddUserDetailView(generic.UpdateView):
 
     def get_object(self, queryset=None):
         user_id = self.request.user.id
+        logger.info('AddUserDetailView def:get_object user_id:%s', user_id)
         return User.objects.get(id=user_id)
 
 
@@ -141,3 +155,7 @@ def check_password(request):
 #     content = {}
 #     content['form'] = SignupForm()
 #     return render(request, 'signup.html', content)
+
+class IndexView(generic.TemplateView):
+    template_name = 'index.html'
+

@@ -76,7 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     objects = UserManager()
 
-    #Will implement the following
+    #TODO:Will implement the following
     # diaries_num = models.IntegerField(
     #     blank=True,
     #     null=True,
@@ -124,6 +124,9 @@ class Reference(models.Model):
     title = models.CharField(
         max_length=100,
     )
+    evaluation = models.IntegerField(
+        choices=REFERENCE_EVALUATION_CHOICIES
+    )
     content = models.CharField(
         max_length=500,
         blank=True,
@@ -132,9 +135,6 @@ class Reference(models.Model):
     link = models.URLField(
         blank=True,
         null=True,
-    )
-    evaluation = models.IntegerField(
-        choices=REFERENCE_EVALUATION_CHOICIES
     )
 
 

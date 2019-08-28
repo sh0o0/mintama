@@ -18,6 +18,7 @@ urlpatterns = [
     path('entry-user-detail/confirm/', views.EntryUserDetailConfirmView.as_view(), name='entry_user_detail_confirm'),
     path('add-user-detail/', views.AddUserDetailView.as_view(), name='add_user_detail'),
     path('api/', views.UserViewset, name='user_api'),
+    path('index/', views.IndexView.as_view(), name='index'),
 
     path('signup/check_username/', views.check_username, name='check_username'),
     path('signup/check_password1/', views.check_password, name='check_password'),

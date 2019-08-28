@@ -320,3 +320,45 @@ INFO 2019-08-25 15:30:41,658 Name: user.views Func: check_form start def:check_f
 INFO 2019-08-25 15:30:41,658 Name: user.views Func: check_form end def:check_form result: {'available': False, 'errors': ['このパスワードは短すぎます。最低 8 文字以上必要です。']}
 INFO 2019-08-25 15:30:44,268 Name: user.views Func: check_form start def:check_form(password, password1)
 INFO 2019-08-25 15:30:44,269 Name: user.views Func: check_form end def:check_form result: {'available': True}
+INFO 2019-08-26 21:48:35,316 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 21:48:57,859 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:49:01,816 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:49:52,294 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:49:54,610 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:50:03,714 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:50:43,237 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:50:53,200 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 21:51:36,262 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 21:51:38,746 Name: user.views Func: get_object AddUserDetailView def:get_object user_id:1c05c389-ddc6-4bce-89fb-63f85e4c620f
+INFO 2019-08-26 23:17:52,771 Name: user.views Func: check_form start def:check_form(username, None)
+INFO 2019-08-26 23:17:52,854 Name: user.views Func: check_form end def:check_form result: {'available': True}
+INFO 2019-08-26 23:17:57,134 Name: user.views Func: check_form start def:check_form(password, password1)
+INFO 2019-08-26 23:17:57,134 Name: user.views Func: check_form end def:check_form result: {'available': False, 'errors': ['このパスワードは短すぎます。最低 8 文字以上必要です。']}
+INFO 2019-08-26 23:18:01,945 Name: user.views Func: check_form start def:check_form(password, password1)
+INFO 2019-08-26 23:18:01,945 Name: user.views Func: check_form end def:check_form result: {'available': True}
+INFO 2019-08-26 23:18:11,276 Name: user.views Func: form_valid complete User create and login User:rousoku
+INFO 2019-08-26 23:21:16,326 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:22:04,227 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:22:33,481 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:23:05,794 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:24:45,355 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:32:13,415 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:33:33,210 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:38:21,690 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 23:39:27,842 Name: user.views Func: form_invalid EntryUserDetailConfirmView is valid False
+INFO 2019-08-26 23:39:33,609 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:41:47,010 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:42:32,821 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:45:10,420 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:47:00,523 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:51:55,061 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:53:31,733 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:53:52,095 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:54:26,166 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:55:00,614 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:56:28,247 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-26 23:58:25,891 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-27 00:00:33,851 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-27 00:01:26,407 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-27 00:05:41,993 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
+INFO 2019-08-27 00:06:31,807 Name: user.views Func: form_valid EntryUserDetailConfirmView is valid True
