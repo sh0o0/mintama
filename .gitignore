@@ -1,6 +1,10 @@
+.vscode/
+__pycache__/
+
 /logfile
-.idea
-__pycache__
 /node_mudules
 
 /.idea/workspace.xml
+
+*.log
+*.pyc
