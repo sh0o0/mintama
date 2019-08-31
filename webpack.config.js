@@ -1,121 +1,70 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+const BundleTracker = require('webpack-bundle-tracker')
 
-var BundleTracker = require('webpack-bundle-tracker')
-var WriteFilePlugin = require('write-file-webpack-plugin')
+const outPutPath = path.resolve(__dirname, 'static/bundles/')
 
 module.exports = {
-  entry: './src/main.js',
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/static/',
-    filename: 'build.js'
-  },
-  plugins: [
-    new BundleTracker({filename: 'webpack-stats.json'}),
-    new WriteFilePlugin(),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ],
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'sass-loader'
-        ],
-      },
-      {
-        test: /\.sass$/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'sass-loader?indentedSyntax'
-        ],
-      },
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this necessary.
-            'scss': [
-              'vue-style-loader',
-              'css-loader',
-              'sass-loader'
-            ],
-            'sass': [
-              'vue-style-loader',
-              'css-loader',
-              'sass-loader?indentedSyntax'
-            ]
-          }
-          // other vue-loader options go here
-        }
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
-      },
-      {
-      test: /\.(css|sass)$/,
-      loader: ['node-sass', 'sass-loader']
-      },
-    ]
-  },
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': path.resolve(__dirname, 'src'),
+    entry: './src/main.js',
+    output: {
+        path: outPutPath,
+        filename: '[name]-[hash].js',
     },
-    extensions: ['*', '.js', '.vue', '.json']
-  },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true,
-    overlay: true,
-    host: 'localhost',
-  },
-  performance: {
-    hints: false
-  },
-  devtool: '#eval-source-map'
-}
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['css-loader']
+            },
+            {
+                test: /\.s(a|c)ss$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                          implementation: require('sass'),
+                          sassOptions: {
+                            fiber: require('fibers'),
+                              indentedSyntax: true // optional
+                          },
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(jpe?g|avg|png|ico|gif)$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 2084,
+                    name: './images/[name].[ext]',
+                }
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+            },
+            {
+                test: /\.js$/,
+                exclude: '/node_modules/',
+                loader: 'babel-loader'
+            }
+        ]
+    },
+    plugins: [
+        new VueLoaderPlugin(),
+        new VuetifyLoaderPlugin(),
+        new BundleTracker({filename: './webpack-stats.json'})
+    ],
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js',
+            '@': path.resolve(__dirname, 'src/'),
+        },
+    },
+    devServer: {
+        contentBase: outPutPath
+    }
 }

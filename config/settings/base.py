@@ -121,7 +121,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'dist'),
+    os.path.join(BASE_DIR, 'static/bundles/')
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -199,16 +199,8 @@ LOGGING = {
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-    },
-
-}
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': '',
+        'BUNDLE_DIR_NAME': 'bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,

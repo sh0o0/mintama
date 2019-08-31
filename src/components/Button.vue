@@ -1,34 +1,20 @@
 <template>
-  <button type="button" @click="goTo">押さないでください！</button>
+    <div>
+        <a href="#">Button</a>
+        <v-card>
+            <v-card-title>...</v-card-title>
+            <v-card-text>...</v-card-text>
+        </v-card>
+    </div>
 </template>
 
-<script>
-  export default {
-    props:{
-      pathname: {
-        type: String,
-        required: true
-      }
-    },
-    methods: {
-      goTo() {
-        this.$router.push({name: this.pathname})
-      }
-    }
-  }
-</script>
 
 <style scoped lang="sass">
-  button
-    width: 80%
-    background-color: transparent
-    color: #000000
-    border: 2px solid #000000
-    border-radius: 5px
-    min-height: 50px
-    text-transform: uppercase
-    &:hover
-        background-color: #ffefd5
-        color: #000000
-        border-color: #000000
+a 
+    display: block
+    width: 100px
+    height: 50px
+    background-color: red
+
+    
 </style>

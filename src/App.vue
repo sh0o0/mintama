@@ -1,26 +1,16 @@
 <template>
-  <div id="app">
-    <MyHeader></MyHeader>
-    <h1> Some content... </h1>
-    <router-view></router-view>
-    <MyFooter></MyFooter>
-  </div>
+    <div>
+        <h1>Hi vue!!</h1>
+        <router-view></router-view>
+        <router-link to="/">button</router-link>
+        <router-link to="/list/">list</router-link>
+    </div>
 </template>
 
 <script>
-  import MyHeader from '@/components/Header'
-  import MyFooter from '@/components/Footer'
-
-  export default {
-    components: {
-      MyHeader,
-      MyFooter
-    }
-  }
 </script>
 
 <style scoped lang="sass">
-  html, body
-    margin: 0
-    min-height: 100vh
+div
+    color: green
 </style>
