@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock title %}</title>
+    {% block style %}{% endblock style %}
+  </head>
+  <body>
+    <div id="app">
+      <baseline-view></baseline-view>
+    </div>
+    {% load render_bundle from webpack_loader %}{% render_bundle 'main' %}
+    {% block script %}{% endblock script %}
+  </body>
+</html>

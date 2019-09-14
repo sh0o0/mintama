@@ -1,0 +1,13 @@
+.vscode/
+__pycache__/
+
+/logfile
+/node_mudules
+
+/.idea/workspace.xml
+
+/static/bundles
+
+
+*.log
+*.pyc

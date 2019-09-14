@@ -1,0 +1,12 @@
+{% extends 'logged_out_base.html' %}
+
+{% block body %}
+    <login-view
+    csrftoken={{ csrf_token }}
+    username_value={% if form.username.value %}{{ form.username.value }}{% else %}''{% endif %}
+    {% for field, errors in form.errors.items %}
+    {{ field }}_errors={% for error in errors %}{{ error }},{% endfor %}
+    {% endfor %}
+    non_field_errors={% for error in form.non_field_errors %}{{error}},{% endfor %}
+    ></login-view>
+{% endblock body %}

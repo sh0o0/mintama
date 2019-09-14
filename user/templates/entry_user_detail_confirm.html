@@ -1,0 +1,36 @@
+{% extends 'logged_in_base.html' %}
+
+{% block body %}
+      {% for field in entry_user_detail_form %}
+        <h2>{{ field.html_name }}</h2>
+        <p>{{field.value}}</p>
+      {% endfor %}
+
+      <h2>mainly learning</h2>
+      {% for field in mainly_learning_formset %}
+        <p>{{field}}</p>
+      {% endfor %}
+      {{ mainly_learning_formset.as_p }}
+
+      <form action="{% url 'user:entry_user_detail' %}" method="POST">
+        {% csrf_token %}
+        {% for field in entry_user_detail_form %}
+          {{ field.as_hidden }}
+        {% endfor %}
+        {% for field in mainly_learning_formset %}
+          {{ filed.as_hidden }}
+        {% endfor %}
+        <button type="submit">戻る</button>
+      </form>
+      <form action="{% url 'user:add_user_detail' %}" method="post">
+        {% csrf_token %}
+        {% for field in entry_user_detail_form %}
+          {{ field.as_hidden }}
+        {% endfor %}
+        {% for field in mainly_learning_formset %}
+          {{ filed.as_hidden }}
+        {% endfor %}
+        <button type="submit">登録</button>
+      </form>
+
+{% endblock body %}
