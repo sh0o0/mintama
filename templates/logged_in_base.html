@@ -3,42 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock title %}</title>
-
-    {% load staticfiles %}
-    {% block css %}{% endblock css %}
-
+    {% block style %}{% endblock style %}
   </head>
   <body>
-    <header class="header">
-      <h1 class="logo">
-        <a href='{% url 'user:top' %}'>SelfStudies</a>
-      </h1>
-      <nav class="global-nav">
-        <ul>
-          <li class="nav-item {% if '/' == request.path %}active{% endif %}">
-            <a href="{% url 'user:top' %}">TOP</a>
-          </li>
-          <li class="nav-item {% if 'aaaa' in request.path %}active{% endif %}" >
-            <a href="{% url 'user:login' %}">LOGIN</a>
-          </li>
-          <li class="nav-item {% if 'aaaa' in request.path %}active{% endif %}" >
-            <a href="{% url 'user:logout' %}">LOGOUT</a>
-          </li>
-          <li class="nav-item {% if 'aaaa' in request.path %}active{% endif %}" >
-            <a href="/twitterManager/logout">Twitter_LOGOUT</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-
-    {% block body %}{% endblock body %}
-
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    {% block scripts %}{% endblock scripts %}
-
-
+    <div id="app">
+      <baseline-view></baseline-view>
+    </div>
+    {% load render_bundle from webpack_loader %}{% render_bundle 'main' %}
+    {% block script %}{% endblock script %}
   </body>
 </html>

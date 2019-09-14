@@ -1,79 +1,14 @@
 {% extends 'logged_out_base.html' %}
 
 {% block body %}
-  <div id="app">
-    <form class="form-group" method="post">{% csrf_token %}
-      {{ signup_form.non_field_errors }}
-      {% for field in signup_form %}
-        <h2>{{ field.html_name }}</h2>
-        <p 
-        v-for="(error, key) in {{ field.html_name | add:'Errors' }}"
-        v-text="error"
-        :key="'{{ field.html_name | add:'Error' }}-' + key"
-        ></p>
-        <input
-        type="{{ field.field.widget.input_type }}"
-        id="{{ field.id_for_label }}"
-        name="{{ field.html_name }}"
-        label="{{ field.label }}"
-        :autofocus="{% if forloop.first %}true{% else %}false{% endif %}"
-        :required="{{ field.field.required|lower }}"
-        v-model="{{ field.html_name }}"
-        >
-      {% endfor %}
-      <input class="form-item btn" type="submit" name="submit" value="登録">
-    </form>
-  </div>
+    <signup-view
+    csrftoken={{ csrf_token }}
+    username_value={% if form.username.value %}{{ form.username.value }}{% else %}''{% endif %}
+    email_value={% if form.email.value %}{{ form.email.value }}{% else %}''{% endif %}
 
+    {% for field, errors in form.errors.items %}
+    {{ field }}_errors={% for error in errors %}{{ error }},{% endfor %}
+    {% endfor %}
+    non_field_errors={% for error in form.non_field_errors %}{{error}},{% endfor %}
+    ></signup-view>
 {% endblock body %}
-{% block scripts %}
-<script type="text/javascript">
-  let vm = new Vue({
-    el: '#app',
-    data() {
-     return {
-      username: '',
-      email: '',
-      password1: '',
-      password2: '',
-
-      usernameErrors: [],
-      emailErrors: [],
-      password1Errors: [],
-      password2Errors: [],
-     }
-    },
-    created: function() {
-      this.debouncedCheckOneForm = _.debounce(this.checkOneForm, 1000);
-    },
-    watch: {
-      username: function() {
-        this.debouncedCheckOneForm('username');
-      },
-      password1: function() {
-        this.debouncedCheckOneForm('password1')
-      },
-    },
-    methods: {
-      checkOneForm: function(formName) {
-        const url = `${location.href}check_${formName}/`; 
-        const data = {[formName]: vm.$data[formName]};
-        const csrftoken = Cookies.get('csrftoken');
-        const headers = {'X-CSRFToken': csrftoken};
-
-        axios.post(url, data, {headers: headers})
-        .then(function(response) {
-          if (response.data['available'] === true) {
-            vm.$data[formName + 'Errors'] = [];
-          } else {
-            vm.$data[formName + 'Errors'] = response.data['errors'];
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        })
-      }
-    }
-  })
-</script>
-{% endblock scripts %}

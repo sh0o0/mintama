@@ -1,23 +1,12 @@
 {% extends 'logged_out_base.html' %}
 
 {% block body %}
-
-    <form class="form-group" action="" method="post">{% csrf_token %}
-        {{form.non_field_errors}}
-        {{form.username.errors}}
-        {{form.username}}
-        {{form.password.errors}}
-        {{form.password}}
-        <input class="form-item btn" type="submit" name="submit" value="ログイン">
-    </form>
-    <div>
-        <a href="{% url 'user:signup' %}">新規登録</a>
-        <a href="{% url 'social:begin' 'twitter' %}">Twitterでログイン</a>
-        <a href="{% url 'social:begin' 'google-oauth2' %}">google-oauth2でログイン</a>
-        <a href="{% url 'social:begin' 'github' %}">githubでログイン</a>
-    </div>
-
+    <login-view
+    csrftoken={{ csrf_token }}
+    username_value={% if form.username.value %}{{ form.username.value }}{% else %}''{% endif %}
+    {% for field, errors in form.errors.items %}
+    {{ field }}_errors={% for error in errors %}{{ error }},{% endfor %}
+    {% endfor %}
+    non_field_errors={% for error in form.non_field_errors %}{{error}},{% endfor %}
+    ></login-view>
 {% endblock body %}
-
-  </body>
-</html>
