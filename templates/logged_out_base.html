@@ -2,20 +2,14 @@
 <html lang="ja" dir="ltr">
   <head>
     <meta charset="utf-8">
-
     <title>{% block title %}{% endblock title %}</title>
-
-    {% load staticfiles %}
-
+    {% block style %}{% endblock style %}
   </head>
   <body>
-    {% block body %}{% endblock body %}
-
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    {% block scripts %}{% endblock scripts %}
-
+    <div id="app">
+      {% block body %}{% endblock body %}
+    </div>
+    {% load render_bundle from webpack_loader %}{% render_bundle 'main' %}
+    {% block script %}{% endblock script %}
   </body>
 </html>

@@ -6,7 +6,18 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid as uuid_lib
 
-from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, CATEGORY_CHOICIES, REFERENCE_EVALUATION_CHOICIES
+from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, REFERENCE_EVALUATION_CHOICIES
+
+
+class Category(models.Model):
+
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+    )
+
+    def __str__(self):
+        return self.name
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -30,10 +41,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     email = models.EmailField(_('email address'), blank=False)
 
-    sex = models.CharField(
-        max_length=5,
+    gender = models.CharField(
+        max_length=6,
         blank=True,
-        choices=[('men', '男性'), ('women', '女性')],
+        choices=[('male', '雄'), ('female', '雌')],
     )
     residence = models.CharField(
         max_length=10,
@@ -47,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
     )
     icon = models.ImageField(
-        upload_to='images',
+        upload_to='img',
         blank=True,
     )
     learning_started_date = models.DateField(
@@ -55,10 +66,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         help_text=_('When your start learning'),
     )
-    crack_level = models.CharField(
-        max_length=50,
+    crack_level = models.IntegerField(
         default=1,
         choices=CRACK_LEVEL_CHOICIES,
+    )
+
+    mainly_learning = models.ManyToManyField(
+        Category,
+        related_name='users'
     )
 
     is_staff = models.BooleanField(
@@ -114,6 +129,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def __str__(self):
+        return self.username
+
 
 class Reference(models.Model):
     user = models.ForeignKey(
@@ -137,17 +155,8 @@ class Reference(models.Model):
         null=True,
     )
 
-
-class MainlyLearning(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='mainly_learning',
-    )
-    category = models.CharField(
-        max_length=50,
-        choices=CATEGORY_CHOICIES,
-    )
+    def __str__(self):
+        return '{}(user: {})'.format(self.title, self.user)
 
 
 class Portfolio(models.Model):
@@ -162,3 +171,6 @@ class Portfolio(models.Model):
     content = models.TextField()
 
     link = models.URLField()
+
+    def __str__(self):
+        return '{}(user: {})'.format(self.title, self.user)

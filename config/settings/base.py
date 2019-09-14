@@ -149,8 +149,11 @@ LOGGING = {
             'format': '[%(server_time)s] %(message)s',
         },
         'verbose': {
-            'format': '%(levelname)s %(asctime)s Name: %(name)s Func: %(funcName)s %(message)s',
+            'format': '[%(asctime)s] [%(levelname)s] [%(name)s %(funcName)s] %(message)s',
         },
+        'at_debug': {
+            'format': '[%(asctime)s] [%(levelname)s] [%(name)s %(funcName)s %(lineno)d] %(message)s'
+        }
     },
     'handlers': {
         'django.server': {
@@ -167,9 +170,15 @@ LOGGING = {
         },
         'console': {
             'level': 'INFO',
-            'filters': ['require_debug_true'],
+            'filters': ['require_debug_false'],
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
+        },
+        'debug_console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'at_debug',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -189,7 +198,7 @@ LOGGING = {
         },
         #Add by app bellow.
         'user': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'debug_console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
         },

@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from .models import User, MainlyLearning
+from .models import User
 
 
 class AddStyleClass:
@@ -35,14 +35,14 @@ class EntryUserDetailForm(AddStyleClass, forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'sex',
+            'gender',
             'residence',
             'introduction',
             'learning_started_date',
             'icon',
         ]
         labels = {
-            'sex': '性別',
+            'gender': '性別',
             'residence': '居住地',
             'introduction': '自己紹介',
             'learning_started_date': '勉強を始めた日付',
@@ -64,9 +64,9 @@ class EntryUserDetailForm(AddStyleClass, forms.ModelForm):
         return entered_date
 
 
-MainlyLearningFormset = forms.inlineformset_factory(
-    User, MainlyLearning, fields=['category'], extra=5
-)
+# MainlyLearningFormset = forms.inlineformset_factory(
+#     User, MainlyLearning, fields=['category'], extra=5
+# )
 
 
 
