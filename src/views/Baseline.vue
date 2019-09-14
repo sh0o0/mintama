@@ -41,7 +41,7 @@
         <v-menu v-model="menuDrawer" offset-y>
           <template v-slot:activator="{ on }">
             <v-avatar color="orange" v-on="on" class="add-pointer">
-              <img v-if="getMyself" :src="getMyself.icon" alt="icon"/>
+              <img v-if="getMyself.icon" :src="getMyself.icon" alt="icon"/>
               <v-icon v-else x-large>mdi-egg</v-icon>
             </v-avatar>
           </template>

@@ -6,22 +6,29 @@ INSTALLED_APPS += [
     'debug_toolbar',
 ]
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'mintama_db',
+#         'USER': 'nakar0',
+#         'PASSWORD': '12345',
+#         'HOST': 'localhost',
+#         'PORT': 3306,
+#         'TEST': {
+#             'NAME': 'test_mintama_db'
+#         }
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'mintama_db',
-        'USER': 'nakar0',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',
-        'PORT': 3306,
         'TEST': {
             'NAME': 'test_mintama_db'
         }
     }
 }
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 INTERNAL_IPS = ('127.0.0.1',)
 MIDDLEWARE += (

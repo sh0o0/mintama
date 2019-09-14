@@ -8,7 +8,7 @@
             <v-row>
               <v-col cols="4" md="12">
                 <v-avatar color="grey" size="170" tile>
-                  <v-img :src="getMyself.icon" alt="USER ICON"></v-img>
+                  <v-img v-if="getMyself.icon" :src="getMyself.icon" alt="USER ICON"></v-img>
                 </v-avatar>
               </v-col>
               <v-col cols="8" md="12">
