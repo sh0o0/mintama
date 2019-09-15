@@ -24,10 +24,30 @@ export default {
       state.myselfOptionsAdded.push(itemOptionAdded)
     }
   },
+  setInputImageData(state, data) {
+    console.log(data)
+    const fileReader = new FileReader()
+
+    fileReader.onload = function() {
+      state.inputImageData = this.result
+      state.myself.icon = data
+    }
+    fileReader.readAsDataURL(data)
+  },
+  setLogin(state) {
+    state.loginOrSignup = 'Login'
+  },
+  setSignup(state) {
+    state.loginOrSignup = 'Signup'
+  },
+
   fetchStart(state) {
     state.userIsLoading = true
   },
   fetchEnd(state) {
     state.userIsLoading = false
   },
+  setError(state, error) {
+    state.myselfError = error
+  }
 }

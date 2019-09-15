@@ -41,9 +41,8 @@
                   <v-text-field
                     type="text"
                     name="username"
-                    autofocus="autofocus"
-                    required="required"
-                    id="id_username"
+                    autofocus
+                    required
                     v-model="usernameValue"
                     
                     label="Username"
@@ -54,7 +53,7 @@
                   <v-text-field
                     type="email"
                     name="email"
-                    required="required"
+                    required
                     id="id_email"
                     v-model="emailValue"
                     
@@ -171,7 +170,7 @@
       submit: () => {
         const form = document.forms['signup']
         form.submit()
-      }
+      },
     },
     watch: {
       usernameValue: function() {

@@ -41,7 +41,7 @@
         <v-menu v-model="menuDrawer" offset-y>
           <template v-slot:activator="{ on }">
             <v-avatar color="orange" v-on="on" class="add-pointer">
-              <img v-if="getMyself.icon" :src="getMyself.icon" alt="icon"/>
+              <v-img v-if="getIconSrc" :src="getIconSrc" alt="icon"/>
               <v-icon v-else x-large>mdi-egg</v-icon>
             </v-avatar>
           </template>
@@ -50,7 +50,7 @@
             <v-list>
               <v-list-item>
                 <v-list-item-avatar>
-                  <img v-if="getMyself" :src="getMyself.icon" alt="icon" />
+                  <img v-if="getIconSrc" :src="getIconSrc" alt="icon" />
                   <v-icon v-else x-large>mdi-egg</v-icon>
                 </v-list-item-avatar>
 
@@ -96,7 +96,6 @@
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col class="text-center">
-            <router-view></router-view>
             <slot name="content"></slot>
           </v-col>
         </v-row>
@@ -136,7 +135,7 @@ export default {
     ...mapMutations('user', ['setMyselfOptionsAdded']),
   },
   computed: {
-    ...mapGetters('user', ['getMyself', 'getMyselfOptionsAdded'])
+    ...mapGetters('user', ['getMyself', 'getMyselfOptionsAdded', 'getIconSrc'])
   },
   created() {
     if (!this.getMyself){

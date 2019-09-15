@@ -81,7 +81,7 @@ class ReferenceViewSet(BaseViewSet):
 
 class PortfolioViewSet(BaseViewSet):
     queryset = Portfolio.objects.all()
-    serializer_class = Portfolio
+    serializer_class = PortfolioSerializer
     permission_classes = [IsAuthenticated]
 
 
@@ -106,6 +106,11 @@ class SignupView(generic.CreateView):
             login(self.request, auth_user)
             logger.info('complete User create and login User:%s', auth_user)
         return result
+
+    def form_invalid(self, form):
+        errors = dict(form.errors.items())
+        result = super().form_invalid(form)
+        return JsonResponse(errors)
 
 
 # class EntryUserDetailView(generic.FormView):

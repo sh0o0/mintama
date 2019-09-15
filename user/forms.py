@@ -7,14 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import User
 
 
-class AddStyleClass:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for key, value in self.fields.items():
-            value.widget.attrs['class'] = 'form-item'
-
-
-class SignupForm(AddStyleClass, UserCreationForm):
+class SignupForm(UserCreationForm):
     class Meta:
         model = User
         fields = [
@@ -31,7 +24,7 @@ class SignupForm(AddStyleClass, UserCreationForm):
         }
 
 
-class EntryUserDetailForm(AddStyleClass, forms.ModelForm):
+class EntryUserDetailForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
@@ -64,13 +57,7 @@ class EntryUserDetailForm(AddStyleClass, forms.ModelForm):
         return entered_date
 
 
-# MainlyLearningFormset = forms.inlineformset_factory(
-#     User, MainlyLearning, fields=['category'], extra=5
-# )
-
-
-
-class LoginForm(AddStyleClass, AuthenticationForm):
+class LoginForm(AuthenticationForm):
     pass
 
 
@@ -85,8 +72,7 @@ class CheckPasswordForm(forms.ModelForm):
         model = User
         fields = ['password']
 
-    #Perform general password validation
-    #訳：一般的なパスワードバリデーションを行う
+    #一般的なパスワードバリデーションを行う
     def _post_clean(self):
         super()._post_clean()
         # Validate the password after self.instance is updated with form data
