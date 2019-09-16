@@ -142,8 +142,10 @@ class Reference(models.Model):
     title = models.CharField(
         max_length=100,
     )
-    evaluation = models.IntegerField(
-        choices=REFERENCE_EVALUATION_CHOICIES
+    evaluation = models.FloatField(
+        choices=REFERENCE_EVALUATION_CHOICIES,
+        blank=True,
+        null=True,
     )
     content = models.CharField(
         max_length=500,

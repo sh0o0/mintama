@@ -6,6 +6,7 @@ import Profile from './views/Profile'
 import EntryProfile from './views/EntryProfile'
 import MyPortfolios from './views/MyPortfolios'
 import MyReferences from './views/MyReferences'
+import DiaryWrite from './views/DiaryWrite'
 
 
 Vue.use(Router)
@@ -36,6 +37,11 @@ export default new Router({
       path: '/references',
       name: 'myReferences',
       component: MyReferences,
+    },
+    {
+      path: '/diaies/wirte',
+      name: 'diaryWrite',
+      component: DiaryWrite,
     },
   ]
 })

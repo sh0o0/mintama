@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'social_django',
-    'accounts',
     'socials',
+    'accounts',
+    'diaries',
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,8 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
+CATEGORY_MODEL = 'accounts.Category'
+REFERENCE_MODEL = 'accounts.Reference'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
