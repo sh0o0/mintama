@@ -7,7 +7,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register('user', views.UserViewSet)
 
-app_name = 'user'
+app_name = 'accounts'
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('api/', include(router.urls)),
