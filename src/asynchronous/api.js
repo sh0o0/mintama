@@ -1,14 +1,19 @@
-import Vue from 'vue'
 import axios from 'axios'
-import VueAxios from 'vue-axios'
 import Cookies from 'js-cookie'
+import _ from 'lodash'
+import Vue from 'vue'
+import VueAxios from 'vue-axios'
 
-const API_URL = 'http://127.0.0.1:8000/'
+import { normalizesFormData, setErrors } from './normalized'
+
+const BASE_URL = 'http://127.0.0.1:8000/'
 
 Vue.use(VueAxios, axios);
-Vue.axios.defaults.baseURL = API_URL;
+Vue.axios.defaults.baseURL = BASE_URL;
 
-export default {
+const isEmpty = obj => !Object.keys(obj).length
+
+export const Rest = {
   get: (entries, slug='') => {
   return Vue.axios
       .get(`${entries}\/${slug}\/`)
@@ -16,31 +21,31 @@ export default {
         throw new Error(`ApiService ${error}`)
       })
   },
-  post: (entries, data) => {
+  post: (entries, formDatas, redirectUrl=null) => {
     const url = `${entries}\/`
     const csrftoken = Cookies.get('csrftoken');
     const headers = {'X-CSRFToken': csrftoken};
+    const data = normalizesFormData(formDatas);
 
-    return Vue.axios.post(url, data, {headers: headers})
+    return Vue.axios.post(url, data, {headers: headers, 'Content-Type': 'multipart/form-data'})
     .then(function(response) {
-      console.log('user post successe')
+      if (isEmpty(response.data) && redirectUrl !== null) {
+        location.href = BASE_URL + redirectUrl
+      } else {
+        setErrors(formDatas, response.data)
+      }
     })
     .catch(function(error) {
         throw new Error(`Api ${error}`);
     })
   },
-  put: (entries, slug="", data) => {
+  put: (entries, slug="", formData) => {
     const url = `${entries}\/${slug}\/`
     const csrftoken = Cookies.get('csrftoken');
     const headers = {'X-CSRFToken': csrftoken, 'Content-Type': 'multipart/form-data'};
+    const data = normalizesFormData(formData);
 
-    const formData = new FormData();
-    for (let formKey in data) {
-      if (formKey === 'icon' && typeof data[formKey] === 'string') continue
-      formData.append(formKey, data[formKey])
-    } 
-
-    return Vue.axios.put(url, formData, {headers: headers})
+    return Vue.axios.put(url, data, {headers: headers})
     .then(function(response) {
       console.log('user put successe')
     })
@@ -62,3 +67,29 @@ export default {
     })
   },
 }
+
+
+const checkOneForm = (entries, formName, checkFormObjs) => {
+  // const sliceIndex = location.href.indexOf('#/');
+  // const href = location.href.slice(0, sliceIndex);
+  const checkFormObj = checkFormObjs[formName];
+
+  const url = `${entries}\/check_${formName}/`; 
+  const data = {[formName]: checkFormObj.value};
+  const csrftoken = Cookies.get('csrftoken');
+  const headers = {'X-CSRFToken': csrftoken};
+
+  Vue.axios.post(url, data, {headers: headers})
+  .then(function(response) {
+    if (isEmpty(response)) {
+      checkFormObj.errors = [];
+    } else {
+      checkFormObj.errors = response.data[formName];
+    }
+  })
+  .catch(function(error) {
+    throw new Error(`checkOneForm ${error}`);
+  })
+}
+
+export const debouncedCheckOneForm = _.debounce(checkOneForm, 1000)

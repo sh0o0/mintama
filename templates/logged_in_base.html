@@ -7,7 +7,9 @@
   </head>
   <body>
     <div id="app">
-      <baseline-view></baseline-view>
+      <baseline-view v-slot:content>
+        <router-view></router-view>
+      </baseline-view>
     </div>
     {% load render_bundle from webpack_loader %}{% render_bundle 'main' %}
     {% block script %}{% endblock script %}

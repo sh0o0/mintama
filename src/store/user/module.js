@@ -9,11 +9,16 @@ const state = {
   myselfOptionsAdded: '',
   userIsLoading: '',
   myselfError: '',
+  inputImageData: '',
+  loginOrSignup: 'Login',
 }
 
 const getters = {
   getMyself(state) {
     return state.myself
+  },
+  getBaselineMyself(state) {
+    return state.baselineMyself
   },
   getMyselfOptionsAdded(state) {
     return state.myselfOptionsAdded
@@ -21,11 +26,22 @@ const getters = {
   getMyselfError(state) {
     return state.myselfError
   },
+  getIconSrc(state) {
+    if (state.inputImageData){
+      return state.inputImageData
+    } else if (state.myself.icon) {
+      return state.myself.icon
+    } 
+    return ''
+  },
   getResidenceChoicies() {
     return RESIDENCE_CHOICIES
   },
   getGenderChoicies() {
     return GENDER_CHOICIES
+  },
+  getLoginOrSignup(state) {
+    return state.loginOrSignup
   }
 }
 

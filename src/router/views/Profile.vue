@@ -45,21 +45,18 @@ export default {
     ...mapMutations("user", ["setMyselfOptionsAdded"])
   },
   computed: {
-    ...mapGetters("user", ["getMyself", "getMyselfOptionsAdded"]),
+    ...mapGetters("user", ["getMyself", "getMyselfOptionsAdded"])
   },
   created() {
     if (!this.getMyselfOptionsAdded) {
       if (this.getMyself) {
         this.setMyselfOptionsAdded(["icon", "introduction"]);
       } else {
-        const that = this;
-        (async function() {
-          await that.apiGetMyself();
-          that.setMyselfOptionsAdded(["icon", "introduction"]);
-        })();
+        this.apiGetMyself().then(response => {
+          this.setMyselfOptionsAdded(["icon", "introduction"]);
+        });
       }
     }
-  },
-  
+  }
 };
 </script>

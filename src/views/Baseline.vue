@@ -32,7 +32,10 @@
         <a class="deco-none" href="/">Mintama</a>
       </v-toolbar-title>
       <v-avatar size="80" width="150">
-        <img v-if="getMyself" :src="`/static/mintama/img/white-egg-level-${getMyself.crack_level}.png`" />
+        <img
+          v-if="getBaselineMyself"
+          :src="`/static/mintama/img/white-egg-level-${getBaselineMyself.crack_level}.png`"
+        />
       </v-avatar>
       <v-spacer></v-spacer>
 
@@ -41,7 +44,7 @@
         <v-menu v-model="menuDrawer" offset-y>
           <template v-slot:activator="{ on }">
             <v-avatar color="orange" v-on="on" class="add-pointer">
-              <img v-if="getMyself.icon" :src="getMyself.icon" alt="icon"/>
+              <v-img v-if="getBaselineMyself.icon" :src="getBaselineMyself.icon" alt="icon" />
               <v-icon v-else x-large>mdi-egg</v-icon>
             </v-avatar>
           </template>
@@ -50,13 +53,13 @@
             <v-list>
               <v-list-item>
                 <v-list-item-avatar>
-                  <img v-if="getMyself" :src="getMyself.icon" alt="icon" />
+                  <img v-if="getBaselineMyself.icon" :src="getBaselineMyself.icon" alt="icon" />
                   <v-icon v-else x-large>mdi-egg</v-icon>
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                  <v-list-item-title>{{ getMyself.username }}</v-list-item-title>
-                  <v-list-item-subtitle>ひび割れ度：{{ getMyself.crack_level }}.LV</v-list-item-subtitle>
+                  <v-list-item-title>{{ getBaselineMyself.username }}</v-list-item-title>
+                  <v-list-item-subtitle>ひび割れ度：{{ getBaselineMyself.crack_level }}.LV</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -96,7 +99,6 @@
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col class="text-center">
-            <router-view></router-view>
             <slot name="content"></slot>
           </v-col>
         </v-row>
@@ -109,7 +111,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   props: {},
   data: () => ({
@@ -124,27 +126,32 @@ export default {
       { title: "チーム開発", icon: "mdi-account-group", routerName: "" }
     ],
     menuDrawerItems: [
-      { title: "アカウント", icon: "mdi-account-circle", routerName: "profile"},
+      {
+        title: "アカウント",
+        icon: "mdi-account-circle",
+        routerName: "profile"
+      },
       { title: "過去の参考資料", icon: "mdi-file", routerName: "myReferences" },
-      { title: "ポートフォリオ", icon: "mdi-arm-flex", routerName: "myPortfolios" },
+      {
+        title: "ポートフォリオ",
+        icon: "mdi-arm-flex",
+        routerName: "myPortfolios"
+      },
       { title: "お気に入り", icon: "mdi-heart", routerName: "" },
       { title: "設定", icon: "mdi-settings-box", routerName: "" }
-    ],
+    ]
   }),
   methods: {
-    ...mapActions('user', ['apiGetMyself']),
-    ...mapMutations('user', ['setMyselfOptionsAdded']),
+    ...mapActions("user", ["apiGetMyself"]),
+    ...mapMutations("user", ["setBaselineMyself"])
   },
   computed: {
-    ...mapGetters('user', ['getMyself', 'getMyselfOptionsAdded'])
+    ...mapGetters("user", ["getBaselineMyself"])
   },
   created() {
-    if (!this.getMyself){
-      const that = this;
-      (async function() {
-        await that.apiGetMyself();
-      }())
-    }
+    this.apiGetMyself().then(response => {
+      this.setBaselineMyself();
+    });
   }
 };
 </script>

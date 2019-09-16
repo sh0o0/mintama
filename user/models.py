@@ -64,7 +64,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     learning_started_date = models.DateField(
         blank=True,
         null=True,
-        help_text=_('When your start learning'),
     )
     crack_level = models.IntegerField(
         default=1,
@@ -73,7 +72,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     mainly_learning = models.ManyToManyField(
         Category,
-        related_name='users'
+        related_name='users',
+        blank=True
     )
 
     is_staff = models.BooleanField(

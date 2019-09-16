@@ -8,11 +8,11 @@
             <v-row>
               <v-col cols="4" md="12">
                 <v-avatar color="grey" size="170" tile>
-                  <v-img v-if="inputImageSrc" :src="inputImageSrc" alt="USER ICON"></v-img>
+                  <v-img v-if="getIconSrc" :src="getIconSrc" alt="USER ICON"></v-img>
                 </v-avatar>
               </v-col>
               <v-col cols="8" md="12">
-                <v-file-input show-size label="アイコン" @change="inputImage"></v-file-input>
+                <v-file-input show-size label="アイコン" @change="setInputImageData"></v-file-input>
               </v-col>
             </v-row>
           </v-card>
@@ -74,8 +74,7 @@ import LearningStartedDateForm from "@/components/LearningStartedDateForm";
 export default {
   data() {
     return {
-      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"],
-      inputImageURL: '',
+      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"]
     };
   },
   components: {
@@ -86,30 +85,25 @@ export default {
     ...mapGetters("user", [
       "getMyself",
       "getResidenceChoicies",
-      "getGenderChoicies"
+      "getGenderChoicies",
+      "getIconSrc"
     ]),
-    ...mapState("user", ["myself"]),
-    inputImageSrc() {
-      if (this.inputImageURL) {
-        return this.inputImageURL
-      }
-      return this.$store.state.user.myself.icon
-    }
+    ...mapState("user", ["myself"])
   },
   methods: {
-    ...mapActions("user", ["apiGetMyself", 'apiPutMyself']),
-    ...mapMutations('user', ['setMyselfOptionsAdded']),
-    inputImage: function(iconImage) {
-      const that = this
-      const fileReader = new FileReader()
-
-      fileReader.onload = function() {
-        that.inputImageURL = this.result
-        that.myself.icon = iconImage
-        console.log(that.myself)
-      }
-      fileReader.readAsDataURL(iconImage)
-    }
+    ...mapActions("user", ["apiGetMyself", "apiPutMyself"]),
+    ...mapMutations("user", ["setInputImageData", 'setMyselfOptionsAdded'])
   },
+  created() {
+    if (!this.getMyselfOptionsAdded) {
+      if (this.getMyself) {
+        this.setMyselfOptionsAdded(["icon", "introduction"]);
+      } else {
+        this.apiGetMyself().then(response => {
+          this.setMyselfOptionsAdded(["icon", "introduction"]);
+        });
+      }
+    }
+  }
 };
 </script>

@@ -1,8 +1,10 @@
 export const GENDER_CHOICIES = [
+  {value: '', text: ''},
   {value: 'male', text: 'オス'},
   {value: 'female', text: 'メス'},
 ]
 export const RESIDENCE_CHOICIES = [
+    '',
     '北海道',
     '青森県',
     '岩手県',

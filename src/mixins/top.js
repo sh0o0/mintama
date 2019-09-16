@@ -1,4 +1,4 @@
-export const topStyle = {
+export const backgroundStyle = {
   data() {
     return {
       topStyle: {
@@ -9,6 +9,18 @@ export const topStyle = {
         backgroundSize: '100% 100%',
         backgroundColor: '#464646',
       }
+    }
+  }
+}
+
+export const oauthBtns = {
+  data() {
+    return {
+      oauthBtns: [
+        {name:'twitter', href: '/socials/login/twitter'},
+        {name:'google', href: '/socials/login/google-oauth2/'},
+        {name:'github', href: '/socials/login/github/'},
+      ]
     }
   }
 }
