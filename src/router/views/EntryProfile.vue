@@ -74,7 +74,7 @@ import LearningStartedDateForm from "@/components/LearningStartedDateForm";
 export default {
   data() {
     return {
-      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"],
+      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"]
     };
   },
   components: {
@@ -86,13 +86,24 @@ export default {
       "getMyself",
       "getResidenceChoicies",
       "getGenderChoicies",
-      'getIconSrc',
+      "getIconSrc"
     ]),
-    ...mapState("user", ["myself"]),
+    ...mapState("user", ["myself"])
   },
   methods: {
-    ...mapActions("user", ["apiGetMyself", 'apiPutMyself']),
-    ...mapMutations('user', ['setInputImageData'])
+    ...mapActions("user", ["apiGetMyself", "apiPutMyself"]),
+    ...mapMutations("user", ["setInputImageData", 'setMyselfOptionsAdded'])
   },
+  created() {
+    if (!this.getMyselfOptionsAdded) {
+      if (this.getMyself) {
+        this.setMyselfOptionsAdded(["icon", "introduction"]);
+      } else {
+        this.apiGetMyself().then(response => {
+          this.setMyselfOptionsAdded(["icon", "introduction"]);
+        });
+      }
+    }
+  }
 };
 </script>

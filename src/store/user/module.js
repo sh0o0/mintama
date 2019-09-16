@@ -17,6 +17,9 @@ const getters = {
   getMyself(state) {
     return state.myself
   },
+  getBaselineMyself(state) {
+    return state.baselineMyself
+  },
   getMyselfOptionsAdded(state) {
     return state.myselfOptionsAdded
   },

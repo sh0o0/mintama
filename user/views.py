@@ -5,8 +5,8 @@ from django.shortcuts import render, resolve_url
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
-    LoginView as SuperLoginView,
-    LogoutView as SuperLogoutView,
+    LoginView as BaseLoginView,
+    LogoutView as BaseLogoutView,
     PasswordChangeForm,
     PasswordChangeDoneView
 )
@@ -16,9 +16,10 @@ from django.urls import reverse_lazy
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import status
 from social_django.models import UserSocialAuth
 
-from .forms import SignupForm, EntryUserDetailForm, LoginForm, CheckUsernameForm, CheckPasswordForm
+from .forms import SignupForm, CheckUsernameForm, CheckPasswordForm
 from .models import Category, Reference, Portfolio
 from .permissions import IsAdminOrReadOnly
 from .serializers import UserFilter, UserSerializer, CategorySerializer, ReferenceSerializer, PortfolioSerializer
@@ -35,7 +36,9 @@ class BaseViewSet(viewsets.ModelViewSet):
             logger.debug('user api my own info')
             user = request.user
             serializer = self.get_serializer(user)
+            print(serializer.data)
             return Response(serializer.data)
+
         logger.info('user api %s', kwargs['pk'])
         return super().retrieve(request, *args, **kwargs)
 
@@ -46,9 +49,11 @@ class BaseViewSet(viewsets.ModelViewSet):
         else:
             instance = self.get_object()
 
+        print(request.data)
         partial = kwargs.pop('partial', False)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
+
         self.perform_update(serializer)
 
         if getattr(instance, '_prefetched_objects_cache', None):
@@ -57,6 +62,13 @@ class BaseViewSet(viewsets.ModelViewSet):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 #API
@@ -86,117 +98,92 @@ class PortfolioViewSet(BaseViewSet):
 
 
 #Django Template
-class SignupView(generic.CreateView):
-    template_name = 'signup.html'
-    form_class = SignupForm
-    success_url = reverse_lazy('user:entry_user_detail')
+class LoginOrSignupView(generic.TemplateView):
+    template_name = 'login_or_signup.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['signup_form'] = SignupForm()
-        return context
+
+class SignupView(generic.CreateView):
+    form_class = SignupForm
+    success_url = reverse_lazy('user:home')
 
     def form_valid(self, form):
-        result = super().form_valid(form)
-
+        logger.debug('signup form valid')
+        super().form_valid(form)
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
         auth_user = authenticate(username=username, password=password)
         if auth_user is not None:
             login(self.request, auth_user)
             logger.info('complete User create and login User:%s', auth_user)
-        return result
+
+        return JsonResponse({})
 
     def form_invalid(self, form):
         errors = dict(form.errors.items())
-        result = super().form_invalid(form)
+        logger.debug('signup form invalid %s', errors)
         return JsonResponse(errors)
 
 
-# class EntryUserDetailView(generic.FormView):
-#     template_name = 'entry_user_detail.html'
-#     form_class = EntryUserDetailForm
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['entry_user_detail_form'] = EntryUserDetailForm()
-#         context['mainly_learning_formset'] = MainlyLearningFormset()
-#         return context
-#
-#
-# class EntryUserDetailConfirmView(generic.FormView):
-#     form_class = EntryUserDetailForm
-#
-#     def post(self, request, *args, **kwargs):
-#         super_result = super().post(request, *args, **kwargs)
-#         return super_result
-#
-#     def form_valid(self, form):
-#         logger.info('EntryUserDetailConfirmView is valid True')
-#         user = self.request.user
-#         formset = MainlyLearningFormset(self.request.POST, instance=user)
-#         if formset.is_valid():
-#             formset.save()
-#         forms = {'entry_user_detail_form': form, 'mainly_learning_formset': formset}
-#         return render(self.request, 'entry_user_detail_confirm.html', forms)
-#
-#     def form_invalid(self, form):
-#         logger.info('EntryUserDetailConfirmView is valid False')
-#         formset = MainlyLearningFormset(self.request.POST)
-#         forms = {'entry_user_detail_form': form, 'mainly_learning_formset': formset}
-#         return render(self.request, 'entry_user_detail.html', forms)
+class LoginView(BaseLoginView):
+
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        return JsonResponse({})
+
+    def form_invalid(self, form):
+        errors = dict(form.errors.items())
+        if errors.get('__all__', None):
+            errors['non_field_errors'] = errors.pop('__all__')
+        return JsonResponse(errors)
 
 
-class AddUserDetailView(generic.UpdateView):
-    model = User
-    form_class = EntryUserDetailForm
-    success_url = reverse_lazy('user:top')
-
-    def get_object(self, queryset=None):
-        user_id = self.request.user.id
-        logger.info('AddUserDetailView def:get_object user_id:%s', user_id)
-        return User.objects.get(id=user_id)
-
-
-class LoginView(SuperLoginView):
-    template_name = 'login.html'
-    form_class = LoginForm
-    success_url = '/'
-
-
-class LogoutView(SuperLogoutView):
+class LogoutView(BaseLogoutView):
     template_name = 'logout.html'
 
 
-class TopView(LoginRequiredMixin, generic.TemplateView):
+class HomeView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'index.html'
     redirect_field_name = 'redirect_to'
 
 
 class IndexView(generic.TemplateView):
     template_name = 'index.html'
+    redirect_field_name = 'redirect_to'
+
+
+def encrypt_password(target_dict):
+    #keyに"password"が含まれている場合、"*"へ変換
+    #暗号化された辞書コピーを返す
+    result_dict = {}
+    for key, value in target_dict.items():
+        if 'password' in key:
+            result_dict[key] = '*' * len(value)
+        else:
+            result_dict[key] = value
+
+    return result_dict
 
 
 #Check Form
-def check_form(request, CheckForm, server_form_name, client_form_name=None):
-    logger.info('start def:check_form(%s, %s)', server_form_name, client_form_name)
+def check_form(request, check_form_class, server_form_name, client_form_name=None):
+    logger.debug('start check_form(%s)', server_form_name)
     if client_form_name is None:
         client_form_name = server_form_name
 
-    request_data = json.loads(request.body)
-    data = {server_form_name: request_data[client_form_name]}
-    form = CheckForm(data)
-    valid_result = {}
+    #バイト文字列をutfへ変換
+    request_json= json.loads(request.body)
+
+    data = {server_form_name: request_json[client_form_name]}
+    form = check_form_class(data)
     if form.is_valid():
-        valid_result['available'] = True
+        logger.debug('check_form valid %s', encrypt_password(request_json))
+        return JsonResponse({})
     else:
-        errors = json.loads(form.errors.as_json(), encoding='utf-8')
-        valid_result['available'] = False
-        valid_result['errors'] = []
-        for error in errors[server_form_name]:
-            valid_result['errors'].append(error['message'])
-    logger.info('end def:check_form result: %s', valid_result)
-    return JsonResponse(valid_result)
+        errors = dict(form.errors.items())
+        if errors.get('password', None):
+            errors['password1'] = errors.pop('password')
+        logger.info('check_form invalid %s', errors)
+        return JsonResponse(errors)
 
 
 def check_username(request):
@@ -205,19 +192,3 @@ def check_username(request):
 
 def check_password(request):
     return check_form(request, CheckPasswordForm, 'password', 'password1')
-
-
-#TODO:非同期にユーザー登録を実装
-# def signup(request):
-#     if request.method == 'POST':
-#         form = SignupForm(request.POST)
-#         if form.is_valid():
-#             pass
-#         else:
-#             some_errors = json.loads(form.errors.as_json(), encoding='utf-8')
-#             error_message = form.error_messages
-#             some_errors.update(error_message)
-#     content = {}
-#     content['form'] = SignupForm()
-#     return render(request, 'signup.html', content)
-

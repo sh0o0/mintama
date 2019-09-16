@@ -1,6 +1,6 @@
 <template>
   <ul v-if="errors">
-    <li v-for="(error, index) in errorsArray" :key="formName + '-' + index">{{ error }}</li>
+    <li v-for="(error, index) in errors" :key="formName + '-' + index">{{ error }}</li>
   </ul>
 </template>
 
@@ -8,16 +8,8 @@
 export default {
   props: {
     formName: String,
-    errors: [String, Array]
+    errors: Array,
   },
-  computed: {
-    errorsArray: function() {
-      if (typeof this.errors == "string") {
-        return this.errors.split(",");
-      }
-      return this.errors;
-    }
-  }
 };
 </script>
 <style scoped lang="sass">

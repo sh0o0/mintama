@@ -6,7 +6,7 @@ from .models import User, Category, Portfolio, Reference
 
 
 class UserFilter(filter.FilterSet):
-    icon = filter.CharFilter(field_name='icon', lookup_expr='contains')
+    icon = filter.CharFilter(field_name='icon', lookup_expr='exact')
 
     class Meta:
         model = User
@@ -14,6 +14,11 @@ class UserFilter(filter.FilterSet):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    residence = serializers.SerializerMethodField()
+    learning_started_date = serializers.SerializerMethodField()
+    introduction = serializers.SerializerMethodField()
+    # icon = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = [
@@ -26,6 +31,18 @@ class UserSerializer(serializers.ModelSerializer):
             'icon',
             'introduction',
         ]
+
+    def get_introduction(self, instance):
+        return instance.introduction if instance.introduction else ''
+
+    def get_residence(self, instance):
+        return instance.residence if instance.residence else ''
+
+    def get_learning_started_date(self, instance):
+        return instance.learning_started_date if instance.learning_started_date else ''
+
+    # def get_icon(self, instance):
+    #     return instance.icon if instance.icon else ''
 
 
 class CategorySerializer(serializers.ModelSerializer):

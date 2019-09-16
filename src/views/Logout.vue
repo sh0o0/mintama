@@ -3,8 +3,7 @@
       <v-container>
         <v-layout class="align-center justify-center">
           <v-flex>
-            <v-btn link href="/login/" color="primary">login</v-btn>
-            <v-btn link href="/signup/" color="teal">Singup</v-btn>
+            <v-btn link href="/login-or-signup/" color="primary">login</v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -12,8 +11,8 @@
 </template>
 
 <script>
-import { topStyle } from '@/top_style'
+import { backgroundStyle, oauthBtns } from "@/mixins/top";
   export default {
-    mixins: [topStyle]
+    mixins: [backgroundStyle, oauthBtns]
   }
 </script>

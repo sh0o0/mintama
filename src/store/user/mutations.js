@@ -4,8 +4,8 @@ export default {
   setMyself(state, payload) {
     state.myself = payload;
   },
-  setBaselineMyself(state, data) {
-    state.baselineMyself = data
+  setBaselineMyself(state) {
+    state.baselineMyself =  Object.assign({}, state.myself)
   },
   setMyselfError(state, error) {
     state.myselfError = error
@@ -24,15 +24,14 @@ export default {
       state.myselfOptionsAdded.push(itemOptionAdded)
     }
   },
-  setInputImageData(state, data) {
-    console.log(data)
+  setInputImageData(state, fileObj) {
     const fileReader = new FileReader()
 
     fileReader.onload = function() {
       state.inputImageData = this.result
-      state.myself.icon = data
+      state.myself.icon = fileObj
     }
-    fileReader.readAsDataURL(data)
+    fileReader.readAsDataURL(fileObj)
   },
   setLogin(state) {
     state.loginOrSignup = 'Login'
