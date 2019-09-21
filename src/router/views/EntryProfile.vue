@@ -31,7 +31,7 @@
             prepend-icon="mdi-email-edit"
           />
           <v-select
-            :items="getGenderChoicies"
+            :items="GENDER_CHOICIES"
             label="性別"
             item-value="value"
             item-text="text"
@@ -40,7 +40,7 @@
           ></v-select>
 
           <v-select
-            :items="getResidenceChoicies"
+            :items="RESIDENCE_CHOICIES"
             label="居住地"
             prepend-icon="mdi-home-account"
             v-model="myself.residence"
@@ -52,7 +52,7 @@
 
           <v-textarea
             label="自己紹介"
-            :value="getMyself.introduction"
+            v-model="getMyself.introduction"
             outlined
             clearable
             clear-icon="cancel"
@@ -60,7 +60,7 @@
             counter
             auto-grow
           />
-          <v-btn link @click="apiPutMyself" color="orange" absolute bottom right>変更</v-btn>
+          <v-btn link @click="update" color="orange" absolute bottom right>変更</v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -70,11 +70,15 @@
 import { mapActions, mapGetters, mapState, mapMutations } from "vuex";
 import CrackLevelForm from "@/components/CrackLevelForm";
 import LearningStartedDateForm from "@/components/LearningStartedDateForm";
+import FormHelper from '@/helper/form'
+import { GENDER_CHOICIES, RESIDENCE_CHOICIES } from '@/helper/constant'
 
 export default {
   data() {
     return {
-      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"]
+      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"],
+      formObj: {
+      },
     };
   },
   components: {
@@ -84,26 +88,32 @@ export default {
   computed: {
     ...mapGetters("user", [
       "getMyself",
-      "getResidenceChoicies",
-      "getGenderChoicies",
       "getIconSrc"
     ]),
-    ...mapState("user", ["myself"])
+    ...mapState("user", ["myself"]),
+    GENDER_CHOICIES() {
+      return　GENDER_CHOICIES;
+    },
+    RESIDENCE_CHOICIES() {
+      return RESIDENCE_CHOICIES;
+    }
   },
   methods: {
     ...mapActions("user", ["apiGetMyself", "apiPutMyself"]),
-    ...mapMutations("user", ["setInputImageData", 'setMyselfOptionsAdded'])
+    ...mapMutations("user", ["setInputImageData", 'setMyselfOptionsAdded']),
+    update() {
+      this.apiPutMyself().then(response => {
+      })
+    }
   },
   created() {
-    if (!this.getMyselfOptionsAdded) {
-      if (this.getMyself) {
-        this.setMyselfOptionsAdded(["icon", "introduction"]);
-      } else {
-        this.apiGetMyself().then(response => {
-          this.setMyselfOptionsAdded(["icon", "introduction"]);
-        });
-      }
-    }
+    const that = this;
+    this.apiGetMyself().then(response => {
+      FormHelper.createThatFormObj(that, {name: 'section', label: 'first', type: 'text'})
+      FormHelper.assignDataToThatObj(that, that.getMyself)
+    }).catch(error => {
+      console.log(error)
+    })
   }
 };
 </script>

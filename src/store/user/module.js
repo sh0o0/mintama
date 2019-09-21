@@ -1,5 +1,3 @@
-import { RESIDENCE_CHOICIES, GENDER_CHOICIES } from './constant'
-
 import actions from './actions'
 import mutations from './mutations'
 
@@ -33,12 +31,6 @@ const getters = {
       return state.myself.icon
     } 
     return ''
-  },
-  getResidenceChoicies() {
-    return RESIDENCE_CHOICIES
-  },
-  getGenderChoicies() {
-    return GENDER_CHOICIES
   },
   getLoginOrSignup(state) {
     return state.loginOrSignup

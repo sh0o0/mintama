@@ -4,7 +4,7 @@ import _ from 'lodash'
 import Vue from 'vue'
 import VueAxios from 'vue-axios'
 
-import { normalizesFormData, setErrors } from './normalized'
+import FormHelper from '@/helper/form'
 
 const BASE_URL = 'http://127.0.0.1:8000/'
 
@@ -25,7 +25,7 @@ export const Rest = {
     const url = `${entries}\/`
     const csrftoken = Cookies.get('csrftoken');
     const headers = {'X-CSRFToken': csrftoken};
-    const data = normalizesFormData(formDatas);
+    const data = FormHelper.normalizesFormObj(formDatas);
 
     return Vue.axios.post(url, data, {headers: headers, 'Content-Type': 'multipart/form-data'})
     .then(function(response) {
@@ -43,16 +43,32 @@ export const Rest = {
     const url = `${entries}\/${slug}\/`
     const csrftoken = Cookies.get('csrftoken');
     const headers = {'X-CSRFToken': csrftoken, 'Content-Type': 'multipart/form-data'};
-    const data = normalizesFormData(formData);
+    const data = FormHelper.createFormData(formData);
 
     return Vue.axios.put(url, data, {headers: headers})
     .then(function(response) {
-      console.log('user put successe')
+      console.log('api put successe', response.data)
     })
     .catch(function(error) {
         throw new Error(`Api ${error}`);
     })
   },
+
+  patch: (entries, slug="", formData) => {
+    const url = `${entries}\/${slug}\/`
+    const csrftoken = Cookies.get('csrftoken');
+    const headers = {'X-CSRFToken': csrftoken, 'Content-Type': 'multipart/form-data'};
+    const data = FormHelper.createFormData(formData);
+
+    return Vue.axios.patch(url, data, {headers: headers})
+    .then(function(response) {
+      console.log('api patch successe', response.data)
+    })
+    .catch(function(error) {
+        throw new Error(`Api ${error}`);
+    })
+  },
+
   delete: (entries, slug="") => {
     const url = `${entries}\/${slug}\/`
     const csrftoken = Cookies.get('csrftoken');

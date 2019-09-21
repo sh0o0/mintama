@@ -24,5 +24,15 @@ export default {
       .catch(response => {
         context.commit("setError", response.errors);
       });
-  }
+  },
+  apiPatchMyself(context) {
+    context.commit("fetchStart");
+    return Rest.put("api", "user/my!own!info", context.state.myself)
+      .then(response => {
+        context.commit("fetchEnd");
+      })
+      .catch(response => {
+        context.commit("setError", response.errors);
+      });
+  },
 };

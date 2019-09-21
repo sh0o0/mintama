@@ -11,7 +11,7 @@
     </v-toolbar>
     <v-card-text>
       <v-form name="signup" method="post">
-        <div v-for="formData in formDatas" :key="formData.name" >
+        <div v-for="formData in formDatas" :key="formData.name">
           <FormError :name="formData.name" :errors="formData.errors"></FormError>
           <v-text-field
             v-if="formData.name !== 'non_field_errors'"
@@ -25,6 +25,7 @@
           ></v-text-field>
         </div>
       </v-form>
+      {{ formDatas.non_field_errors.name }}
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -44,6 +45,7 @@ export default {
   mixins: [oauthBtns],
   data() {
     return {
+      sample: {},
       formDatas: {
         username: {
           name: "username",
@@ -107,7 +109,7 @@ export default {
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");
-    }
+    },
   },
   watch: {
     "formDatas.username.value": function() {
@@ -116,6 +118,6 @@ export default {
     "formDatas.password1.value": function() {
       debouncedCheckOneForm('signup', 'password1', this.formDatas);
     }
-  }
+  },
 };
 </script>
