@@ -3,36 +3,33 @@ import { Rest } from "@/asynchronous/api";
 export default {
   apiGetMyself(context) {
     context.commit("fetchStart");
-    return Rest.get("api", "user/my!own!info")
+    return Rest.get("account/api/user", "my!own!info")
       .then(response => {
-        console.log("status:", response.status);
-        console.log("data", response.data);
         context.commit("setMyself", response.data);
         context.commit("fetchEnd");
       })
-      .catch(response => {
-        context.commit("setError", response.errors);
+      .catch(error => {
+
       });
   },
   apiPutMyself(context) {
     context.commit("fetchStart");
-    return Rest.put("api", "user/my!own!info", context.state.myself)
+    return Rest.put("account/api/user", "my!own!info", context.state.myself)
       .then(response => {
-        console.log(response.status);
         context.commit("fetchEnd");
       })
-      .catch(response => {
-        context.commit("setError", response.errors);
+      .catch(error => {
+        throw new Error(`actions put: ${error}`)
       });
   },
-  apiPatchMyself(context) {
+  apiPatchMyself(context, formObj) {
     context.commit("fetchStart");
-    return Rest.put("api", "user/my!own!info", context.state.myself)
+    return Rest.patch("account/api/user", "my!own!info", formObj)
       .then(response => {
         context.commit("fetchEnd");
       })
-      .catch(response => {
-        context.commit("setError", response.errors);
+      .catch(error => {
+        throw new Error(`actions patch: ${error}`)
       });
   },
 };

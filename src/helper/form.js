@@ -6,42 +6,40 @@ const normalizesFormObj = formObj => {
   let normFormObj = {};
   for (let dataKey in formObj) {
     let name = formObj[dataKey].name;
-    if (!(name === undefined)) {
-      if (formObj[dataKey].type === 'file') {
-        //image objectを格納
-        normFormObj[name] = formObj[dataKey].image
+    if (name === undefined) {
+      normFormObj[dataKey] = formObj[dataKey];
+      continue;
+    }
+
+    if (formObj[dataKey].type === 'file') {
+      normFormObj[name] = formObj[dataKey].file
+    } else {
+      if (formObj[dataKey].value === null) {
+        formObj[dataKey].value = '';
       } else {
         normFormObj[name] = formObj[dataKey].value
       }
-      normFormObj[`clear_${name}`] = formObj[dataKey].clear;
-    } else {
-      normFormObj[dataKey] = formObj[dataKey]
     }
+
+    let clear = formObj[dataKey].clear;
+    if (!(clear === null || clear === undefined)) {
+      normFormObj[`clear_${name}`] = formObj[dataKey].clear;
+    }
+
   }
   return normFormObj
 }
 
-const createFormData = normFormObj => {
-  console.log(normFormObj)
+const createFormData = formObj => {
+  let normFormObj = normalizesFormObj(formObj)
   let formData = new FormData();
   for (let dataKey in normFormObj) {
     formData.append(dataKey, normFormObj[dataKey])
   }
-  //test
-  formData.append('icon_clear', false)
-  formData.append('icon', '')
   return formData
 }
-// const createFormData = formObj => {
-//   const normFormObj = normalizesFormObj(formObj);
-//   let formData = new FormData();
-//   for (let dataKey in normFormObj) {
-//     formData.append(normFormObj[dataKey])
-//   }
-//   return formData
-// }
 
-const assignDataToObj = (data, obj) => {
+const assignDataToObj = (obj, data) => {
   for (let dataKey in data) {
     let isUndefined = obj[dataKey] === undefined
     if (!(isUndefined)) {
@@ -55,15 +53,21 @@ const assignErrors = (formObj, errors) => {
   }
 }
 
+const clearErrors = (formObj) => {
+  for (let formKey in formObj) {
+    formObj[formKey].errors = [];
+  } 
+}
+
 const createFormObj = ({
   name,
   label = "",
   prependIcon = "",
   type = "text",
-  file = null,
+  file = '',
   autofocus = false,
   required = false,
-  clear = false,
+  clear = null,
   value = "",
   errors = []
 }) => {
@@ -82,32 +86,8 @@ const createFormObj = ({
   };
 };
 
-// function assignDataToObjForCall(data) {
-//   const obj = this.formObj;
-//   assignDataToObj(data, obj);
-// };
-
-// function createFormObjForCall(argObj) {
-//   const formObj = createFormObj(argObj);
-//   this.$set(this.formObj, formObj['name'], formObj);
-// };
-
-// function createFormObjsForCall(...argObjs) {
-//   for (let argObj in argObjs) {
-//     const formObj = createFormObj(argObj);
-//     this.$set(this.formObj, formObj['name'], formObj);
-//   }
-// };
-
-// function assignErrorsForCall(errors) {
-//   const formObj = this.formObj;
-//   assignErrors(formObj, errors);
-// };
-
-
 function assignDataToThatObj(that, data) {
-  const obj = that.formObj;
-  assignDataToObj(data, obj);
+  assignDataToObj(that.formObj, data);
 };
 
 function createThatFormObj(that, argObj) {
@@ -116,7 +96,7 @@ function createThatFormObj(that, argObj) {
 };
 
 function createThatFormObjs(that, ...argObjs) {
-  for (let argObj in argObjs) {
+  for (let argObj of argObjs) {
     const formObj = createFormObj(argObj);
     that.$set(that.formObj, formObj['name'], formObj);
   }
@@ -127,12 +107,16 @@ function assignThatErrors(that, errors) {
   assignErrors(formObj, errors);
 };
 
-const setFileToThatFormObj = (that, formName, file) => {
+const setFileToThatFormObj = (form, file) => {
+  if (file === null) {
+    form.file = '';
+    return
+  } 
   const fileReader = new FileReader();
 
-  fileReader.onload = () => {
-    that.formObj[formName].value = this.result;
-    that.formObj[formName].file = fileObj;
+  fileReader.onload = function() {
+    form.value = this.result;
+    form.file = file;
   }
   fileReader.readAsDataURL(file);
 }
@@ -144,6 +128,8 @@ const FormHelper = {
   assignDataToThatObj,
   createThatFormObj,
   createThatFormObjs,
+  assignErrors,
+  clearErrors,
   assignThatErrors,
   setFileToThatFormObj,
 }

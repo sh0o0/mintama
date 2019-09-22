@@ -1,96 +1,118 @@
 <template>
   <v-app>
-    <v-card class="pa-2 pb-8">
-      <v-card-title>プロフィール編集</v-card-title>
+    <h2 class="heading">プロフィール編集</h2>
       <v-row>
         <v-col align-self="start" class="p-2" cols="12" md="3">
           <v-card class="pa-2">
             <v-row>
               <v-col cols="4" md="12">
                 <v-avatar color="grey" size="170" tile>
-                  <v-img v-if="getIconSrc" :src="getIconSrc" alt="USER ICON"></v-img>
+                  <v-img v-if="formObj.icon.value" :src="formObj.icon.value" alt="USER ICON"></v-img>
                 </v-avatar>
               </v-col>
               <v-col cols="8" md="12">
-                <v-file-input show-size label="アイコン" @change="setInputImageData"></v-file-input>
+                <v-file-input show-size :label="formObj.icon.label" @change="inputFile"></v-file-input>
+                <v-checkbox v-model="formObj.icon.clear" label="アイコンを消す"></v-checkbox>
+                <FormError :formName="formObj.icon.name" :errors="formObj.icon.errors"></FormError>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
         <v-col cols="12" md="9">
+          <FormError :formName="formObj.username.name" :errors="formObj.username.errors"></FormError>
           <v-text-field
-            label="ユーザー名"
-            v-model.trim="myself.username"
-            type="text"
-            prepend-icon="mdi-rename-box"
+            :label="formObj.username.label"
+            v-model.trim="formObj.username.value"
+            :type="formObj.username.type"
+            :prepend-icon="formObj.username.prependIcon"
           />
+
+          <FormError :formName="formObj.email.name" :errors="formObj.email.errors"></FormError>
           <v-text-field
-            label="メールアドレス"
-            v-model.trim="myself.email"
-            type="email"
-            prepend-icon="mdi-email-edit"
+            :label="formObj.email.label"
+            v-model.trim="formObj.email.value"
+            :type="formObj.email.type"
+            :prepend-icon="formObj.email.prependIcon"
           />
+
+          <FormError :formName="formObj.gender.name" :errors="formObj.gender.errors"></FormError>
           <v-select
             :items="GENDER_CHOICIES"
-            label="性別"
             item-value="value"
             item-text="text"
-            prepend-icon="mdi-gender-male-female"
-            v-model="myself.gender"
+            :label="formObj.gender.label"
+            :prepend-icon="formObj.gender.prependIcon"
+            v-model="formObj.gender.value"
           ></v-select>
 
+          <FormError :formName="formObj.residence.name" :errors="formObj.residence.errors"></FormError>
           <v-select
             :items="RESIDENCE_CHOICIES"
-            label="居住地"
-            prepend-icon="mdi-home-account"
-            v-model="myself.residence"
+            :label="formObj.residence.label"
+            :prepend-icon="formObj.residence.prependIcon"
+            v-model="formObj.residence.value"
           ></v-select>
 
-          <learning-started-date-form></learning-started-date-form>
+          <FormError :formName="formObj.learning_started_date.name" :errors="formObj.learning_started_date.errors"></FormError>
+          <learning-started-date-form 
+          :form="formObj.learning_started_date"
+          ></learning-started-date-form>
+          
+          <FormError :formName="formObj.crack_level.name" :errors="formObj.crack_level.errors"></FormError>
+          <crack-level-form
+          :form="formObj.crack_level"
+          ></crack-level-form>
 
-          <crack-level-form></crack-level-form>
-
+          <FormError :formName="formObj.introduction.name" :errors="formObj.introduction.errors"></FormError>
           <v-textarea
-            label="自己紹介"
-            v-model="getMyself.introduction"
-            outlined
-            clearable
-            clear-icon="cancel"
-            :rules="introductionRules"
-            counter
-            auto-grow
+          :label="formObj.introduction.label"
+          v-model="formObj.introduction.value"
+          :rules="introductionRules"
+          counter
+          outlined
+          clearable
+          clear-icon="cancel"
+          auto-grow
           />
           <v-btn link @click="update" color="orange" absolute bottom right>変更</v-btn>
+          <Dialog 
+          heading="変更が完了しました。"
+          :dialog="dialog"
+          @dialog-to-false="dialogToFalse"
+          ></Dialog>
+
         </v-col>
       </v-row>
-    </v-card>
   </v-app>
 </template>
 <script>
-import { mapActions, mapGetters, mapState, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
+
 import CrackLevelForm from "@/components/CrackLevelForm";
 import LearningStartedDateForm from "@/components/LearningStartedDateForm";
+import FormError  from '@/components/FormError'
+import Dialog from '@/components/Dialog'
+
 import FormHelper from '@/helper/form'
+import FormOptions from '@/helper/form_options'
 import { GENDER_CHOICIES, RESIDENCE_CHOICIES } from '@/helper/constant'
 
 export default {
   data() {
     return {
       introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"],
-      formObj: {
-      },
+      formObj: {},
+      dialog: false
     };
   },
   components: {
     CrackLevelForm,
-    LearningStartedDateForm
+    LearningStartedDateForm,
+    FormError,
+    Dialog,
   },
   computed: {
-    ...mapGetters("user", [
-      "getMyself",
-      "getIconSrc"
-    ]),
-    ...mapState("user", ["myself"]),
+    ...mapGetters("user", ["getMyself"]),
     GENDER_CHOICIES() {
       return　GENDER_CHOICIES;
     },
@@ -99,20 +121,32 @@ export default {
     }
   },
   methods: {
-    ...mapActions("user", ["apiGetMyself", "apiPutMyself"]),
-    ...mapMutations("user", ["setInputImageData", 'setMyselfOptionsAdded']),
+    ...mapActions("user", ["apiGetMyself", "apiPatchMyself"]),
+    ...mapMutations('user', ['setBaselineMyself']),
     update() {
-      this.apiPutMyself().then(response => {
+      const that = this;
+      FormHelper.clearErrors(that.formObj)
+      this.apiPatchMyself(this.formObj).then(response => {
+        that.dialog = true;
+        that.apiGetMyself().then(response => {
+          that.setBaselineMyself();
+        })
       })
+    },
+    inputFile(file) {
+      FormHelper.setFileToThatFormObj(this.formObj['icon'], file)
+    },
+    dialogToFalse() {
+      this.dialog = false
     }
   },
   created() {
     const that = this;
+    FormHelper.createThatFormObjs(that, ...FormOptions.user)
     this.apiGetMyself().then(response => {
-      FormHelper.createThatFormObj(that, {name: 'section', label: 'first', type: 'text'})
       FormHelper.assignDataToThatObj(that, that.getMyself)
     }).catch(error => {
-      console.log(error)
+      console.log(error.response.data)
     })
   }
 };

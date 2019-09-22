@@ -11,7 +11,7 @@
     </v-toolbar>
     <v-card-text>
       <v-form name="signup" method="post">
-        <div v-for="formData in formDatas" :key="formData.name">
+        <div v-for="formData in formObj" :key="formData.name">
           <FormError :name="formData.name" :errors="formData.errors"></FormError>
           <v-text-field
             v-if="formData.name !== 'non_field_errors'"
@@ -25,7 +25,6 @@
           ></v-text-field>
         </div>
       </v-form>
-      {{ formDatas.non_field_errors.name }}
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -46,7 +45,7 @@ export default {
   data() {
     return {
       sample: {},
-      formDatas: {
+      formObj: {
         username: {
           name: "username",
           value: "",
@@ -105,18 +104,18 @@ export default {
   },
   methods: {
     submit() {
-      Rest.post('signup', this.formDatas, '')
+      Rest.post('signup', this.formObj, '')
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");
     },
   },
   watch: {
-    "formDatas.username.value": function() {
-      debouncedCheckOneForm('signup', 'username', this.formDatas);
+    "formObj.username.value": function() {
+      debouncedCheckOneForm('signup', 'username', this.formObj);
     },
-    "formDatas.password1.value": function() {
-      debouncedCheckOneForm('signup', 'password1', this.formDatas);
+    "formObj.password1.value": function() {
+      debouncedCheckOneForm('signup', 'password1', this.formObj);
     }
   },
 };

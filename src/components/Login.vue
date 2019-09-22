@@ -21,17 +21,17 @@
     </v-toolbar>
     <v-card-text>
       <v-form name="login" method="post">
-        <div v-for="formData in formDatas" :key="formData.name">
-          <FormError :name="formData.name" :errors="formData.errors"></FormError>
+        <div v-for="form in formObj" :key="form.name">
+          <FormError :name="form.name" :errors="form.errors"></FormError>
           <v-text-field
-            v-if="formData.name !== 'non_field_errors'"
-            v-model="formData.value"
-            :type="formData.type"
-            :name="formData.name"
-            :autofocus="formData.autofocus"
-            :required="formData.required"
-            :label="formData.label"
-            :prepend-icon="formData.prependIcon"
+            v-if="form.name !== 'non_field_errors'"
+            v-model="form.value"
+            :type="form.type"
+            :name="form.name"
+            :autofocus="form.autofocus"
+            :required="form.required"
+            :label="form.label"
+            :prepend-icon="form.prependIcon"
           ></v-text-field>
         </div>
       </v-form>
@@ -54,7 +54,7 @@ export default {
   mixins: [oauthBtns],
   data() {
     return {
-      formDatas: {
+      formObj: {
         username: {
           name: "username",
           value: "",
@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     submit() {
-      Rest.post('login', this.formDatas, '')
+      Rest.post('login', this.formObj, '')
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");

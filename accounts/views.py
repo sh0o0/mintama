@@ -24,13 +24,12 @@ from .forms import SignupForm, CheckUsernameForm, CheckPasswordForm
 from .models import Category, Reference, Portfolio
 from .permissions import IsAdminOrReadOnly
 from .serializers import UserSerializer, CategorySerializer, ReferenceSerializer, PortfolioSerializer
-# from .serializers import UserFilter
 
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
 
-
+#API
 class BaseViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
@@ -64,18 +63,7 @@ class BaseViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
-#API
 class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -107,7 +95,7 @@ class LoginOrSignupView(generic.TemplateView):
 
 class SignupView(generic.CreateView):
     form_class = SignupForm
-    success_url = reverse_lazy('user:home')
+    success_url = reverse_lazy('accounts:home')
 
     def form_valid(self, form):
         logger.debug('signup form valid')

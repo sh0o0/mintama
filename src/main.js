@@ -20,6 +20,15 @@ Vue.component('login-or-signup', LoginOrSignup)
 Vue.component('logout-view', Logout)
 Vue.component('baseline-view', Baseline)
 
+// Vue.config.errorHandler = (err, vm, info) => {
+//     console.log(`Captured in Vue.config.errorHandler: ${info}`, err);
+//   };
+//   window.addEventListener("error", event => {
+//     console.log("Captured in error EventListener", event.error);
+//   });
+//   window.addEventListener("unhandledrejection", event => {
+//     console.log("Captured in unhandledrejection EventListener", event.reason);
+//   });
 
 let vm = new Vue({
     el: "#app",

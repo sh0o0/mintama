@@ -12,6 +12,7 @@ from .constant import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, GENDER_CHOICIES
 
 class UserSerializer(serializers.ModelSerializer):
     clear_icon = serializers.SerializerMethodField()
+    introduction = serializers.CharField(allow_blank=True, allow_null=True, trim_whitespace=True)
     icon = serializers.ImageField(max_length=None, allow_empty_file=True, required=False)
 
     class Meta:

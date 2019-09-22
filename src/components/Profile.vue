@@ -20,10 +20,12 @@
         <v-col cols="12" md="9">
           <v-simple-table>
             <tbody>
-              <tr v-for="info in getMyselfOptionsAdded" :key="info.name">
-                <td>{{ info.label }}</td>
-                <td>{{ info.value ? info.value : '未設定' }}</td>
-              </tr>
+              <template v-for="info in formObj">
+                <tr v-if="!(exclude.includes(info.name))" :key="info.name">
+                  <td>{{ info.label }}</td>
+                  <td>{{ info.value ? info.value : '未設定' }}</td>
+                </tr>
+              </template>
             </tbody>
           </v-simple-table>
           <v-btn link color="orange" absolute bottom right>
@@ -35,28 +37,31 @@
   </v-app>
 </template>
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import FormHelper from '@/helper/form'
+import FormOptions from '@/helper/form_options'
+
 export default {
   data() {
-    return {};
+    return {
+      formObj: {},
+      exclude: ["icon", "introduction"]
+    };
   },
   methods: {
     ...mapActions("user", ["apiGetMyself"]),
-    ...mapMutations("user", ["setMyselfOptionsAdded"])
   },
   computed: {
-    ...mapGetters("user", ["getMyself", "getMyselfOptionsAdded"])
+    ...mapGetters("user", ["getMyself"]),
   },
   created() {
-    if (!this.getMyselfOptionsAdded) {
-      if (this.getMyself) {
-        this.setMyselfOptionsAdded(["icon", "introduction"]);
-      } else {
-        this.apiGetMyself().then(response => {
-          this.setMyselfOptionsAdded(["icon", "introduction"]);
-        });
-      }
-    }
+    const that = this;
+    FormHelper.createThatFormObjs(that, ...FormOptions.user)
+    this.apiGetMyself().then(response => {
+      FormHelper.assignDataToThatObj(that, that.getMyself)
+    }).catch(error => {
+      console.log(error.response.data)
+    })
   }
 };
 </script>

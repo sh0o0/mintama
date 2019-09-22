@@ -197,7 +197,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['debug_console', 'console', 'mail_admins'],
             'level': 'INFO',
         },
         'django.server': {
@@ -207,7 +207,7 @@ LOGGING = {
         },
         #Add by app bellow.
         'user': {
-            'handlers': ['console', 'debug_console', 'file'],
+            'handlers': ['debug_console', 'console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
         },
