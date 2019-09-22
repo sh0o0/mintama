@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from './views/Home'
-import Profile from './views/Profile'
+import Account from './views/Account'
 import EntryProfile from './views/EntryProfile'
 import MyPortfolios from './views/MyPortfolios'
 import MyReferences from './views/MyReferences'
@@ -19,9 +19,9 @@ export default new Router({
       component: Home
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: Profile,
+      path: '/account',
+      name: 'account',
+      component: Account,
     },
     {
       path: '/entry-profile',

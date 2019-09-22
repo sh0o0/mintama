@@ -1,12 +1,29 @@
+import os
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid as uuid_lib
 
-from .const import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, REFERENCE_EVALUATION_CHOICIES
+from .constant import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, REFERENCE_EVALUATION_CHOICIES, GENDER_CHOICIES
+
+
+#古い画像を削除するデコレータ
+def delete_previous_file(function):
+    def wrapper(*args, **kwargs):
+        self = args[0]
+        ret = self.icon
+        previous = ret if ret else None
+        super().save()
+        ret = function(*args, **kwargs)
+        if previous:
+            os.remove(settings.MEDIA_ROOT + '/', + previous)
+        return ret
+    return wrapper
 
 
 class Category(models.Model):
@@ -44,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(
         max_length=6,
         blank=True,
-        choices=[('male', '雄'), ('female', '雌')],
+        choices=GENDER_CHOICIES
     )
     residence = models.CharField(
         max_length=10,
@@ -60,6 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     icon = models.ImageField(
         upload_to='img',
         blank=True,
+        null=True,
     )
     learning_started_date = models.DateField(
         blank=True,
@@ -129,8 +147,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    # @delete_previous_file
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
+
+    # @delete_previous_file
+    def delete(self, using=None, keep_parents=False):
+        return super().delete(using=None, keep_parents=False)
+
     def __str__(self):
         return self.username
+
 
 
 class Reference(models.Model):

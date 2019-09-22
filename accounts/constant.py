@@ -91,3 +91,8 @@ REFERENCE_EVALUATION_CHOICIES = [
     (4.5, '4.5'),
     (5.0, '5.0'),
 ]
+
+GENDER_CHOICIES = [
+    ('male', '雄'),
+    ('female', '雌')
+]

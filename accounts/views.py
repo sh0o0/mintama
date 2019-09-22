@@ -10,9 +10,10 @@ from django.contrib.auth.views import (
     PasswordChangeForm,
     PasswordChangeDoneView
 )
+from django.conf import settings
 from django.http.response import HttpResponse, JsonResponse
-from django.views import generic
 from django.urls import reverse_lazy
+from django.views import generic
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -22,21 +23,21 @@ from social_django.models import UserSocialAuth
 from .forms import SignupForm, CheckUsernameForm, CheckPasswordForm
 from .models import Category, Reference, Portfolio
 from .permissions import IsAdminOrReadOnly
-from .serializers import UserFilter, UserSerializer, CategorySerializer, ReferenceSerializer, PortfolioSerializer
+from .serializers import UserSerializer, CategorySerializer, ReferenceSerializer, PortfolioSerializer
 
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
 
-
+#API
 class BaseViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
-        if kwargs['pk'] == 'my!own!info':
+        if kwargs['pk'] == settings.REST_MYSELF_URL:
             logger.debug('user api my own info')
             user = request.user
             serializer = self.get_serializer(user)
-            print(serializer.data)
+
             return Response(serializer.data)
 
         logger.info('user api %s', kwargs['pk'])
@@ -44,12 +45,11 @@ class BaseViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         logger.info('start user update')
-        if kwargs['pk'] == 'my!own!info':
+        if kwargs['pk'] == settings.REST_MYSELF_URL:
             instance = self.request.user
         else:
             instance = self.get_object()
 
-        print(request.data)
         partial = kwargs.pop('partial', False)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -63,19 +63,10 @@ class BaseViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
-#API
 class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filter_class = UserFilter
     permission_classes = [IsAuthenticated]
 
 
@@ -104,7 +95,7 @@ class LoginOrSignupView(generic.TemplateView):
 
 class SignupView(generic.CreateView):
     form_class = SignupForm
-    success_url = reverse_lazy('user:home')
+    success_url = reverse_lazy('accounts:home')
 
     def form_valid(self, form):
         logger.debug('signup form valid')

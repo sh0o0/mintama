@@ -129,9 +129,11 @@ export default {
       {
         title: "アカウント",
         icon: "mdi-account-circle",
-        routerName: "profile"
+        routerName: "account"
       },
-      { title: "過去の参考資料", icon: "mdi-file", routerName: "myReferences" },
+      { title: "過去の参考資料", 
+        icon: "mdi-file", 
+        routerName: "myReferences" },
       {
         title: "ポートフォリオ",
         icon: "mdi-arm-flex",

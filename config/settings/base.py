@@ -197,7 +197,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['debug_console', 'console', 'mail_admins'],
             'level': 'INFO',
         },
         'django.server': {
@@ -207,7 +207,7 @@ LOGGING = {
         },
         #Add by app bellow.
         'user': {
-            'handlers': ['console', 'debug_console', 'file'],
+            'handlers': ['debug_console', 'console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
         },
@@ -229,6 +229,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 3
 }
+REST_MYSELF_URL = 'my!own!info'
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.twitter.TwitterOAuth',
