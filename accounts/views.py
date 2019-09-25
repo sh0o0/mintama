@@ -29,6 +29,7 @@ from .serializers import UserSerializer, CategorySerializer, ReferenceSerializer
 logger = logging.getLogger(__name__)
 User = get_user_model()
 
+
 #API
 class BaseViewSet(viewsets.ModelViewSet):
 
@@ -73,13 +74,11 @@ class UserViewSet(BaseViewSet):
 class CategoryViewSet(BaseViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrReadOnly]
 
 
 class ReferenceViewSet(BaseViewSet):
     queryset = Reference.objects.all()
     serializer_class = ReferenceSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class PortfolioViewSet(BaseViewSet):

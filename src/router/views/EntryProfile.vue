@@ -112,7 +112,7 @@ export default {
     Dialog,
   },
   computed: {
-    ...mapGetters("user", ["getMyself"]),
+    ...mapGetters("accounts", ["getMyself"]),
     GENDER_CHOICIES() {
       return　GENDER_CHOICIES;
     },
@@ -121,8 +121,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions("user", ["apiGetMyself", "apiPatchMyself"]),
-    ...mapMutations('user', ['setBaselineMyself']),
+    ...mapActions("accounts", ["apiGetMyself", "apiPatchMyself"]),
+    ...mapMutations('accounts', ['setBaselineMyself']),
     update() {
       const that = this;
       FormHelper.clearErrors(that.formObj)

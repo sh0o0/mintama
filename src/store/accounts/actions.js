@@ -1,9 +1,9 @@
-import { Rest } from "@/asynchronous/api";
+import { Api } from "@/asynchronous/api";
 
 export default {
   apiGetMyself(context) {
     context.commit("fetchStart");
-    return Rest.get("account/api/user", "my!own!info")
+    return Api.get("accounts/api/user", "my!own!info")
       .then(response => {
         context.commit("setMyself", response.data);
         context.commit("fetchEnd");
@@ -14,7 +14,7 @@ export default {
   },
   apiPutMyself(context) {
     context.commit("fetchStart");
-    return Rest.put("account/api/user", "my!own!info", context.state.myself)
+    return Api.put("accounts/api/user", "my!own!info", context.state.myself)
       .then(response => {
         context.commit("fetchEnd");
       })
@@ -24,7 +24,7 @@ export default {
   },
   apiPatchMyself(context, formObj) {
     context.commit("fetchStart");
-    return Rest.patch("account/api/user", "my!own!info", formObj)
+    return Api.patch("accounts/api/user", "my!own!info", formObj)
       .then(response => {
         context.commit("fetchEnd");
       })

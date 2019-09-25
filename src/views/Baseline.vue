@@ -96,13 +96,13 @@
 
     <!-- content -->
     <v-content>
-      <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
-          <v-col class="text-center">
+      <v-container fluid>
+        <v-row align="start" justify="start">
+          <v-col class="text-left">
             <slot name="content"></slot>
           </v-col>
         </v-row>
-      </v-container>
+       </v-container>
     </v-content>
     <v-footer color="blue" app>
       <span class="white--text">&copy; 2019</span>
@@ -144,11 +144,11 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions("user", ["apiGetMyself"]),
-    ...mapMutations("user", ["setBaselineMyself"])
+    ...mapActions("accounts", ["apiGetMyself"]),
+    ...mapMutations("accounts", ["setBaselineMyself"])
   },
   computed: {
-    ...mapGetters("user", ["getBaselineMyself"])
+    ...mapGetters("accounts", ["getBaselineMyself"])
   },
   created() {
     this.apiGetMyself().then(response => {

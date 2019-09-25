@@ -159,7 +159,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 
-
 class Reference(models.Model):
     user = models.ForeignKey(
         User,

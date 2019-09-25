@@ -104,7 +104,6 @@ class ReferenceSerializer(serializers.ModelSerializer):
         fields = [
             'user',
             'title',
-            'evaluation',
             'content',
             'link',
         ]

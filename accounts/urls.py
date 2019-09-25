@@ -5,15 +5,15 @@ from . import views
 
 
 router = routers.DefaultRouter()
-router.register('account/api/user', views.UserViewSet)
-router.register('account/api/category', views.CategoryViewSet)
-router.register('account/api/reference', views.ReferenceViewSet)
-router.register('account/api/portfolio', views.PortfolioViewSet)
+router.register('user', views.UserViewSet)
+router.register('category', views.CategoryViewSet)
+router.register('reference', views.ReferenceViewSet)
+router.register('portfolio', views.PortfolioViewSet)
 
 app_name = 'accounts'
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
-    path('', include(router.urls)),
+    path('account/api/', include(router.urls)),
     path('login-or-signup/', views.LoginOrSignupView.as_view(), name='login-or-signup/'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),

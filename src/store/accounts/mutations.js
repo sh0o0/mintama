@@ -1,5 +1,3 @@
-import { USER_OPTIONS } from '@/helper/constant'
-
 export default {
   setMyself(state, payload) {
     state.myself = payload;

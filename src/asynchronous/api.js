@@ -13,11 +13,11 @@ Vue.axios.defaults.baseURL = BASE_URL;
 
 const isEmpty = obj => !Object.keys(obj).length;
 
-export const Rest = {
+export const Api = {
   get: (entries, slug = "") => {
     const url = `${entries}\/${slug + "/" ? slug : ""}`;
     return Vue.axios.get(url).catch(error => {
-      throw new Error(`ApiService ${error}`);
+      throw new Error(`Api: ${error}`);
     });
   },
   post: (entries, formObj, redirectUrl = null) => {
@@ -122,3 +122,5 @@ const checkOneForm = (entries, formName, checkFormObjs) => {
 };
 
 export const debouncedCheckOneForm = _.debounce(checkOneForm, 1000);
+
+export const API_MYSELF_URL = 'my!own!info'

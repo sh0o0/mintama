@@ -49,10 +49,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions("user", ["apiGetMyself"]),
+    ...mapActions("accounts", ["apiGetMyself"]),
   },
   computed: {
-    ...mapGetters("user", ["getMyself"]),
+    ...mapGetters("accounts", ["getMyself"]),
   },
   created() {
     const that = this;

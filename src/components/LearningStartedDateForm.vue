@@ -27,6 +27,7 @@
   </v-menu>
 </template>
 <script>
+import FormatHelper from '@/helper/format'
 export default {
   props: {
     form: Object
@@ -40,12 +41,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      if (!date) return null;
-
-      const year = date.slice(0, 4);
-      const month = date.slice(5, 7);
-      const day = date.slice(8);
-      return `${year}年${month}月${day}日`;
+      return FormatHelper.dateToJp(date)
     },
   },
   watch: {

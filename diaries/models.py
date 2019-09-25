@@ -3,12 +3,9 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from mintama.get_outer_model import get_category_model, get_reference_model
-
+from accounts.models import Category, Reference
 
 User = get_user_model()
-Category = get_category_model()
-Reference = get_reference_model()
 
 
 class Diary(models.Model):
@@ -22,6 +19,7 @@ class Diary(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Section(models.Model):
     categories = models.ManyToManyField(
@@ -43,4 +41,4 @@ class Section(models.Model):
     )
     
     def __str__(self):
-        return '{}({})'.format(self.heading, self.title)
+        return self.heading
