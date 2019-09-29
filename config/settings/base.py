@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'social_django',
     'socials',
     'accounts',
-    'diaries',
+    'notes',
 ]
 
 MIDDLEWARE = [
@@ -227,7 +227,7 @@ WEBPACK_LOADER = {
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 3
+    'PAGE_SIZE': 10
 }
 REST_MYSELF_URL = 'my!own!info'
 

@@ -1,7 +1,27 @@
+//other
+const isObject = data => {
+  return data instanceof Object && !(data instanceof Array)
+}
+
 const isHasKey = (data, key) => {
-  return data instanceof Object && !(data instanceof Array) && key in data;
+  return isObject(data) && key in data;
 };
 
+const isEmpty = obj => !Object.keys(obj).length;
+
+const arrayToString = array => {
+  let arrayStr = ''; 
+  for (let value of array) {
+    if (isObject(value)) {
+      arrayStr += JSON.stringify(value) + ','
+    } else {
+      arrayStr += value
+    }
+  }
+  return `[${arrayStr}]`
+};
+
+//normalizes
 const normalizesFormObj = formObj => {
   let normFormObj = {};
   for (let dataKey in formObj) {
@@ -25,40 +45,13 @@ const normalizesFormObj = formObj => {
     if (!(clear === null || clear === undefined)) {
       normFormObj[`clear_${name}`] = formObj[dataKey].clear;
     }
-
   }
   return normFormObj
 }
 
-const createFormData = formObj => {
-  let normFormObj = normalizesFormObj(formObj)
-  let formData = new FormData();
-  for (let dataKey in normFormObj) {
-    formData.append(dataKey, normFormObj[dataKey])
-  }
-  return formData
-}
 
-const assignDataToObj = (obj, data) => {
-  for (let dataKey in data) {
-    let isUndefined = obj[dataKey] === undefined
-    if (!(isUndefined)) {
-      obj[dataKey].value = data[dataKey]
-    }
-  }
-}
-const assignErrors = (formObj, errors) => {
-  for (let errorKey in errors) {
-    formObj[errorKey].errors = errors[errorKey];
-  }
-}
 
-const clearErrors = (formObj) => {
-  for (let formKey in formObj) {
-    formObj[formKey].errors = [];
-  } 
-}
-
+//create
 const createFormObj = ({
   name,
   label = "",
@@ -86,10 +79,6 @@ const createFormObj = ({
   };
 };
 
-function assignDataToThatObj(that, data) {
-  assignDataToObj(that.formObj, data);
-};
-
 function createThatFormObj(that, argObj) {
   const formObj = createFormObj(argObj);
   that.$set(that.formObj, formObj['name'], formObj);
@@ -102,11 +91,53 @@ function createThatFormObjs(that, ...argObjs) {
   }
 };
 
+const createFormData = formObj => {
+  let normFormObj = normalizesFormObj(formObj)
+  let formData = new FormData();
+  for (let dataKey in normFormObj) {
+    formData.append(dataKey, normFormObj[dataKey])
+  }
+  return formData
+}
+
+const createJsonFormData = jsonData => {
+  // if (formObj[dataKey] instanceof Array) {
+  //   normFormObj[dataKey] = arrayToString(formObj[dataKey])
+  // } else {
+  //   normFormObj[dataKey] = formObj[dataKey];
+  // }
+  return jsonData
+}
+
+
+
+//assign
 function assignThatErrors(that, errors) {
   const formObj = that.formObj;
   assignErrors(formObj, errors);
 };
 
+function assignDataToThatObj(that, data) {
+  assignDataToObj(that.formObj, data);
+};
+
+const assignDataToObj = (obj, data) => {
+  for (let dataKey in data) {
+    let isUndefined = obj[dataKey] === undefined
+    if (!(isUndefined)) {
+      obj[dataKey].value = data[dataKey]
+    }
+  }
+}
+const assignErrors = (formObj, errors) => {
+  for (let errorKey in errors) {
+    formObj[errorKey].errors = errors[errorKey];
+  }
+}
+
+
+
+//set
 const setFileToThatFormObj = (form, file) => {
   if (file === null) {
     form.file = '';
@@ -122,16 +153,27 @@ const setFileToThatFormObj = (form, file) => {
 }
 
 
+//claer
+const clearErrors = (formObj) => {
+  for (let formKey in formObj) {
+    formObj[formKey].errors = [];
+  } 
+}
+
+
+
 const FormHelper = {
   normalizesFormObj,
   createFormData,
   assignDataToThatObj,
   createThatFormObj,
   createThatFormObjs,
+  createJsonFormData,
   assignErrors,
   clearErrors,
   assignThatErrors,
   setFileToThatFormObj,
+  isEmpty,
 }
 
 export default FormHelper

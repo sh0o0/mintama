@@ -1,161 +1,132 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import CreateNote from './views/CreateNote'
+import UpdateProfile from './views/UpdateProfile'
+import UpdateNote from './views/UpdateNote'
 import Home from './views/Home'
-import Account from './views/Account'
-import EntryProfile from './views/EntryProfile'
-import MyPortfolios from './views/MyPortfolios'
-import MyReferences from './views/MyReferences'
-import CreateDiary from './views/CreateDiary'
+import Note from './views/Note'
+import NoteList from './views/NoteList'
+import PortfolioList from './views/PortfolioList'
+import Profile from './views/Profile'
+import ReferenceList from './views/ReferenceList'
+
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    //home
     {
       path: '/',
       name: 'home',
       component: Home
     },
+    //settings
+    // {
+    //   path: '/settings',
+    //   name: 'settings',
+    //   component: Settings,
+    // },
     {
-      path: '/account',
-      name: 'account',
-      component: Account,
+      path: '/settings/profiles',
+      name: 'settingsProfile',
+      component: UpdateProfile,
     },
-    {
-      path: '/entry-profile',
-      name: 'entryProfile',
-      component: EntryProfile,
-    },
+    // {
+    //   path: '/settings/password',
+    //   name: 'settingsPassword',
+    //   component: SettingsPassword,
+    // },
+    //app list
     {
       path: '/portfolios',
-      name: 'myPortfolios',
-      component: MyPortfolios,
+      name: 'portfolioList',
+      component: PortfolioList,
     },
     {
       path: '/references',
-      name: 'myReferences',
-      component: MyReferences,
+      name: 'referenceList',
+      component: ReferenceList,
     },
     {
-      path: '/create/diary',
-      name: 'createDiary',
-      component: CreateDiary,
+      path: '/notes',
+      name: 'noteList',
+      component: NoteList,
+    },
+    // {
+    //   path: '/todos',
+    //   name: 'todoList',
+    //   component: TodoList,
+    // },
+    //personal app list
+    {
+      path: '/:username',
+      name: 'profile',
+      component: Profile,
+    },
+    // {
+    //   path: '/:username/portfolios',
+    //   name: 'personalPortfolioList',
+    //   component: PersonalPortfolioList,
+    // },
+    // {
+    //   path: '/:username/references',
+    //   name: 'personalReferenceList',
+    //   component: PersonalReferenceList,
+    // },
+    {
+      path: '/:username/notes',
+      name: 'personalNoteList',
+      component: NoteList,
+    },
+    //app info
+    // {
+    //   path: '/:username/portfolios/:portfolioId',
+    //   name: 'portfolio',
+    //   component: Portfolio,
+    // },
+    // {
+    //   path: '/:username/references/:referenceId',
+    //   name: 'reference',
+    //   component: Reference,
+    // },
+    {
+      path: '/:username/notes/:noteId',
+      name: 'note',
+      component: Note,
+    },
+    //app create
+    // {
+    //   path: '/portfolio/create',
+    //   name: 'createPortfolio',
+    //   component: CreatePortfolio,
+    // },
+    // {
+    //   path: '/reference/create',
+    //   name: 'createReference',
+    //   component: CreateReference,
+    // },
+    {
+      path: '/notes/create',
+      name: 'createNote',
+      component: CreateNote,
+    },
+    //app update
+    // {
+    //   path: '/:username/portfolios/:portfolioId/update',
+    //   name: 'updatePortfolio',
+    //   component: UpdatePortfolio,
+    // },
+    // {
+    //   path: '/:username/references/:referenceId/update',
+    //   name: 'updateReference',
+    //   component: UpdateReference,
+    // },
+    {
+      path: '/:username/notes/:noteId/update',
+      name: 'updateNote',
+      component: UpdateNote,
     },
   ]
 })
-
-// const sample = [
-//   //home
-//   {
-//     path: '/',
-//     name: 'home',
-//     component: Home
-//   },
-//   //settings
-//   {
-//     path: '/settings',
-//     name: 'settings',
-//     component: Settings,
-//   },
-//   {
-//     path: '/settings/profile',
-//     name: 'settingsProfile',
-//     component: EditProfile,
-//   },
-//   {
-//     path: '/settings/password',
-//     name: 'settingsPassword',
-//     component: SettingsPassword,
-//   },
-//   //app list
-//   {
-//     path: '/portfolios',
-//     name: 'portfolioList',
-//     component: PortfolioList,
-//   },
-//   {
-//     path: '/references',
-//     name: 'referenceList',
-//     component: ReferenceList,
-//   },
-//   {
-//     path: '/diaries',
-//     name: 'diaryList',
-//     component: DiaryList,
-//   },
-//   // {
-//   //   path: '/todos',
-//   //   name: 'todoList',
-//   //   component: TodoList,
-//   // },
-//   //personal app list
-//   {
-//     path: '/:username',
-//     name: 'personalProfile',
-//     component: PersonalProfile,
-//   },
-//   {
-//     path: '/:username/portfolios',
-//     name: 'personalPortfolioList',
-//     component: PersonalPortfolioList,
-//   },
-//   {
-//     path: '/:username/references',
-//     name: 'personalReferenceList',
-//     component: PersonalReferenceList,
-//   },
-//   {
-//     path: '/:username/diaries',
-//     name: 'personalDiaryList',
-//     component: PersonalDiaryList,
-//   },
-//   //app info
-//   {
-//     path: '/:username/portfolio/:portfolioId',
-//     name: 'portfolio',
-//     component: Portfolio,
-//   },
-//   {
-//     path: '/:username/reference/:referenceId',
-//     name: 'reference',
-//     component: Reference,
-//   },
-//   {
-//     path: '/:username/diary/:diaryId',
-//     name: 'diary',
-//     component: Diary,
-//   },
-//   //app create
-//   {
-//     path: '/portfolio/create',
-//     name: 'createPortfolio',
-//     component: CreatePortfolio,
-//   },
-//   {
-//     path: '/reference/create',
-//     name: 'createReference',
-//     component: CreateReference,
-//   },
-//   {
-//     path: '/diary/create',
-//     name: 'createDiary',
-//     component: CreateDiary,
-//   },
-//   //app update
-//   {
-//     path: '/:username/portfolio/:portfolioId/update',
-//     name: 'updatePortfolio',
-//     component: UpdatePortfolio,
-//   },
-//   {
-//     path: '/:username/reference/:referenceId/update',
-//     name: 'updateReference',
-//     component: UpdateReference,
-//   },
-//   {
-//     path: '/:username/diary/:diaryId/update',
-//     name: 'updateDiary',
-//     component: UpdateDiary,
-//   },
-// ]

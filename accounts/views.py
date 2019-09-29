@@ -14,77 +14,14 @@ from django.conf import settings
 from django.http.response import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views import generic
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework import status
 from social_django.models import UserSocialAuth
 
 from .forms import SignupForm, CheckUsernameForm, CheckPasswordForm
 from .models import Category, Reference, Portfolio
-from .permissions import IsAdminOrReadOnly
-from .serializers import UserSerializer, CategorySerializer, ReferenceSerializer, PortfolioSerializer
 
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
-
-
-#API
-class BaseViewSet(viewsets.ModelViewSet):
-
-    def retrieve(self, request, *args, **kwargs):
-        if kwargs['pk'] == settings.REST_MYSELF_URL:
-            logger.debug('user api my own info')
-            user = request.user
-            serializer = self.get_serializer(user)
-
-            return Response(serializer.data)
-
-        logger.info('user api %s', kwargs['pk'])
-        return super().retrieve(request, *args, **kwargs)
-
-    def update(self, request, *args, **kwargs):
-        logger.info('start user update')
-        if kwargs['pk'] == settings.REST_MYSELF_URL:
-            instance = self.request.user
-        else:
-            instance = self.get_object()
-
-        partial = kwargs.pop('partial', False)
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
-
-
-class UserViewSet(BaseViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class CategoryViewSet(BaseViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-
-class ReferenceViewSet(BaseViewSet):
-    queryset = Reference.objects.all()
-    serializer_class = ReferenceSerializer
-
-
-class PortfolioViewSet(BaseViewSet):
-    queryset = Portfolio.objects.all()
-    serializer_class = PortfolioSerializer
-    permission_classes = [IsAuthenticated]
 
 
 #Django Template

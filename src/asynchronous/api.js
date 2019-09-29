@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import _ from "lodash";
 import Vue from "vue";
 import VueAxios from "vue-axios";
+import _ from "lodash";
 
 import FormHelper from "@/helper/form";
 
@@ -11,7 +11,6 @@ const BASE_URL = "http://127.0.0.1:8000/";
 Vue.use(VueAxios, axios);
 Vue.axios.defaults.baseURL = BASE_URL;
 
-const isEmpty = obj => !Object.keys(obj).length;
 
 export const Api = {
   get: (entries, slug = "") => {
@@ -20,26 +19,20 @@ export const Api = {
       throw new Error(`Api: ${error}`);
     });
   },
-  post: (entries, formObj, redirectUrl = null) => {
+  post: (entries, formObj) => {
     const url = `${entries}\/`;
     const csrftoken = Cookies.get("csrftoken");
-    const headers = { "X-CSRFToken": csrftoken };
+    const headers = { 
+      "X-CSRFToken": csrftoken,  
+      "Content-Type": "multipart/form-data"};
     const data = FormHelper.createFormData(formObj);
 
     return Vue.axios
       .post(url, data, {
         headers: headers,
-        "Content-Type": "multipart/form-data"
-      })
-      .then(function(response) {
-        if (isEmpty(response.data) && redirectUrl !== null) {
-          location.href = BASE_URL + redirectUrl;
-        } else {
-          FormHelper.assignErrors(formObj, response.data);
-        }
       })
       .catch(function(error) {
-        throw new Error(`Api ${error}`);
+        throw new Error(`Api post ${error}`);
       });
   },
   put: (entries, slug, formData) => {
@@ -81,20 +74,115 @@ export const Api = {
       });
   },
 
-  delete: (entries, slug) => {
-    const url = `${entries}\/${slug}\/`;
+  delete: (entries, slug, username=null) => {
+    let url;
+    if (username) {
+      url = `api/accounts/${username}/${entries}/${slug}/`;
+    } else {
+      url = `api/${entries}/${slug}/`;
+    }
+
     const csrftoken = Cookies.get("csrftoken");
     const headers = { "X-CSRFToken": csrftoken };
 
     return Vue.axios
-      .delete(url, data, { headers: headers })
-      .then(function(response) {
-        console.log("user delete successe");
+      .delete(url, { headers: headers })
+      .then()
+      .catch(function(error) {
+        throw new Error(`Api delete${error}`);
+      });
+  },
+
+  getJson: (entries, slug=null, username=null, options=null) => {
+    let url;
+    if (username) {
+      url = `api/accounts/${username}/${entries}/`;
+      if (slug) {
+        url += `${slug}/`
+      }
+    } else {
+      url = `api/${entries}/`;
+      if (slug) {
+        url += `${slug}/`
+      }
+    }
+
+    if (options) {
+      url += `?${options}`
+    }
+
+    return Vue.axios
+      .get(url)
+      .catch(function(error) {
+        throw new Error(`Api getJson ${error}`);
+      });
+  },
+  postJson: (entries, formData, username=null) => {
+    let url;
+    if (username) {
+      url = `api/accounts/${username}/${entries}/`;
+    } else {
+      url = `api/${entries}\/`;
+    }
+    const csrftoken = Cookies.get("csrftoken");
+    const headers = { 
+      "X-CSRFToken": csrftoken ,
+      "Content-Type": "application/json"
+    };
+    const data = FormHelper.createJsonFormData(formData);
+
+    return Vue.axios
+      .post(url, data, {
+        headers: headers,
       })
       .catch(function(error) {
-        throw new Error(`Api ${error}`);
+        throw new Error(`Api postJson ${error}`);
       });
-  }
+  },
+  putJson: (entries, slug, formData, username=null) => {
+    if (username) {
+      var url = `api/accounts/${username}/${entries}/${slug}/`;
+    } else {
+      var url = `api/${entries}/${slug}/`;
+    }
+
+    const csrftoken = Cookies.get("csrftoken");
+    const headers = { 
+      "X-CSRFToken": csrftoken ,
+      "Content-Type": "application/json"
+    };
+    const data = FormHelper.createJsonFormData(formData);
+
+    return Vue.axios
+      .put(url, data, { headers: headers })
+      .then()
+      .catch(function(error) {
+        throw new Error(`Api putJson${error}`);
+      });
+  },
+
+  patchJson: (entries, slug, formObj, username=null) => {
+    let url;
+    if (username) {
+      url = `api/accounts/${username}/${entries}/${slug}/`;
+    } else {
+      url = `api/${entries}/${slug}/`;
+    }
+    const csrftoken = Cookies.get("csrftoken");
+    const headers = { 
+      "X-CSRFToken": csrftoken ,
+      "Content-Type": "application/json"
+    };
+    const data = FormHelper.createJsonFormData(formObj);
+
+    return Vue.axios
+      .patch(url, data, { headers: headers })
+      .then()
+      .catch(function(error) {
+        FormHelper.assignErrors(formObj, error.response.data);
+        throw new Error(`Api patchJson${error}`);
+      });
+  },
 };
 
 const checkOneForm = (entries, formName, checkFormObjs) => {
@@ -110,7 +198,7 @@ const checkOneForm = (entries, formName, checkFormObjs) => {
   Vue.axios
     .post(url, data, { headers: headers })
     .then(function(response) {
-      if (isEmpty(response)) {
+      if (FormHelper.isEmpty(response)) {
         checkFormObj.errors = [];
       } else {
         checkFormObj.errors = response.data[formName];

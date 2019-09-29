@@ -36,8 +36,9 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { debouncedCheckOneForm, Rest } from "@/asynchronous/api";
+import { debouncedCheckOneForm, Api } from "@/asynchronous/api";
 import FormError from "@/components/FormError";
+import FormHelper from '@/helper/form'
 import { oauthBtns } from "@/mixins/top";
 
 export default {
@@ -104,7 +105,15 @@ export default {
   },
   methods: {
     submit() {
-      Rest.post('signup', this.formObj, '')
+      const that = this;
+      Api.post('signup', this.formObj)
+      .then(function(response) {
+        if (FormHelper.isEmpty(response.data)) {
+          location.href = '/';
+        } else {
+          FormHelper.assignErrors(that.formObj, response.data);
+        }
+      })
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");

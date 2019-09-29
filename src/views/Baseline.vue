@@ -119,7 +119,7 @@ export default {
     menuDrawer: false,
     sideDrawerItems: [
       { title: "ホーム", icon: "mdi-home", routerName: "home" },
-      { title: "日記", icon: "mdi-border-color", routerName: "" },
+      { title: "ノート", icon: "mdi-border-color", routerName: "noteList"},
       { title: "チャット", icon: "mdi-chat", routerName: "" },
       { title: "計画", icon: "mdi-floor-plan", routerName: "" },
       { title: "コミュニティ", icon: "mdi-forum", routerName: "" },
@@ -129,15 +129,15 @@ export default {
       {
         title: "アカウント",
         icon: "mdi-account-circle",
-        routerName: "account"
+        routerName: "profile"
       },
       { title: "過去の参考資料", 
         icon: "mdi-file", 
-        routerName: "myReferences" },
+        routerName: "reference" },
       {
         title: "ポートフォリオ",
         icon: "mdi-arm-flex",
-        routerName: "myPortfolios"
+        routerName: "portfolio"
       },
       { title: "お気に入り", icon: "mdi-heart", routerName: "" },
       { title: "設定", icon: "mdi-settings-box", routerName: "" }

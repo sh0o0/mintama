@@ -3,7 +3,7 @@ import { Api } from "@/asynchronous/api";
 export default {
   apiGetMyself(context) {
     context.commit("fetchStart");
-    return Api.get("accounts/api/user", "my!own!info")
+    return Api.getJson('own', 'user')
       .then(response => {
         context.commit("setMyself", response.data);
         context.commit("fetchEnd");
@@ -12,9 +12,9 @@ export default {
 
       });
   },
-  apiPutMyself(context) {
+  apiPutMyself(context, username) {
     context.commit("fetchStart");
-    return Api.put("accounts/api/user", "my!own!info", context.state.myself)
+    return Api.put("users", username, context.state.myself)
       .then(response => {
         context.commit("fetchEnd");
       })
@@ -22,9 +22,9 @@ export default {
         throw new Error(`actions put: ${error}`)
       });
   },
-  apiPatchMyself(context, formObj) {
+  apiPatchMyself(context, {username, formObj}) {
     context.commit("fetchStart");
-    return Api.patch("accounts/api/user", "my!own!info", formObj)
+    return Api.patch("users", username, formObj)
       .then(response => {
         context.commit("fetchEnd");
       })
