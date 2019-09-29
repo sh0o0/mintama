@@ -101,7 +101,7 @@
         <v-card-title class="headline">削除が完了しました。</v-card-title>
         <v-card-actions>
           <div class="flex-grow-1"></div>
-          <router-link tag="div" :to="{name: 'noteList', params: {username: $route.params.username}}">
+          <router-link tag="div" :to="{name: 'personalNoteList', params: {username: $route.params.username}}">
             <v-btn link color="gray darken-1" text @click="deletedDialog = false">ノート一覧に移動する。</v-btn>
           </router-link>
         </v-card-actions>
