@@ -27,10 +27,7 @@ class DetailIsAdminOrWriteOwnOnly(IsAdminUser):
             if is_safe_method:
                 if not pk:
                     return True
-                else:
-                    raise UsernameNoneException
-            else:
-                raise UsernameNoneException
+            raise UsernameNoneException
         else:
             is_admin = super().has_permission(request, view)
             is_own_user = request.user == get_object_or_404(User, username=username)

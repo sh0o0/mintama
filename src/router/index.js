@@ -1,14 +1,20 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import CreateNote from './views/CreateNote'
-import UpdateProfile from './views/UpdateProfile'
-import UpdateNote from './views/UpdateNote'
 import Home from './views/Home'
+
+import Profile from './views/Profile'
+import PortfolioList from './views/PortfolioList'
+import UpdateProfile from './views/UpdateProfile'
+
 import Note from './views/Note'
 import NoteList from './views/NoteList'
-import PortfolioList from './views/PortfolioList'
-import Profile from './views/Profile'
+import CreateNote from './views/CreateNote'
+import UpdateNote from './views/UpdateNote'
+
+import BoardList from './views/BoardList'
+import Board from './views/Board'
+
 import ReferenceList from './views/ReferenceList'
 
 
@@ -54,11 +60,6 @@ export default new Router({
       name: 'noteList',
       component: NoteList,
     },
-    // {
-    //   path: '/todos',
-    //   name: 'todoList',
-    //   component: TodoList,
-    // },
     //personal app list
     {
       path: '/:username',
@@ -80,6 +81,11 @@ export default new Router({
       name: 'personalNoteList',
       component: NoteList,
     },
+    {
+      path: '/:username/boards',
+      name: 'boardList',
+      component: BoardList,
+    },
     //app info
     // {
     //   path: '/:username/portfolios/:portfolioId',
@@ -95,6 +101,11 @@ export default new Router({
       path: '/:username/notes/:noteId',
       name: 'note',
       component: Note,
+    },
+    {
+      path: '/:username/boards/:boardId',
+      name: 'board',
+      component: Board,
     },
     //app create
     // {

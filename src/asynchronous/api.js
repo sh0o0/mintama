@@ -117,13 +117,18 @@ export const Api = {
         throw new Error(`Api getJson ${error}`);
       });
   },
-  postJson: (entries, formData, username=null) => {
+  postJson: (entries, formData, username=null, options=null) => {
     let url;
     if (username) {
       url = `api/accounts/${username}/${entries}/`;
     } else {
       url = `api/${entries}\/`;
     }
+
+    if (options) {
+      url += `?${options}`
+    }
+
     const csrftoken = Cookies.get("csrftoken");
     const headers = { 
       "X-CSRFToken": csrftoken ,

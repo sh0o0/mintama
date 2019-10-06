@@ -26,15 +26,11 @@ class UserSerializer(serializers.ModelSerializer):
             'introduction',
             'clear_icon',
         ]
-        # extra_kwargs = {
-        #     'clear_icon': {'write_only': True}
-        # }
 
     def get_clear_icon(self, instance):
         initial_data = getattr(self, 'initial_data', None)
         if initial_data is None: return None
 
-        print(initial_data)
         if initial_data['clear_icon'] == 'true':
             ret = True
         else:
@@ -58,7 +54,6 @@ class UserSerializer(serializers.ModelSerializer):
         """
         ret = OrderedDict()
         fields = self._readable_fields
-
         for field in fields:
             try:
                 attribute = field.get_attribute(instance)
@@ -81,10 +76,6 @@ class UserSerializer(serializers.ModelSerializer):
                 ret[field.field_name] = field.to_representation(attribute)
 
         return ret
-
-    #validate_<field_name>でvalidate_dataをいじれる
-    def validate_icon(self, value):
-        return value
 
     #overrideでフィールドを追加できる。
     def to_internal_value(self, data):

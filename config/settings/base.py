@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'socials',
     'accounts',
     'notes',
+    'todos',
 ]
 
 MIDDLEWARE = [
