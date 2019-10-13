@@ -29,7 +29,7 @@
             </tbody>
           </v-simple-table>
           <v-btn link color="orange" absolute bottom right>
-            <router-link :to="{name: 'entryProfile'}" class="deco-none">編集</router-link>
+            <router-link :to="{name: 'settingsProfile'}" class="deco-none">編集</router-link>
           </v-btn>
         </v-col>
       </v-row>

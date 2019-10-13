@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return FormatHelper.dateToJapan(date)
+      return dateToJapan(date)
     },
   },
   watch: {
@@ -52,8 +52,6 @@ export default {
   created() {
     if (this.form.value) {
       this.dateFormatted = this.formatDate(this.form.value);
-    } else {
-      this.dateFormatted = this.formatDate(new Date().toISOString().substr(0, 10));    
     }
   },
 };

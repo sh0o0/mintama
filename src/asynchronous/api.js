@@ -59,7 +59,6 @@ export const Api = {
     return Vue.axios
       .put(url, data, { headers: headers })
       .then(function(response) {
-        console.log("api put successe", response.data);
       })
       .catch(function(error) {
         throw new Error(`Api ${error}`);
@@ -78,7 +77,6 @@ export const Api = {
     return Vue.axios
       .patch(url, data, { headers: headers })
       .then(function(response) {
-        console.log("api patch successe", response.data);
       })
       .catch(function(error) {
         FormHelper.assignErrors(formObj, error.response.data);

@@ -6,7 +6,7 @@
         <router-link
           v-for="item in sideDrawerItems"
           :key="item.title"
-          :to="{name: item.routerName}"
+          :to="item.router"
           class="deco-none"
         >
           <v-list-item link>
@@ -70,7 +70,7 @@
               <router-link
                 v-for="item in menuDrawerItems"
                 :key="item.title"
-                :to="{name: item.routerName}"
+                :to="item.router"
                 class="deco-none"
               >
                 <v-list-item link>
@@ -95,6 +95,7 @@
 
     <!-- content -->
     <v-content>
+      <div class="pa-2">
       <!-- <v-container fluid>
         <v-row align="start" justify="start"> -->
           <!-- <v-col class="text-left"> -->
@@ -102,6 +103,7 @@
            <!-- </v-col> -->
         <!-- </v-row>
        </v-container> -->
+      </div>
     </v-content>
   </v-app>
 </template>
@@ -109,13 +111,15 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
-  props: {},
-  data: () => ({
+  props: ['username'],
+  data() {
+    return {
     sideDrawer: true,
     menuDrawer: false,
     sideDrawerItems: [
-      { title: "ホーム", icon: "mdi-home", routerName: "home" },
-      { title: "ノート", icon: "mdi-border-color", routerName: "noteList"},
+      { title: "ホーム", icon: "mdi-home", router: {name: 'home'} },
+      { title: "TODO", icon: "mdi-border-color", router: {name: 'boardList', params: {username: this.username}}},
+      { title: "ノート", icon: "mdi-border-color", router: {name: 'noteList'}},
       // { title: "チャット", icon: "mdi-chat", routerName: "" },
       // { title: "計画", icon: "mdi-floor-plan", routerName: "" },
       // { title: "コミュニティ", icon: "mdi-forum", routerName: "" },
@@ -125,20 +129,22 @@ export default {
       {
         title: "アカウント",
         icon: "mdi-account-circle",
-        routerName: "profile"
+        router: {name: 'profile', params:{username: this.username}}
       },
       { title: "過去の参考資料", 
         icon: "mdi-file", 
-        routerName: "reference" },
+        router: {name: 'reference'} 
+      },
       {
         title: "ポートフォリオ",
         icon: "mdi-arm-flex",
-        routerName: "portfolio"
+        router: {name: 'portfolio'}
       },
-      // { title: "お気に入り", icon: "mdi-heart", routerName: "" },
-      // { title: "設定", icon: "mdi-settings-box", routerName: "" }
+      // { title: "お気に入り", icon: "mdi-heart", router: "" },
+      // { title: "設定", icon: "mdi-settings-box", router: "" }
     ]
-  }),
+    }
+  },
   methods: {
     ...mapActions("accounts", ["apiGetMyself"]),
     ...mapMutations("accounts", ["setBaselineMyself"])

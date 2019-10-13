@@ -19,6 +19,8 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="9">
+          <v-form v-model="valid">
+
           <FormError :formName="formObj.username.name" :errors="formObj.username.errors"></FormError>
           <v-text-field
             :label="formObj.username.label"
@@ -74,7 +76,9 @@
           clear-icon="cancel"
           auto-grow
           />
-          <v-btn link @click="update" color="orange" absolute bottom right>変更</v-btn>
+          </v-form>
+          <v-btn  v-show="valid" link @click="update" color="orange" absolute bottom right>変更</v-btn>
+          <v-btn  v-show="!(valid)" link color="grey lighten-4" absolute bottom right>変更</v-btn>
           <Dialog 
           heading="変更が完了しました。"
           :dialog="dialog"
@@ -100,9 +104,10 @@ import { GENDER_CHOICIES, RESIDENCE_CHOICIES } from '@/helper/constant'
 export default {
   data() {
     return {
-      introductionRules: [v => !v || v.length <= 300 || "Max 300 characters"],
+      introductionRules: [v => !v || v.length <= 500 || "Max 500 characters"],
       formObj: {},
-      dialog: false
+      dialog: false,
+      valid: true,
     };
   },
   components: {
@@ -126,7 +131,7 @@ export default {
     update() {
       const that = this;
       FormHelper.clearErrors(this.formObj)
-      this.apiPatchMyself({username: this.getMyself.username, formObj:this.formObj}).then(response => {
+      this.apiPatchMyself({username: this.getMyself.username, formObj: this.formObj}).then(response => {
         that.dialog = true;
         that.apiGetMyself().then(response => {
           that.setBaselineMyself();

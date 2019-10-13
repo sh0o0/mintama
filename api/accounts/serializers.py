@@ -45,9 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
             instance.icon.delete(save=True)
         return ret
 
-    def create(self, validated_data):
-        return super().create(validated_data)
-
     def to_representation(self, instance):
         """
         Object instance -> Dict of primitive datatypes.
