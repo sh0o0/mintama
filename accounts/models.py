@@ -12,20 +12,6 @@ import uuid as uuid_lib
 from .constant import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, REFERENCE_EVALUATION_CHOICIES, GENDER_CHOICIES
 
 
-#古い画像を削除するデコレータ
-def delete_previous_file(function):
-    def wrapper(*args, **kwargs):
-        self = args[0]
-        ret = self.icon
-        previous = ret if ret else None
-        super().save()
-        ret = function(*args, **kwargs)
-        if previous:
-            os.remove(settings.MEDIA_ROOT + '/', + previous)
-        return ret
-    return wrapper
-
-
 class Category(models.Model):
 
     name = models.CharField(

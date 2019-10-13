@@ -1,4 +1,4 @@
-const dateToJp = date => {
+export const dateToJapan = date => {
   if (!date) return null;
 
   const year = date.slice(0, 4);
@@ -7,6 +7,8 @@ const dateToJp = date => {
   return `${year}年${month}月${day}日`;
 };
 
-export default {
-  dateToJp
-}
+export const datetimeToJapan = datetime => {
+  if (!datetime) return null;
+  const dt = new Date(datetime);
+  return dt.toLocaleString();
+} 

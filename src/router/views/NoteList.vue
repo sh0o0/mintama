@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import FormatHelper from "@/helper/format";
+import { dateToJapan } from "@/helper/format";
 import { Api } from "@/asynchronous/api";
 
 
@@ -82,9 +82,7 @@ export default {
     };
   },
   filters: {
-    dateFormat(date) {
-      return FormatHelper.dateToJp(date);
-    }
+    dateToJapan,
   },
   created() {
     this.fetch();

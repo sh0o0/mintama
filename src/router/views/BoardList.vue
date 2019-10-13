@@ -20,7 +20,7 @@
             >
               <v-btn color="amber" small>ボードに入る</v-btn>
             </router-link>
-            <v-btn color="red" small @click="confirmDialog = true; deleteBoardObj = board">削除</v-btn>
+            <v-btn color="red" small @click.stop="confirmDialog = true; deleteBoardObj = board">削除</v-btn>
           </v-row>
         </template>
 
@@ -56,26 +56,34 @@
       </v-btn>
     </v-row>
 
-    <v-dialog v-model="formDialog" width="300">
+    <v-dialog v-model="formDialog" width="400">
       <v-card>
         <v-card-title class="headline">新規ボード作成</v-card-title>
         <v-card-actions>
           <v-text-field label="ボード名" v-model.trim="boardForm.name"></v-text-field>
         </v-card-actions>
+        <v-divider></v-divider>
         <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn color="gray darken-1" text @click="createBoard">作成</v-btn>
-          <v-btn color="gray darken-1" text @click="formDialog = false">キャンセル</v-btn>
+          <v-row class="mx-1">
+            <v-btn text @click="createBoard">作成</v-btn>
+            <v-btn text @click="formDialog = false">キャンセル</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn class="grey lighten-4" text @click="createDefaultBoard()">デフォルトボードを作成</v-btn>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="confirmDialog" @click="confirmDialog = false" width="300">
+    <v-dialog v-model="confirmDialog" @click="confirmDialog = false" width="500">
       <v-card>
         <v-card-title class="headline">"{{ deleteBoardObj.name }}"を削除しますか？</v-card-title>
         <v-card-actions>
           <div class="flex-grow-1"></div>
-          <v-btn color="gray darken-1" text @click="deleteBoard(deleteBoardObj.id); confirmDialog = false;">する</v-btn>
+          <v-btn
+            color="gray darken-1"
+            text
+            @click="deleteBoard(deleteBoardObj.id); confirmDialog = false;"
+          >する</v-btn>
           <v-btn color="gray darken-1" text @click="confirmDialog = false">しない</v-btn>
         </v-card-actions>
       </v-card>
@@ -131,50 +139,61 @@ export default {
     loadCards(list) {
       const that = this;
       const options = "include=name,cards";
-      return Api.getJson("lists", list.id, this.username, options).then(response => {
+      return Api.getJson("lists", list.id, this.username, options).then(
+        response => {
           that.$set(list, "cards", response.data.cards);
         }
       );
     },
     validateForm() {
-      if (this.boardForm.name === '') {
-        return false
-      } else {
-        return true
-      }
+      if (this.boardForm.name === "") return false;
+      return true;
     },
     createBoard() {
       if (this.validateForm() === false) {
-        alert('正しく入力してください');
+        alert("正しく入力してください");
         return;
       }
       this.isLoading = true;
       const that = this;
       const options = "include=id,name,lists";
-      Api.postJson("boards", this.boardForm, this.username, options).then(response => {
-        that.boards.push(response.data);
-        that.formDialog = false;
-        that.isLoading = false;
-      });
+      Api.postJson("boards", this.boardForm, this.username, options)
+        .then(response => {
+          that.boards.push(response.data);
+          that.formDialog = false;
+        })
+        .finally(() => {
+          that.isLoading = false;
+        });
+    },
+    createDefaultBoard() {
+      this.isLoading = true;
+      const that = this;
+      const options = "include=id,name,lists";
+      Api.postJson("boards", null, this.username, options, "default")
+        .then(response => {
+          that.boards.push(response.data);
+          that.formDialog = false;
+        })
+        .finally(() => {
+          that.isLoading = false;
+        });
     },
     deleteBoard(id) {
       this.isLoading = true;
       const that = this;
-      Api.delete("boards", id, this.username).then(response => {
-        for (let i = 0; i < that.boards.length; i++) {
-          if (that.boards[i].id === id) {
-            that.boards.splice(i, 1);
-            break;
+      Api.delete("boards", id, this.username)
+        .then(response => {
+          for (let i = 0; i < that.boards.length; i++) {
+            if (that.boards[i].id === id) {
+              that.boards.splice(i, 1);
+              break;
+            }
           }
-        };
-        that.isLoading = false;
-      });
-    },
-    pageTransition(boardId) {
-      this.$router.push({
-        name: "board",
-        params: { username: this.username, boardId: boardId }
-      });
+        })
+        .finally(() => {
+          that.isLoading = false;
+        });
     },
     init() {
       const that = this;
@@ -188,7 +207,7 @@ export default {
     }
   },
   created() {
-    this.init()
+    this.init();
   }
 };
 </script>

@@ -12,6 +12,18 @@ Vue.use(VueAxios, axios);
 Vue.axios.defaults.baseURL = BASE_URL;
 
 
+const formatErrorResponse = error => {
+  let ret = '';
+  const errors = error.response.data
+  for (let errorKey in errors) {
+    ret += `■${errorKey}\n`
+    for (let detail of errors[errorKey]) {
+      ret += `　${detail}\n`
+    }
+  }
+  return ret
+}
+
 export const Api = {
   get: (entries, slug = "") => {
     const url = `${entries}\/${slug + "/" ? slug : ""}`;
@@ -93,7 +105,7 @@ export const Api = {
       });
   },
 
-  getJson: (entries, slug=null, username=null, options=null) => {
+  getJson: (entries, slug=null, username=null, options=null, method=null) => {
     let url;
     if (username) {
       url = `api/accounts/${username}/${entries}/`;
@@ -107,6 +119,10 @@ export const Api = {
       }
     }
 
+    if (method) {
+      url += `${method}/`
+    }
+
     if (options) {
       url += `?${options}`
     }
@@ -117,12 +133,16 @@ export const Api = {
         throw new Error(`Api getJson ${error}`);
       });
   },
-  postJson: (entries, formData, username=null, options=null) => {
+  postJson: (entries, formData, username=null, options=null, method=null) => {
     let url;
     if (username) {
       url = `api/accounts/${username}/${entries}/`;
     } else {
       url = `api/${entries}\/`;
+    }
+
+    if (method) {
+      url += `${method}/`
     }
 
     if (options) {
@@ -141,14 +161,24 @@ export const Api = {
         headers: headers,
       })
       .catch(function(error) {
+        const formatedError = formatErrorResponse(error);
+        alert(formatedError);
         throw new Error(`Api postJson ${error}`);
       });
   },
-  putJson: (entries, slug, formData, username=null) => {
+  putJson: (entries, slug=null, formData, username=null, method=null) => {
     if (username) {
-      var url = `api/accounts/${username}/${entries}/${slug}/`;
+      var url = `api/accounts/${username}/${entries}/`;
     } else {
-      var url = `api/${entries}/${slug}/`;
+        var url = `api/${entries}/`;
+    }
+
+    if (slug) {
+      url += `${slug}/`
+    }
+
+    if (method) {
+      url += `${method}/`;
     }
 
     const csrftoken = Cookies.get("csrftoken");
@@ -162,6 +192,8 @@ export const Api = {
       .put(url, data, { headers: headers })
       .then()
       .catch(function(error) {
+        const formatedError = formatErrorResponse(error);
+        alert(formatedError);
         throw new Error(`Api putJson${error}`);
       });
   },
@@ -183,8 +215,9 @@ export const Api = {
     return Vue.axios
       .patch(url, data, { headers: headers })
       .then()
-      .catch(function(error) {
-        FormHelper.assignErrors(formObj, error.response.data);
+      .catch(error => {
+        const formatedError = formatErrorResponse(error);
+        alert(formatedError);
         throw new Error(`Api patchJson${error}`);
       });
   },

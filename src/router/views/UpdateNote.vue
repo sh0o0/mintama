@@ -114,7 +114,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import FormatHelper from "@/helper/format";
+import { dateToJapan } from "@/helper/format";
 import { Api } from "@/asynchronous/api";
 import moment from "moment";
 
@@ -165,7 +165,7 @@ export default {
       this.formObj.sections.push(section);
     },
     formatedDate(date) {
-      return FormatHelper.dateToJp(date);
+      return FormatHelper.dateToJapan(date);
     },
 
     update() {

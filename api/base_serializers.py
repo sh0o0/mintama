@@ -47,21 +47,10 @@ class SkipNoneModelSerializer(serializers.ModelSerializer):
 
 class DecideResponseDataModelSerializer(serializers.ModelSerializer):
 
-    def __init__(self, instance=None, data=empty, **kwargs):
-        super().__init__(instance=instance, data=data, **kwargs)
-        #includeを抽出
-        request = self._context.get('request', object)
-        query_params = getattr(request, 'query_params', {})
-        if query_params:
-            self.include_field = self.extract_list_for_query_params(query_params, 'include')
-            self.exclude_field = self.extract_list_for_query_params(query_params, 'exclude')
-            if len(self.include_field) and len(self.exclude_field):
-                raise IncludeWithExcludeParamsError
-
     def extract_list_for_query_params(self, query_params, key):
         param = query_params.get(key, None)
         if param is None:
-            return []
+            return None
         else:
             return [x.strip() for x in param.split(',')]
 
@@ -72,8 +61,13 @@ class DecideResponseDataModelSerializer(serializers.ModelSerializer):
         ret = OrderedDict()
         fields = self._readable_fields
 
-        include_field = getattr(self, 'include_field', None)
-        exclude_field = getattr(self, 'exclude_field', None)
+        #includeを抽出
+        request = self._context.get('request', object)
+        query_params = getattr(request, 'query_params', {})
+        include_field = self.extract_list_for_query_params(query_params, 'include')
+        exclude_field = self.extract_list_for_query_params(query_params, 'exclude')
+        if include_field and exclude_field:
+            raise IncludeWithExcludeParamsError
 
         for field in fields:
 

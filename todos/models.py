@@ -1,10 +1,13 @@
 import datetime
+import logging
 
-from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 class Board(models.Model):
@@ -17,23 +20,36 @@ class Board(models.Model):
     name = models.CharField(
         max_length=50,
     )
-    is_archive = models.BooleanField(
-        default=False,
-    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.all_switch(auto=True)
 
     @classmethod
     def create_default_board(cls, user):
+        logger.debug('create default board')
         board = cls(user=user, name='デフォルト')
         board.save()
         return board
 
-    def all_switch(self):
-        for list in self.lists:
-            list.switch_next()
+    def all_switch(self, auto=True):
+        logger.debug('all switch')
+        intend_save_cards = []
+        for list in self.lists.all():
+            if auto:
+                is_switch = list.is_auto_switch
+            else:
+                is_switch = list.auto_switch and list.next is not None
 
-    def all_previous(self):
-        for list in self.lists:
-            list.switch_previous()
+            if is_switch is False:
+                continue
+
+            for card in list.cards.all():
+                card.list = list.next
+                intend_save_cards.append(card)
+
+        for card in intend_save_cards:
+            card.save()
 
     def __str__(self):
         return self.name
@@ -48,9 +64,11 @@ class List(models.Model):
     name = models.CharField(
         max_length=50,
     )
-    order = models.IntegerField()
+    order = models.IntegerField(
+        default=9999,
+    )
 
-    next = models.OneToOneField(
+    next = models.ForeignKey(
         'self',
         related_name='previous',
         on_delete=models.SET_NULL,
@@ -67,77 +85,71 @@ class List(models.Model):
         default=False,
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.is_auto_switch:
-            self.switch_next()
-
-
     @classmethod
     def create_default_lists(cls, board):
-        names = ['TODO', 'TODAY', 'COMPLETE', 'EXCEED', 'COMPLETED']
-        lists = {}
-        for order, name in enumerate(names):
-            list = cls(board=board, name=name, order=order)
-            list.save()
-            lists[name.lower()] = list
+        logger.debug('create default lists')
 
-        lists['todo'].next = lists['today']
-        lists['todo'].save()
+        todo_list = cls(board=board, name='することすべて', order=1)
+        today_list = cls(board=board, name='今日すること', order=2)
+        complete_list = cls(board=board, name='今日完了したこと', order=3)
+        exceed_list = cls(board=board, name='前からの持ち越し', order=4)
+        completed_list = cls(board=board, name='完了したことすべて', order=5)
 
-        lists['today'].next, lists['today'].auto_switch = lists['exceed'], True
-        lists['today'].save()
+        todo_list.save()
+        today_list.save()
+        complete_list.save()
+        exceed_list.save()
+        completed_list.save()
 
-        lists['complete'].next = lists['completed']
-        lists['complete'].save()
+        todo_list.next = today_list
+        today_list.next, today_list.auto_switch = exceed_list, True
+        complete_list.next = completed_list
+        exceed_list.next = todo_list
 
-        lists['exceed'].next = lists['todo']
-        lists['exceed'].save()
-
-        return lists
+        todo_list.save()
+        today_list.save()
+        complete_list.save()
+        exceed_list.save()
 
     def switch_next(self):
         if self.next is None:
-            return False
+            return
 
         for card in self.cards.all():
             card.list = self.next
             card.save()
 
-        return True
-
-    def switch_previous(self):
-        if self.previous is None:
-            return False
-
-        for card in self.cards.all():
-            card.list = self.previous
-            card.save()
-
-        return True
-
     @property
     def is_auto_switch(self):
         if self.auto_switch == False:
+            logger.debug('is auto switch false')
+            return False
+
+        if len(self.cards.all()) == 0:
             return False
 
         now = datetime.datetime.now()
         for card in self.cards.all():
-            if self.self.switch_time == datetime.time():
-                point = card.moved_at(hour=0, minute=0, second=0) + datetime.timedelta(days=1)
+            year = card.moved_at.year
+            month = card.moved_at.month
+            day = card.moved_at.day
+            if self.switch_time == datetime.time():
+                # 0:00なら一日増し
+                day += 1
+                point = datetime.datetime(year=year, month=month, day=day)
             else:
                 hour = self.switch_time.hour
                 minute = self.switch_time.minute
-                second = self.switch_time.second
+                point = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute)
                 if card.moved_at.time() < self.switch_time:
-                    point = card.moved_at(hour=hour, minute=minute, second=second) + datetime.timedelta(days=1)
-                else:
-                    point = card.moved_at(hour=hour, minute=minute, second=second)
+                    point += datetime.timedelta(days=1)
 
             if point > now:
+                logger.debug('is auto switch false')
                 return False
 
-        return True
+            logger.debug('is auto switch true')
+            return True
 
     def __str__(self):
         return self.name
@@ -150,15 +162,16 @@ class Card(models.Model):
         on_delete=models.CASCADE,
     )
     name = models.CharField(
-        max_length=50,
+        max_length=300,
     )
     detail = models.CharField(
-        max_length=2000,
+        max_length=5000,
+        blank=True,
     )
     order = models.IntegerField()
 
     moved_at = models.DateTimeField(
-        auto_now=True,
+        auto_now=timezone.datetime.now,
     )
     is_archive = models.BooleanField(
         default=False,

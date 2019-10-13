@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class ListFilter(filters.FilterSet):
+    is_archive = filters.BooleanFilter(field_name='is_archive')
     order_by = filters.OrderingFilter(
         fields=[
             ('order', 'order')
@@ -28,7 +29,8 @@ class ListFilter(filters.FilterSet):
     class Meta:
         model = List
         fields = [
-            'order_by'
+            'is_archive',
+            'order_by',
         ]
 
 
@@ -37,40 +39,51 @@ class BoardViewSet(viewsets.ModelViewSet):
     serializer_class = BoardSerializer
     permission_classes = [DetailIsAdminOrWriteOwnOnly]
 
-    @action(methods=['post'], detail=True)
+    @action(methods=['post'], detail=False)
     def default(self, request, *args, **kwargs):
         board = Board.create_default_board(request.user)
         List.create_default_lists(board)
         serializer = self.get_serializer(board)
         return Response(serializer.data)
 
-    @action(methods=['put', 'patch'], detail=False, url_path='auto_switch/true')
+    @action(methods=['put', 'patch'], detail=True, url_path='auto_switch/true')
     def all_auto_switch_true(self, request, *args, **kwargs):
         instance = self.get_object()
-        for list in instance.lists:
+        for list in instance.lists.all():
             list.auto_switch = True
             list.save()
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @action(methods=['put', 'patch'], detail=False, url_path='auto_switch/false')
+    @action(methods=['put', 'patch'], detail=True, url_path='auto_switch/false')
     def all_auto_switch_false(self, request, *args, **kwargs):
         instance = self.get_object()
-        for list in instance.lists:
+        for list in instance.lists.all():
             list.auto_switch = False
             list.save()
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    @action(methods=['put'], detail=True)
+    def all_cards_next(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.all_switch(auto=False)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     @add_user_id_to_request_data
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return super().create(request, *args, **kwargs)
+
+    @action(methods=['get'], detail=True)
+    def all_lists(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @action(methods=['get'], detail=True)
+    def archive_lists(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -79,17 +92,6 @@ class ListViewSet(viewsets.ModelViewSet):
     permission_classes = [DetailIsAdminOrWriteOwnOnly]
     filter_class = ListFilter
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
     @action(methods=['put', 'patch'], detail=True)
     def next(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -97,33 +99,41 @@ class ListViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @action(methods=['put', 'patch'], detail=True)
-    def previous(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.switch_previous()
-        serializer = self.get_serializer(instance)
+    @action(methods=['put'], detail=False)
+    def save_order(self, request, *args, **kwargs):
+        res_lists = []
+        for order, o in enumerate(request.data):
+            list = List.objects.get(id=o['id'])
+            list.order = order
+            list.save()
+            res_lists.append(list)
+
+        serializer = self.get_serializer(res_lists, many=True)
         return Response(serializer.data)
 
-    @action(methods=['put', 'patch'], detail=False, url_path='auto_switch/true')
-    def auto_switch_true(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.auto_switch = True
-        instance.save()
+    @action(methods=['get'], detail=True)
+    def all_cards(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
-        serializer = BoardSerializer(instance)
-        return Response(serializer.data)
-
-    @action(methods=['put', 'patch'], detail=False, url_path='auto_switch/false')
-    def auto_switch_false(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.auto_switch = False
-        instance.save()
-
-        serializer = BoardSerializer(instance)
-        return Response(serializer.data)
+    @action(methods=['get'], detail=True)
+    def archive_cards(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
     permission_classes = [DetailIsAdminOrWriteOwnOnly]
+
+    @action(methods=['put'], detail=False)
+    def save_order(self, request, *args, **kwargs):
+        res_cards = []
+        list = List.objects.get(id=request.data['id'])
+        for order, o in enumerate(request.data['cards']):
+            card = Card.objects.get(id=o['id'])
+            card.order, card.list = order, list
+            card.save()
+            res_cards.append(card)
+
+        serializer = self.get_serializer(res_cards, many=True)
+        return Response(serializer.data)

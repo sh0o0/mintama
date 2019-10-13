@@ -27,7 +27,7 @@
   </v-menu>
 </template>
 <script>
-import FormatHelper from '@/helper/format'
+import { dateToJapan } from '@/helper/format'
 export default {
   props: {
     form: Object
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return FormatHelper.dateToJp(date)
+      return FormatHelper.dateToJapan(date)
     },
   },
   watch: {
