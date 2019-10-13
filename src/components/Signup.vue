@@ -11,7 +11,7 @@
     </v-toolbar>
     <v-card-text>
       <v-form name="signup" method="post">
-        <div v-for="formData in formDatas" :key="formData.name" >
+        <div v-for="formData in formObj" :key="formData.name">
           <FormError :name="formData.name" :errors="formData.errors"></FormError>
           <v-text-field
             v-if="formData.name !== 'non_field_errors'"
@@ -36,15 +36,17 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { debouncedCheckOneForm, Rest } from "@/asynchronous/api";
+import { debouncedCheckOneForm, Api } from "@/asynchronous/api";
 import FormError from "@/components/FormError";
+import FormHelper from '@/helper/form'
 import { oauthBtns } from "@/mixins/top";
 
 export default {
   mixins: [oauthBtns],
   data() {
     return {
-      formDatas: {
+      sample: {},
+      formObj: {
         username: {
           name: "username",
           value: "",
@@ -103,19 +105,27 @@ export default {
   },
   methods: {
     submit() {
-      Rest.post('signup', this.formDatas, '')
+      const that = this;
+      Api.post('signup', this.formObj)
+      .then(function(response) {
+        if (FormHelper.isEmpty(response.data)) {
+          location.href = '/';
+        } else {
+          FormHelper.assignErrors(that.formObj, response.data);
+        }
+      })
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");
-    }
+    },
   },
   watch: {
-    "formDatas.username.value": function() {
-      debouncedCheckOneForm('signup', 'username', this.formDatas);
+    "formObj.username.value": function() {
+      debouncedCheckOneForm('signup', 'username', this.formObj);
     },
-    "formDatas.password1.value": function() {
-      debouncedCheckOneForm('signup', 'password1', this.formDatas);
+    "formObj.password1.value": function() {
+      debouncedCheckOneForm('signup', 'password1', this.formObj);
     }
-  }
+  },
 };
 </script>

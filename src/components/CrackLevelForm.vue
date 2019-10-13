@@ -1,6 +1,11 @@
 <template>
   <div>
-    <v-text-field readonly label="ひび割れ度" :value="myself.crack_level" prepend-icon="mdi-egg-easter">
+    <v-text-field 
+    :label="form.label" 
+    :value="form.value" 
+    :prepend-icon="form.prependIcon"
+    readonly 
+    >
       <v-btn
         link
         color="red lighten-1"
@@ -30,16 +35,15 @@
   </div>
 </template>
 <script>
-  import { mapState } from 'vuex'
-  export default {
-    data() {
-      return {
-        crackChallengeDialog: false,
-      }
-    },
-    computed: {
-      ...mapState('user', ['myself'])
+export default {
+  props: {
+    form: Object,
+  },
+  data() {
+    return {
+      crackChallengeDialog: false,
     }
-  }
+  },
+}
 
 </script>

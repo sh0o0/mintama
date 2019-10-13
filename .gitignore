@@ -4,12 +4,12 @@ __pycache__/
 /logfile
 /node_mudules
 /media
-
-/.idea/workspace.xml
-
 /static/bundles
 
+/.idea/workspace.xml
 /webpack-stats.json
+
+mintama_db
 
 *.log
 *.pyc

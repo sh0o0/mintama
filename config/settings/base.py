@@ -13,15 +13,20 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import pickle
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+#load secrets
+with open(os.path.dirname(BASE_DIR) + '\\some_pass', 'rb') as f:
+    SECRETS = pickle.load(f)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'n7pk(r^zby=)dx8&zy$5bn_-jk5(_s53&wejx^(#u&l59=%t1t'
+SECRET_KEY = SECRETS['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -42,8 +47,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'social_django',
-    'user',
     'socials',
+    'accounts',
+    'notes',
+    'todos',
 ]
 
 MIDDLEWARE = [
@@ -113,7 +120,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -124,7 +131,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'accounts.User'
+CATEGORY_MODEL = 'accounts.Category'
+REFERENCE_MODEL = 'accounts.Reference'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -189,7 +198,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'mail_admins'],
+            'handlers': ['debug_console', 'console', 'mail_admins'],
             'level': 'INFO',
         },
         'django.server': {
@@ -199,7 +208,7 @@ LOGGING = {
         },
         #Add by app bellow.
         'user': {
-            'handlers': ['console', 'debug_console', 'file'],
+            'handlers': ['debug_console', 'console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
         },
@@ -219,8 +228,9 @@ WEBPACK_LOADER = {
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 3
+    'PAGE_SIZE': 10
 }
+REST_MYSELF_URL = 'my!own!info'
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.twitter.TwitterOAuth',
@@ -234,17 +244,13 @@ AUTHENTICATION_BACKENDS = [
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/' # リダイレクトURL
 
-with open(os.path.dirname(BASE_DIR) + '\\some_pass', 'rb') as f:
-    TOKENS = pickle.load(f)
+SOCIAL_AUTH_TWITTER_KEY = SECRETS['SOCIAL_AUTH_TWITTER_KEY']
+SOCIAL_AUTH_TWITTER_SECRET = SECRETS['SOCIAL_AUTH_TWITTER_SECRET']
+SOCIAL_AUTH_TWITTER_TOKEN = SECRETS['SOCIAL_AUTH_TWITTER_TOKEN']
+SOCIAL_AUTH_TWITTER_TOKEN_SECRET = SECRETS['SOCIAL_AUTH_TWITTER_TOKEN_SECRET']
 
-SOCIAL_AUTH_TWITTER_KEY = TOKENS['SOCIAL_AUTH_TWITTER_KEY']
-SOCIAL_AUTH_TWITTER_SECRET = TOKENS['SOCIAL_AUTH_TWITTER_SECRET']
-SOCIAL_AUTH_TWITTER_TOKEN = TOKENS['SOCIAL_AUTH_TWITTER_TOKEN']
-SOCIAL_AUTH_TWITTER_TOKEN_SECRET = TOKENS['SOCIAL_AUTH_TWITTER_TOKEN_SECRET']
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SECRETS['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRETS['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = TOKENS['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = TOKENS['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
-
-SOCIAL_AUTH_GITHUB_KEY = TOKENS['SOCIAL_AUTH_GITHUB_KEY']
-SOCIAL_AUTH_GITHUB_SECRET = TOKENS['SOCIAL_AUTH_GITHUB_SECRET']
+SOCIAL_AUTH_GITHUB_KEY = SECRETS['SOCIAL_AUTH_GITHUB_KEY']
+SOCIAL_AUTH_GITHUB_SECRET = SECRETS['SOCIAL_AUTH_GITHUB_SECRET']

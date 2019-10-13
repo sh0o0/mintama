@@ -19,24 +19,24 @@
           </v-list-item>
         </router-link>
       </v-list>
-      <template v-slot:append>
+      <!-- <template v-slot:append>
         <div class="pa-2">
           <v-btn block href="/logout/" class="blue darken-4" dark>Logout</v-btn>
         </div>
-      </template>
+      </template> -->
     </v-navigation-drawer>
 
     <v-app-bar app color="blue" dark>
       <v-app-bar-nav-icon @click.stop="sideDrawer = !sideDrawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>
-        <a class="deco-none" href="/">Mintama</a>
+      <v-toolbar-title class="px-3">
+        <a href="/" class="deco-none font-italic font-weight-bold">Mintama</a>
       </v-toolbar-title>
-      <v-avatar size="80" width="150">
+      <!-- <v-avatar size="80" width="150">
         <img
           v-if="getBaselineMyself"
           :src="`/static/mintama/img/white-egg-level-${getBaselineMyself.crack_level}.png`"
         />
-      </v-avatar>
+      </v-avatar> -->
       <v-spacer></v-spacer>
 
       <!-- menuDrawer -->
@@ -86,8 +86,7 @@
 
             <v-card-actions>
               <div class="flex-grow"></div>
-              <v-btn text href="/logout/" class="blue darken-4" dark>Logout</v-btn>
-              <v-btn outlined text @click="menuDrawer = false">Cancel</v-btn>
+              <v-btn text href="/logout/" class="blue darken-4" dark block>Logout</v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -96,17 +95,14 @@
 
     <!-- content -->
     <v-content>
-      <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
-          <v-col class="text-center">
+      <!-- <v-container fluid>
+        <v-row align="start" justify="start"> -->
+          <!-- <v-col class="text-left"> -->
             <slot name="content"></slot>
-          </v-col>
-        </v-row>
-      </v-container>
+           <!-- </v-col> -->
+        <!-- </v-row>
+       </v-container> -->
     </v-content>
-    <v-footer color="blue" app>
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
   </v-app>
 </template>
 
@@ -119,11 +115,11 @@ export default {
     menuDrawer: false,
     sideDrawerItems: [
       { title: "ホーム", icon: "mdi-home", routerName: "home" },
-      { title: "日記", icon: "mdi-border-color", routerName: "" },
-      { title: "チャット", icon: "mdi-chat", routerName: "" },
-      { title: "計画", icon: "mdi-floor-plan", routerName: "" },
-      { title: "コミュニティ", icon: "mdi-forum", routerName: "" },
-      { title: "チーム開発", icon: "mdi-account-group", routerName: "" }
+      { title: "ノート", icon: "mdi-border-color", routerName: "noteList"},
+      // { title: "チャット", icon: "mdi-chat", routerName: "" },
+      // { title: "計画", icon: "mdi-floor-plan", routerName: "" },
+      // { title: "コミュニティ", icon: "mdi-forum", routerName: "" },
+      // { title: "チーム開発", icon: "mdi-account-group", routerName: "" }
     ],
     menuDrawerItems: [
       {
@@ -131,22 +127,24 @@ export default {
         icon: "mdi-account-circle",
         routerName: "profile"
       },
-      { title: "過去の参考資料", icon: "mdi-file", routerName: "myReferences" },
+      { title: "過去の参考資料", 
+        icon: "mdi-file", 
+        routerName: "reference" },
       {
         title: "ポートフォリオ",
         icon: "mdi-arm-flex",
-        routerName: "myPortfolios"
+        routerName: "portfolio"
       },
-      { title: "お気に入り", icon: "mdi-heart", routerName: "" },
-      { title: "設定", icon: "mdi-settings-box", routerName: "" }
+      // { title: "お気に入り", icon: "mdi-heart", routerName: "" },
+      // { title: "設定", icon: "mdi-settings-box", routerName: "" }
     ]
   }),
   methods: {
-    ...mapActions("user", ["apiGetMyself"]),
-    ...mapMutations("user", ["setBaselineMyself"])
+    ...mapActions("accounts", ["apiGetMyself"]),
+    ...mapMutations("accounts", ["setBaselineMyself"])
   },
   computed: {
-    ...mapGetters("user", ["getBaselineMyself"])
+    ...mapGetters("accounts", ["getBaselineMyself"])
   },
   created() {
     this.apiGetMyself().then(response => {

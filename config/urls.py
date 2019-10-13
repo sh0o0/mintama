@@ -17,14 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework import routers
-from django.views.generic import TemplateView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('user.urls', namespace='user')),
-    path('socials/', include('social_django.urls', namespace='social')),
+    path('socials/', include('social_django.urls', namespace='socials')),
+    path('', include('accounts.urls', namespace='accounts')),
+    path('notes/', include('notes.urls', namespace='notes')),
+    path('api/', include('api.urls', namespace='api')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
