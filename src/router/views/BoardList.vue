@@ -119,7 +119,7 @@ export default {
   computed: {
     cards() {
       return this.retrieveCard;
-    }
+    },
   },
   methods: {
     retrieveBoards() {

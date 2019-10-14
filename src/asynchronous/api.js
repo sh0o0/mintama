@@ -59,7 +59,6 @@ export const Api = {
     return Vue.axios
       .put(url, data, { headers: headers })
       .then(function(response) {
-        console.log("api put successe", response.data);
       })
       .catch(function(error) {
         throw new Error(`Api ${error}`);
@@ -78,7 +77,6 @@ export const Api = {
     return Vue.axios
       .patch(url, data, { headers: headers })
       .then(function(response) {
-        console.log("api patch successe", response.data);
       })
       .catch(function(error) {
         FormHelper.assignErrors(formObj, error.response.data);
@@ -161,8 +159,9 @@ export const Api = {
         headers: headers,
       })
       .catch(function(error) {
-        const formatedError = formatErrorResponse(error);
-        alert(formatedError);
+        alert('エラーが発生しました。')      
+        // const formatedError = formatErrorResponse(error);
+        // alert(formatedError);
         throw new Error(`Api postJson ${error}`);
       });
   },
@@ -192,8 +191,7 @@ export const Api = {
       .put(url, data, { headers: headers })
       .then()
       .catch(function(error) {
-        const formatedError = formatErrorResponse(error);
-        alert(formatedError);
+        alert('エラーが発生しました。')
         throw new Error(`Api putJson${error}`);
       });
   },
@@ -216,8 +214,7 @@ export const Api = {
       .patch(url, data, { headers: headers })
       .then()
       .catch(error => {
-        const formatedError = formatErrorResponse(error);
-        alert(formatedError);
+        alert('エラーが発生しました。')
         throw new Error(`Api patchJson${error}`);
       });
   },

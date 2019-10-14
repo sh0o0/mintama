@@ -100,6 +100,7 @@ export default {
       categoryList: [],
       referenceList: [],
       dialog: false,
+      username: this.$route.params.username,
     };
   },
   methods: {
@@ -142,11 +143,11 @@ export default {
       if (this.validateFormObj()) {
         Api.postJson("notes", this.formObj)
           .then(response => {
-            that.dialog = true
+            that.dialog = true;
+            that.$router.push({name: 'personalNoteList', params: {username: that.username}})
           })
           .catch(error => {
             alert('作成に失敗しました。')
-            console.log(error.response);
           });
       }
     },

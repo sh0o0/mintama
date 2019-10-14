@@ -49,3 +49,20 @@ class IsAdminOrWriteOwnOnly(IsAdminUser):
 
         is_own_user = request.user == user
         return is_own_user or is_safe_method or is_admin
+
+
+class IsAdminOrOwnOnly(IsAdminUser):
+    def has_permission(self, request, view):
+        username = view.kwargs.get('username', None)
+
+        is_post_method = request.method == 'POST'
+
+        if not username:
+            if is_post_method:
+                return True
+            raise UsernameNoneException
+        else:
+            is_admin = super().has_permission(request, view)
+            is_own_user = request.user == get_object_or_404(User, username=username)
+
+            return is_admin or is_own_user

@@ -45,9 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
             instance.icon.delete(save=True)
         return ret
 
-    def create(self, validated_data):
-        return super().create(validated_data)
-
     def to_representation(self, instance):
         """
         Object instance -> Dict of primitive datatypes.
@@ -92,15 +89,21 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ReferenceSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = Reference
         fields = [
+            'id',
             'user',
+            'username',
             'title',
             'content',
             'link',
         ]
 
+    def get_username(self, instance):
+        return instance.user.username
 
 class PortfolioSerializer(serializers.ModelSerializer):
     class Meta:

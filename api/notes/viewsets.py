@@ -103,6 +103,7 @@ class NoteViewSet(viewsets.ModelViewSet):
         Section.objects.filter(note=note).delete()
         if sections_data:
             for section_data in sections_data:
+                print(section_data)
                 section_data['categories'] = [category['id'] for category in section_data['categories_dict']]
                 section_data['references'] = [reference['id'] for reference in section_data['references_dict']]
                 section_data['note'] = note.id

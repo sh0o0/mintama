@@ -16,7 +16,7 @@ import BoardList from './views/BoardList'
 import Board from './views/Board'
 
 import ReferenceList from './views/ReferenceList'
-
+import Reference from './views/Reference'
 
 Vue.use(Router)
 
@@ -45,11 +45,11 @@ export default new Router({
     //   component: SettingsPassword,
     // },
     //app list
-    {
-      path: '/portfolios',
-      name: 'portfolioList',
-      component: PortfolioList,
-    },
+    // {
+    //   path: '/portfolios',
+    //   name: 'portfolioList',
+    //   component: PortfolioList,
+    // },
     {
       path: '/references',
       name: 'referenceList',
@@ -82,6 +82,11 @@ export default new Router({
       component: NoteList,
     },
     {
+      path: '/:username/references',
+      name: 'personalReferenceList',
+      component: ReferenceList,
+    },
+    {
       path: '/:username/boards',
       name: 'boardList',
       component: BoardList,
@@ -97,6 +102,11 @@ export default new Router({
     //   name: 'reference',
     //   component: Reference,
     // },
+    {
+      path: '/:username/references/:referenceId',
+      name: 'reference',
+      component: Reference,
+    },
     {
       path: '/:username/notes/:noteId',
       name: 'note',

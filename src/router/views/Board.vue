@@ -746,7 +746,7 @@ export default {
 .is-all
   line-height: 3
 .board
-  height: 85vh
+  height: 83vh
   padding-top: 20px
   overflow-y: hidden
   overflow-x: scroll

@@ -11,10 +11,17 @@
     <h2 class="font-weight-bold ">{{ note.title }}</h2>
 
     <v-row class="pa-2 ma2">
+      <router-link
+      class="deco-none"
+      :to="{name: 'profile', params: {username: user.username}}"
+      >
+
       <v-avatar size="40" class="ml-10">
-        <v-img :src="user.icon" class="mr-2"></v-img>
+        <v-img v-if="user.icon" :src="user.icon" class="mr-2"></v-img>
+        <v-icon v-else large>mdi-egg</v-icon>
         <span>{{ user.username }}</span>
       </v-avatar>
+      </router-link>
       <v-spacer></v-spacer>
       <router-link
         v-if="$route.params.username === getMyself.username"

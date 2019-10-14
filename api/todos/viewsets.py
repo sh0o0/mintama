@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 
-from api.permissions import DetailIsAdminOrWriteOwnOnly
+from api.permissions import DetailIsAdminOrWriteOwnOnly, IsAdminOrOwnOnly
 from helper.viewsets import add_user_id_to_request_data
 from todos.models import Board, List, Card
 from .serializers import BoardSerializer, ListSerializer, CardSerializer
@@ -37,7 +37,10 @@ class ListFilter(filters.FilterSet):
 class BoardViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
-    permission_classes = [DetailIsAdminOrWriteOwnOnly]
+    permission_classes = [IsAdminOrOwnOnly]
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @action(methods=['post'], detail=False)
     def default(self, request, *args, **kwargs):
@@ -89,7 +92,7 @@ class BoardViewSet(viewsets.ModelViewSet):
 class ListViewSet(viewsets.ModelViewSet):
     queryset = List.objects.all()
     serializer_class = ListSerializer
-    permission_classes = [DetailIsAdminOrWriteOwnOnly]
+    permission_classes = [IsAdminOrOwnOnly]
     filter_class = ListFilter
 
     @action(methods=['put', 'patch'], detail=True)
@@ -123,7 +126,7 @@ class ListViewSet(viewsets.ModelViewSet):
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
-    permission_classes = [DetailIsAdminOrWriteOwnOnly]
+    permission_classes = [IsAdminOrOwnOnly]
 
     @action(methods=['put'], detail=False)
     def save_order(self, request, *args, **kwargs):

@@ -37,7 +37,7 @@ class Board(models.Model):
         intend_save_cards = []
         for list in self.lists.all():
             if auto:
-                is_switch = list.is_auto_switch
+                is_switch = list.is_auto_switch and list.next is not None
             else:
                 is_switch = list.auto_switch and list.next is not None
 
