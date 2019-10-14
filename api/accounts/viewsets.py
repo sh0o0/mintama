@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from accounts.models import Category, Reference, Portfolio
-from api.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly, DetailIsAdminOrWriteOwnOnly
+from helper.viewsets import add_user_id_to_request_data
 from .serializers import UserSerializer, CategorySerializer, ReferenceSerializer, PortfolioSerializer
 
 
@@ -86,10 +87,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ReferenceViewSet(viewsets.ModelViewSet):
     queryset = Reference.objects.all()
     serializer_class = ReferenceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DetailIsAdminOrWriteOwnOnly]
 
+    @add_user_id_to_request_data
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 class PortfolioViewSet(viewsets.ModelViewSet):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DetailIsAdminOrWriteOwnOnly]

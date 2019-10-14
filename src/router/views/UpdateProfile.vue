@@ -150,8 +150,6 @@ export default {
     FormHelper.createThatFormObjs(that, ...FormOptions.user)
     this.apiGetMyself().then(response => {
       FormHelper.assignDataToThatObj(that, that.getMyself)
-    }).catch(error => {
-      console.log(error.response.data)
     })
   }
 };

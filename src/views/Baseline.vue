@@ -4,26 +4,45 @@
     <v-navigation-drawer v-model="sideDrawer" app>
       <v-list dense>
         <router-link
-          v-for="item in sideDrawerItems"
-          :key="item.title"
-          :to="item.router"
-          class="deco-none"
+        :to="{name: 'home'}"
+        class="deco-none"
         >
-          <v-list-item link>
-            <v-list-item-action>
-              <v-icon>{{item.icon}}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>{{item.title}}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+        <v-list-item link class="pl-5">
+          <v-list-item-action>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>ホーム</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         </router-link>
+
+        <v-list-group v-for="item in sideDrawerItems" :key="item.title" :value="false" class="pl-1 ma-0">
+          <template v-slot:activator>
+            <v-list-item link class="pl-0">
+              <v-list-item-action>
+                <v-icon>{{item.icon}}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>{{item.title}}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+
+          <router-link
+            v-for="router in item.routers"
+            :key="router.title"
+            :to="router.router"
+            class="deco-none"
+          >
+            <v-list-item class="pl-8" link>
+              <v-list-item-action>
+                <v-list-item-title>{{ router.title }}</v-list-item-title>
+              </v-list-item-action>
+            </v-list-item>
+          </router-link>
+        </v-list-group>
       </v-list>
-      <!-- <template v-slot:append>
-        <div class="pa-2">
-          <v-btn block href="/logout/" class="blue darken-4" dark>Logout</v-btn>
-        </div>
-      </template> -->
     </v-navigation-drawer>
 
     <v-app-bar app color="blue" dark>
@@ -36,7 +55,7 @@
           v-if="getBaselineMyself"
           :src="`/static/mintama/img/white-egg-level-${getBaselineMyself.crack_level}.png`"
         />
-      </v-avatar> -->
+      </v-avatar>-->
       <v-spacer></v-spacer>
 
       <!-- menuDrawer -->
@@ -96,13 +115,13 @@
     <!-- content -->
     <v-content>
       <div class="pa-2">
-      <!-- <v-container fluid>
-        <v-row align="start" justify="start"> -->
-          <!-- <v-col class="text-left"> -->
-            <slot name="content"></slot>
-           <!-- </v-col> -->
+        <!-- <v-container fluid>
+        <v-row align="start" justify="start">-->
+        <!-- <v-col class="text-left"> -->
+        <slot name="content"></slot>
+        <!-- </v-col> -->
         <!-- </v-row>
-       </v-container> -->
+        </v-container>-->
       </div>
     </v-content>
   </v-app>
@@ -111,39 +130,82 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
-  props: ['username'],
+  props: ["username"],
   data() {
     return {
-    sideDrawer: true,
-    menuDrawer: false,
-    sideDrawerItems: [
-      { title: "ホーム", icon: "mdi-home", router: {name: 'home'} },
-      { title: "TODO", icon: "mdi-border-color", router: {name: 'boardList', params: {username: this.username}}},
-      { title: "ノート", icon: "mdi-border-color", router: {name: 'noteList'}},
+      sideDrawer: true,
+      menuDrawer: false,
+      sideDrawerItems: [
+        {
+          title: "TODO",
+          icon: "mdi-calendar-range",
+          routers: [
+            {
+              title: "ボードリスト",
+              router: { name: "boardList", params: { username: this.username } }
+            }
+          ]
+        },
+        {
+          title: "ノート",
+          icon: "mdi-border-color",
+          routers: [
+            {
+              title: "自分のノート",
+              router: {
+                name: "personalNoteList",
+                params: { username: this.username }
+              }
+            },
+            {
+              title: "新規ノートの作成",
+              router: {
+                name: "createNote",
+                params: { username: this.username }
+              }
+            },
+            { title: "みんなのノート", router: { name: "noteList" } }
+          ]
+        },
+        {
+          title: 'リファレンス',
+          icon: 'mdi-file',
+          routers: [
+            {
+              title: '自分のリファレンス',
+              router: {name: 'personalReferenceList', params: {username: this.username}}
+            },
+            {
+              title: 'みんなのリファレンス',
+              router: {name: 'referenceList'},
+            }
+          ]
+        }
+      ],
       // { title: "チャット", icon: "mdi-chat", routerName: "" },
       // { title: "計画", icon: "mdi-floor-plan", routerName: "" },
       // { title: "コミュニティ", icon: "mdi-forum", routerName: "" },
       // { title: "チーム開発", icon: "mdi-account-group", routerName: "" }
-    ],
-    menuDrawerItems: [
-      {
-        title: "アカウント",
-        icon: "mdi-account-circle",
-        router: {name: 'profile', params:{username: this.username}}
-      },
-      { title: "過去の参考資料", 
-        icon: "mdi-file", 
-        router: {name: 'reference'} 
-      },
-      {
-        title: "ポートフォリオ",
-        icon: "mdi-arm-flex",
-        router: {name: 'portfolio'}
-      },
-      // { title: "お気に入り", icon: "mdi-heart", router: "" },
-      // { title: "設定", icon: "mdi-settings-box", router: "" }
-    ]
-    }
+      menuDrawerItems: [
+        {
+          title: "アカウント",
+          icon: "mdi-account-circle",
+          router: { name: "profile", params: { username: this.username } }
+        },
+        {
+          title: "過去の参考資料",
+          icon: "mdi-file",
+          router: { name: 'personalReferenceList', params: {username: this.username}}
+        },
+        // {
+        //   title: "ポートフォリオ",
+        //   icon: "mdi-arm-flex",
+        //   router: { name: "portfolio" }
+        // }
+        // { title: "お気に入り", icon: "mdi-heart", router: "" },
+        // { title: "設定", icon: "mdi-settings-box", router: "" }
+      ]
+    };
   },
   methods: {
     ...mapActions("accounts", ["apiGetMyself"]),

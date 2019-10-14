@@ -28,40 +28,44 @@
               </template>
             </tbody>
           </v-simple-table>
-          <v-btn link color="orange" absolute bottom right>
-            <router-link :to="{name: 'settingsProfile'}" class="deco-none">編集</router-link>
-          </v-btn>
+          <template v-if="getMyself.username === username">
+            <router-link :to="{name: 'settingsProfile'}" class="deco-none">
+              <v-btn link color="orange" absolute bottom right>編集</v-btn>
+            </router-link>
+          </template>
         </v-col>
       </v-row>
     </v-card>
   </v-app>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
-import FormHelper from '@/helper/form'
-import FormOptions from '@/helper/form_options'
+import { mapGetters } from "vuex";
+import { Api } from "@/asynchronous/api";
+import FormHelper from "@/helper/form";
+import FormOptions from "@/helper/form_options";
 
 export default {
   data() {
     return {
       formObj: {},
-      exclude: ["icon", "introduction"]
+      exclude: ["icon", "introduction"],
+      username: this.$route.params.username
     };
   },
-  methods: {
-    ...mapActions("accounts", ["apiGetMyself"]),
-  },
   computed: {
-    ...mapGetters("accounts", ["getMyself"]),
+    ...mapGetters("accounts", ["getMyself"])
   },
   created() {
     const that = this;
-    FormHelper.createThatFormObjs(that, ...FormOptions.user)
-    this.apiGetMyself().then(response => {
-      FormHelper.assignDataToThatObj(that, that.getMyself)
-    }).catch(error => {
-      console.log(error.response.data)
-    })
+    FormHelper.createThatFormObjs(that, ...FormOptions.user);
+
+    Api.getJson("users", this.username)
+      .then(response => {
+        FormHelper.assignDataToThatObj(that, response.data);
+      })
+      .catch(error => {
+        console.log(error.response.data);
+      });
   }
 };
 </script>

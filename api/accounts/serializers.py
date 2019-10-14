@@ -89,15 +89,21 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ReferenceSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = Reference
         fields = [
+            'id',
             'user',
+            'username',
             'title',
             'content',
             'link',
         ]
 
+    def get_username(self, instance):
+        return instance.user.username
 
 class PortfolioSerializer(serializers.ModelSerializer):
     class Meta:

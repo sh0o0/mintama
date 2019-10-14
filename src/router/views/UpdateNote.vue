@@ -128,6 +128,7 @@ export default {
       updateDialog: false,
       confirmDialog: false,
       deletedDialog: false,
+      username: this.$route.params.username,
     };
   },
   computed: {
@@ -145,7 +146,7 @@ export default {
     isSectionEmpty(section) {
       if (section.heading !== "") return false;
       if (section.content !== "") return false;
-      if (section.categories.length !== 0) return false;
+      if (section.categories_dict.length !== 0) return false;
       if (section.heading.length !== 0) return false;
 
       return true;
@@ -159,8 +160,8 @@ export default {
       const section = {
         heading: "",
         content: "",
-        categories: [],
-        references: []
+        categories_dict: [],
+        references_dict: []
       };
       this.formObj.sections.push(section);
     },
@@ -176,10 +177,11 @@ export default {
         Api.putJson("notes", noteId, this.formObj, username)
           .then(response => {
             that.updateDialog = true;
+            alert('変更が完了しました。')
+            that.$router.push({name: 'personalNoteList', params: {username: that.username}})
           })
           .catch(error => {
             alert('変更に失敗しました。');
-            console.log(error.response);
           });
       }
     },

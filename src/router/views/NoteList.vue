@@ -35,20 +35,20 @@
           <v-card-title class="amber">{{ note.title }}</v-card-title>
           <v-card-text>
             <v-list>
-              <v-list-item-content
+              <v-list-item
                 class="py-0"
                 v-for="(section, index) in note.sections"
                 :key="index"
                 dence
-              >・{{ section.heading }}</v-list-item-content>
+              >・{{ section.heading }}</v-list-item>
             </v-list>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions class="px-5">
             <v-row>
-              <span>user: {{note.username}}</span>
+              <span>ユーザー: {{note.username}}</span>
               <v-spacer></v-spacer>
-              <span>作成日時 : {{ note.written_at | dateFormat }}</span>
+              <span>作成日時 : {{ note.written_at | datetimeToJapan }}</span>
             </v-row>
           </v-card-actions>
         </v-card>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { dateToJapan } from "@/helper/format";
+import { dateToJapan, datetimeToJapan } from "@/helper/format";
 import { Api } from "@/asynchronous/api";
 
 
@@ -83,6 +83,7 @@ export default {
   },
   filters: {
     dateToJapan,
+    datetimeToJapan,
   },
   created() {
     this.fetch();
