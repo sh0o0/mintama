@@ -11,22 +11,16 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import pickle
-
+from config.settings.secret_keys import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-#load secrets
-with open(os.path.dirname(BASE_DIR) + '\\some_pass', 'rb') as f:
-    SECRETS = pickle.load(f)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SECRETS['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -132,8 +126,6 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
-CATEGORY_MODEL = 'accounts.Category'
-REFERENCE_MODEL = 'accounts.Reference'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -243,14 +235,3 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/' # リダイレクトURL
-
-SOCIAL_AUTH_TWITTER_KEY = SECRETS['SOCIAL_AUTH_TWITTER_KEY']
-SOCIAL_AUTH_TWITTER_SECRET = SECRETS['SOCIAL_AUTH_TWITTER_SECRET']
-SOCIAL_AUTH_TWITTER_TOKEN = SECRETS['SOCIAL_AUTH_TWITTER_TOKEN']
-SOCIAL_AUTH_TWITTER_TOKEN_SECRET = SECRETS['SOCIAL_AUTH_TWITTER_TOKEN_SECRET']
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = SECRETS['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = SECRETS['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
-
-SOCIAL_AUTH_GITHUB_KEY = SECRETS['SOCIAL_AUTH_GITHUB_KEY']
-SOCIAL_AUTH_GITHUB_SECRET = SECRETS['SOCIAL_AUTH_GITHUB_SECRET']

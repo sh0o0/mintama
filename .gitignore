@@ -1,6 +1,7 @@
 .vscode/
 __pycache__/
 
+/config/settings/secret_keys.py
 /logfile
 /node_mudules
 /media
