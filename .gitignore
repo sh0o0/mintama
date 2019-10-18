@@ -2,8 +2,8 @@
 __pycache__/
 
 /config/settings/secret_keys.py
-/logfile
-/node_mudules
+/logfile/*
+/node_modules
 /media
 /static/bundles
 
