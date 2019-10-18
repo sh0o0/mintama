@@ -5,7 +5,7 @@
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
             <transition name="fade" mode="out-in">
-              <component :is="LoginOrSignup" @toggleLoginOrSignup="toggleLoginOrSignup()"></component>
+              <component :is="LoginOrSignup" :csrftoken="csrftoken" @toggleLoginOrSignup="toggleLoginOrSignup()"></component>
             </transition>
           </v-col>
         </v-row>
@@ -21,6 +21,9 @@ import { backgroundStyle } from "@/mixins/top";
 
 export default {
   mixins: [backgroundStyle],
+  props: {
+    csrftoken: String,
+  },
   data() {
     return {
       LoginOrSignup: "Login"

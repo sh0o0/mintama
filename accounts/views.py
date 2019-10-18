@@ -14,6 +14,7 @@ from django.conf import settings
 from django.http.response import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
 from social_django.models import UserSocialAuth
 
 from .forms import SignupForm, CheckUsernameForm, CheckPasswordForm
@@ -118,9 +119,11 @@ def check_form(request, check_form_class, server_form_name, client_form_name=Non
         return JsonResponse(errors)
 
 
+@csrf_exempt
 def check_username(request):
     return check_form(request, CheckUsernameForm, 'username')
 
 
+@csrf_exempt
 def check_password(request):
     return check_form(request, CheckPasswordForm, 'password', 'password1')

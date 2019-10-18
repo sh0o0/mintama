@@ -43,6 +43,9 @@ import { oauthBtns } from "@/mixins/top";
 
 export default {
   mixins: [oauthBtns],
+  props: {
+    csrftoken: String,
+  },
   data() {
     return {
       sample: {},
@@ -106,7 +109,7 @@ export default {
   methods: {
     submit() {
       const that = this;
-      Api.post('signup', this.formObj)
+      Api.post('signup', this.formObj, this.csrftoken)
       .then(function(response) {
         if (FormHelper.isEmpty(response.data)) {
           location.href = '/';

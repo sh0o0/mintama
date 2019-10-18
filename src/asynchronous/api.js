@@ -31,12 +31,16 @@ export const Api = {
       throw new Error(`Api: ${error}`);
     });
   },
-  post: (entries, formObj) => {
+  post: (entries, formObj, token=null) => {
     const url = `${entries}\/`;
-    const csrftoken = Cookies.get("csrftoken");
+    let csrftoken = Cookies.get("csrftoken");
+    if (!(csrftoken) && token) {
+      csrftoken = token;
+    }
     const headers = { 
       "X-CSRFToken": csrftoken,  
-      "Content-Type": "multipart/form-data"};
+      "Content-Type": "multipart/form-data"
+    };
     const data = FormHelper.createFormData(formObj);
 
     return Vue.axios
