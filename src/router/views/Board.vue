@@ -14,7 +14,7 @@
         </template>
 
         <v-card width="300">
-          <v-list flat="">
+          <v-list flat>
             <v-list-item-group>
               <v-list-item v-if="isAll" @click="init()">
                 <v-list-item-content>アーカイブを含めない</v-list-item-content>
@@ -60,7 +60,7 @@
               <v-card-text class="list-title pa-0">{{ list.name }}</v-card-text>
             </v-col>
             <v-col cols="2" class="pl-1">
-              <v-icon class="mr-5" @click="copyToListForm(list)">mdi-pencil-outline</v-icon>
+              <v-icon class="mr-5" @click.stop="copyToListForm(list)">mdi-pencil-outline</v-icon>
             </v-col>
           </v-row>
 
@@ -87,7 +87,7 @@
                   <span>{{ card.name }}</span>
                   </v-col>
                   <v-col cols="2" class="pa-0 mt-3">
-                  <v-icon @click="copyToCardForm(card, list)">mdi-pencil</v-icon>
+                  <v-icon @click.stop="copyToCardForm(card, list)">mdi-pencil</v-icon>
 
                   </v-col>
                 </v-row>
@@ -134,16 +134,19 @@
     </v-row>
 
     <!-- list form dialog -->
-    <v-dialog v-model="listFormDialog" width="500">
+    <v-dialog v-model="listFormDialog" width="530">
       <v-card>
-        <v-row class="px-5 pt-2">
+        <v-row class="mx-5 pt-2">
+          <template v-if="listForm.list['next_list']">
+            <v-btn class="grey lighten-2" text @click="cardsNext()">このリストのカードを次に移動</v-btn>
+          </template>
           <v-spacer></v-spacer>
           <v-btn fab dark color="grey" @click="listFormDialog = false" x-small>
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-row>
         <v-card-actions>
-          <v-text-field class="heading" label="リスト名" v-model.trim="listForm.copyList.name"></v-text-field>
+          <v-text-field  label="リスト名" v-model.trim="listForm.copyList.name"></v-text-field>
         </v-card-actions>
 
         <v-card-actions>
@@ -164,12 +167,11 @@
         <v-card-actions>
           <v-time-picker
             id="switch-time"
-            width="200"
+            :width="switchTimeWidth"
             landscape
             v-model="listForm.copyList.switch_time"
           ></v-time-picker>
         </v-card-actions>
-
         <v-divider></v-divider>
         <v-card-actions>
           <template>
@@ -177,9 +179,6 @@
             <v-btn v-else class="grey lighten-2" text @click="archiveList()">アーカイブ</v-btn>
           </template>
           <v-btn class="red lighten-2" text @click="deleteList()">削除</v-btn>
-          <template v-if="listForm.list['next_list']">
-            <v-btn class="grey lighten-2" text @click="cardsNext()">このリストのカードを次に移動</v-btn>
-          </template>
           <v-spacer></v-spacer>
           <v-btn text @click="updateList()">保存</v-btn>
         </v-card-actions>
@@ -216,7 +215,7 @@
 
         <label class="ml-2 grey--text text--darken-1" for="switch-time">切り替え時間</label>
         <v-card-actions>
-          <v-time-picker id="switch-time" width="200" landscape v-model="addListForm.switch_time"></v-time-picker>
+          <v-time-picker id="switch-time" :width="switchTimeWidth" landscape v-model="addListForm.switch_time"></v-time-picker>
         </v-card-actions>
 
         <v-divider></v-divider>
@@ -238,7 +237,7 @@
         </v-row>
 
         <v-card-actions>
-          <v-text-field class="heading" label="カード名" v-model.trim="cardForm.copyCard.name"></v-text-field>
+          <v-text-field label="カード名" v-model.trim="cardForm.copyCard.name"></v-text-field>
         </v-card-actions>
 
         <v-card-actions>
@@ -284,6 +283,7 @@
 import draggable from "vuedraggable";
 import { Api } from "@/asynchronous/api";
 import { datetimeToJapan } from "@/helper/format";
+import { getDevice } from '@/helper/device'
 
 export default {
   data() {
@@ -327,6 +327,13 @@ export default {
         items.push({ id: list.id, name: list.name });
       }
       return items;
+    },
+    switchTimeWidth() {
+      if (getDevice() === 'other') {
+        return 250
+      } else {
+        return 150
+      }
     }
   },
   components: {

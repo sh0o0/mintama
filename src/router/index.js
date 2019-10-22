@@ -16,7 +16,6 @@ import BoardList from './views/BoardList'
 import Board from './views/Board'
 
 import ReferenceList from './views/ReferenceList'
-import Reference from './views/Reference'
 
 Vue.use(Router)
 
@@ -26,7 +25,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
     },
     //settings
     // {
@@ -102,11 +101,6 @@ export default new Router({
     //   name: 'reference',
     //   component: Reference,
     // },
-    {
-      path: '/:username/references/:referenceId',
-      name: 'reference',
-      component: Reference,
-    },
     {
       path: '/:username/notes/:noteId',
       name: 'note',

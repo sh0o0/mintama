@@ -19,7 +19,7 @@ export const oauthBtns = {
       oauthBtns: [
         {name:'twitter', href: '/socials/login/twitter'},
         {name:'google', href: '/socials/login/google-oauth2/'},
-        {name:'github', href: '/socials/login/github/'},
+        // {name:'github', href: '/socials/login/github/'},
       ]
     }
   }

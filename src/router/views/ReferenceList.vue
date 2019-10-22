@@ -14,7 +14,7 @@
           <v-row>
             <h3 class="font-weight-bold">{{ reference.title }}</h3>
             <v-spacer></v-spacer>
-            <div v-if="$route.params.username">
+            <div v-if="$route.params.username === getBaselineMyself.username">
               <v-btn
                 class="deco-none mx-2 amber"
                 @click.stop="referenceFormDialog = true; referenceForm = reference"
@@ -29,11 +29,9 @@
           </v-row>
         </template>
         
-        <v-list-item class="ml-5">
+        <v-list-item class="pl-2">
           <router-link class="deco-none" :to="{name: 'profile', params: {username: reference.username}}">
-          <v-list-item-avatar>
             <v-icon>mdi-egg</v-icon><span class="amber--text">{{ reference.username }}</span>
-          </v-list-item-avatar>
           </router-link>
         </v-list-item>
         <v-list-item>
@@ -49,7 +47,7 @@
       <v-btn
         link
         @click="referenceFormDialog = true; referenceForm = {}"
-        class="mr-2"
+        class="mr-2 grey"
         fab
         dark
       >
@@ -98,7 +96,7 @@
     </v-dialog>
 
     <v-dialog v-model="isLoading" persistent width="300">
-      <v-card color="gray" dark>
+      <v-card color="grey" dark>
         <v-card-text>
           Please wait
           <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
@@ -108,6 +106,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { Api } from "@/asynchronous/api";
 
 export default {
@@ -120,6 +119,9 @@ export default {
       deleteReferenceDialog: false,
       deleteTargetReference: {},
     };
+  },
+  computed: {
+    ...mapGetters('accounts', ['getBaselineMyself']),
   },
   methods: {
     retrieveReferences() {
@@ -181,6 +183,11 @@ export default {
         }
       }
     },
+  },
+  watch: {
+    "$route.params.username": function() {
+      this.retrieveReferences();
+    }
   },
   created() {
     this.retrieveReferences();

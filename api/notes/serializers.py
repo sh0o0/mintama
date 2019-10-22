@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from notes.models import Note, Section
-from accounts.models import Category, Reference
 
 
 class SectionSerializer(serializers.ModelSerializer):

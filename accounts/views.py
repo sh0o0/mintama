@@ -1,7 +1,6 @@
 import json
 import logging
 
-from django.shortcuts import render, resolve_url
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
@@ -10,15 +9,12 @@ from django.contrib.auth.views import (
     PasswordChangeForm,
     PasswordChangeDoneView
 )
-from django.conf import settings
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import JsonResponse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
-from social_django.models import UserSocialAuth
 
 from .forms import SignupForm, CheckUsernameForm, CheckPasswordForm
-from .models import Category, Reference, Portfolio
 
 
 logger = logging.getLogger(__name__)

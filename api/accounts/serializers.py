@@ -5,7 +5,6 @@ from rest_framework.fields import SkipField
 from rest_framework.relations import PKOnlyObject
 
 from accounts.models import User, Category, Portfolio, Reference
-from accounts.constant import RESIDENCE_CHOICIES, CRACK_LEVEL_CHOICIES, GENDER_CHOICIES
 
 
 class UserSerializer(serializers.ModelSerializer):

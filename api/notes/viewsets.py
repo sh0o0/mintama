@@ -8,7 +8,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 
-from accounts.models import Category, Reference
 from api.permissions import DetailIsAdminOrWriteOwnOnly
 from notes.models import Note, Section
 from .serializers import NoteSerializer, SectionSerializer

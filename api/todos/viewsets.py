@@ -1,16 +1,11 @@
 import logging
 
-from django.contrib.auth import get_user_model
-from django.http import QueryDict
 from rest_framework import viewsets
-from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework import status
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 
-from api.permissions import DetailIsAdminOrWriteOwnOnly, IsAdminOrOwnOnly
+from api.permissions import IsAdminOrOwnOnly
 from helper.viewsets import add_user_id_to_request_data
 from todos.models import Board, List, Card
 from .serializers import BoardSerializer, ListSerializer, CardSerializer

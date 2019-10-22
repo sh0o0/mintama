@@ -5,8 +5,8 @@ from rest_framework.request import Request
 from mintama.get_outer_model import get_category_model, get_reference_model
 
 from .models import Note, Section
-from .serializers import NoteSerializer, SectionSerializer
-from .views import NoteViewSet, SectionViewSet
+from api.notes.serializers import NoteSerializer, SectionSerializer
+from api.notes.viewsets import NoteViewSet, SectionViewSet
 from accounts.models import Category, Reference
 
 User = get_user_model()
@@ -23,13 +23,12 @@ class TestNoteModel(TestCase):
         del cls.user
 
     def creating_a_note_and_saving(self, title=None):
-        Note = Note()
+        note = Note()
         note.user = self.user
         if title is not None:
             note.title = title
         
         note.save()
-
 
     def test_is_empty(self):
         note = Note.objects.all()
@@ -52,7 +51,7 @@ class TestNoteModel(TestCase):
         self.assertTrue(actual_note.written_at)
 
     def test_title_over_length_save(self):
-        title = 'texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext'
+        title = 'text' * 100
         self.creating_a_note_and_saving(title)
 
 
@@ -118,7 +117,7 @@ class TestSectionModel(TestCase):
         self.assertEqual(actual_section.content, content)
 
     def test_heading_over_length_save(self):
-        heading = 'texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext'
+        heading = 'text' * 100
         self.creating_a_section_and_saving(heading)
 
 

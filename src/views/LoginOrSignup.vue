@@ -3,11 +3,9 @@
     <v-content>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="4">
             <transition name="fade" mode="out-in">
               <component :is="LoginOrSignup" :csrftoken="csrftoken" @toggleLoginOrSignup="toggleLoginOrSignup()"></component>
             </transition>
-          </v-col>
         </v-row>
       </v-container>
     </v-content>

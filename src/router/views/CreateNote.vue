@@ -100,7 +100,6 @@ export default {
       categoryList: [],
       referenceList: [],
       dialog: false,
-      username: this.$route.params.username,
     };
   },
   methods: {
@@ -144,7 +143,7 @@ export default {
         Api.postJson("notes", this.formObj)
           .then(response => {
             that.dialog = true;
-            that.$router.push({name: 'personalNoteList', params: {username: that.username}})
+            that.$router.push({name: 'personalNoteList', params: {username: this.$route.params.username}})
           })
           .catch(error => {
             alert('作成に失敗しました。')
@@ -153,10 +152,7 @@ export default {
     },
     validateFormObj() {
       if (this.formObj.title === "") {
-        this.formObj.title ===
-          moment()
-            .utf()
-            .format("YYYY年MM月DD日");
+        this.formObj.title = moment().utc().format("YYYY年MM月DD日");
       }
 
       const sections = this.formObj.sections;
@@ -183,6 +179,9 @@ export default {
     Api.getJson("categories").then(response => {
       that.categoryList = response.data.results;
     });
+    Api.getJson('references', null, this.$route.params.username).then(response =>
+      that.referenceList = response.data.results
+    ) 
   }
 };
 </script>

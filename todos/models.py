@@ -89,11 +89,11 @@ class List(models.Model):
     def create_default_lists(cls, board):
         logger.debug('create default lists')
 
-        todo_list = cls(board=board, name='することすべて', order=1)
-        today_list = cls(board=board, name='今日すること', order=2)
-        complete_list = cls(board=board, name='今日完了したこと', order=3)
-        exceed_list = cls(board=board, name='前からの持ち越し', order=4)
-        completed_list = cls(board=board, name='完了したことすべて', order=5)
+        todo_list = cls(board=board, name='することすべて', order=1, auto_switch=True)
+        today_list = cls(board=board, name='今日すること', order=2, auto_switch=True)
+        complete_list = cls(board=board, name='今日完了したこと', order=3, auto_switch=True)
+        exceed_list = cls(board=board, name='前からの持ち越し', order=4, auto_switch=True)
+        completed_list = cls(board=board, name='完了したことすべて', order=5, auto_switch=True)
 
         todo_list.save()
         today_list.save()

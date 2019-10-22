@@ -1,11 +1,11 @@
 <template>
-  <v-card class="elevation-12">
+  <v-card class="form">
     <v-toolbar color="primary" dark flat>
       <v-row align="center">
-        <v-col cols="12" md="3">
-          <v-toolbar-title>Login</v-toolbar-title>
+        <v-col>
+          <v-toolbar-title class="font-weight-bold display-1">Login</v-toolbar-title>
         </v-col>
-        <v-col cols="12" md="9">
+        <v-col cols="6" class="text-right">
           <v-btn
             v-for="oauth in oauthBtns"
             :key="oauth.name"
@@ -21,7 +21,7 @@
     </v-toolbar>
     <v-card-text>
       <v-form name="login" method="post">
-        <div v-for="form in formObj" :key="form.name">
+        <div v-for="form in formObj" :key="form.name" class="form-item">
           <FormError :name="form.name" :errors="form.errors"></FormError>
           <v-text-field
             v-if="form.name !== 'non_field_errors'"
@@ -113,3 +113,13 @@ export default {
   }
 };
 </script>
+<style scoped lang="sass">
+.form
+  width: 500px
+
+@media screen and (max-device-width: 480px)
+    .form
+      width: 700px
+    .form-item
+      margin: 30px auto
+</style>

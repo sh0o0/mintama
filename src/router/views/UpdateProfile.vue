@@ -1,16 +1,16 @@
 <template>
   <v-app>
     <h2 class="heading">プロフィール編集</h2>
-      <v-row>
+      <v-row class="mb-10">
         <v-col align-self="start" class="p-2" cols="12" md="3">
           <v-card class="pa-2">
             <v-row>
-              <v-col cols="4" md="12">
+              <v-col cols="6" md="12">
                 <v-avatar color="grey" size="170" tile>
                   <v-img v-if="formObj.icon.value" :src="formObj.icon.value" alt="USER ICON"></v-img>
                 </v-avatar>
               </v-col>
-              <v-col cols="8" md="12">
+              <v-col cols="6" md="12">
                 <v-file-input show-size :label="formObj.icon.label" @change="inputFile"></v-file-input>
                 <v-checkbox v-model="formObj.icon.clear" label="アイコンを消す"></v-checkbox>
                 <FormError :formName="formObj.icon.name" :errors="formObj.icon.errors"></FormError>

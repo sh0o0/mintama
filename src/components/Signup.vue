@@ -1,13 +1,23 @@
 <template>
-  <v-card class="elevation-12">
+  <v-card class="form">
     <v-toolbar color="teal" dark flat>
-      <v-toolbar-title>Signup</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-layout wrap>
-        <v-flex v-for="oauth in oauthBtns" :key="oauth.name" xs12 sm6 md4 text-center my-5>
-          <v-btn :href="oauth.href" small rounded light color="normal">{{ oauth.name }}</v-btn>
-        </v-flex>
-      </v-layout>
+      <v-row align="center">
+        <v-col>
+          <v-toolbar-title class="font-weight-bold display-1">Signup</v-toolbar-title>
+        </v-col>
+        <v-col cols="6" class="text-right">
+          <v-btn
+            v-for="oauth in oauthBtns"
+            :key="oauth.name"
+            :href="oauth.href"
+            small
+            rounded
+            light
+            color="normal"
+            class="ma-2"
+          >{{ oauth.name }}</v-btn>
+        </v-col>
+      </v-row>
     </v-toolbar>
     <v-card-text>
       <v-form name="signup" method="post">
@@ -38,13 +48,13 @@
 import { mapMutations } from "vuex";
 import { debouncedCheckOneForm, Api } from "@/asynchronous/api";
 import FormError from "@/components/FormError";
-import FormHelper from '@/helper/form'
+import FormHelper from "@/helper/form";
 import { oauthBtns } from "@/mixins/top";
 
 export default {
   mixins: [oauthBtns],
   props: {
-    csrftoken: String,
+    csrftoken: String
   },
   data() {
     return {
@@ -98,9 +108,9 @@ export default {
           autofocus: false,
           required: false,
           label: "",
-          prependIcon: "",
+          prependIcon: ""
         }
-      },
+      }
     };
   },
   components: {
@@ -109,26 +119,35 @@ export default {
   methods: {
     submit() {
       const that = this;
-      Api.post('signup', this.formObj, this.csrftoken)
-      .then(function(response) {
+      Api.post("signup", this.formObj, this.csrftoken).then(function(response) {
         if (FormHelper.isEmpty(response.data)) {
-          location.href = '/';
+          location.href = "/";
         } else {
           FormHelper.assignErrors(that.formObj, response.data);
         }
-      })
+      });
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");
-    },
+    }
   },
   watch: {
     "formObj.username.value": function() {
-      debouncedCheckOneForm('signup', 'username', this.formObj);
+      debouncedCheckOneForm("signup", "username", this.formObj);
     },
     "formObj.password1.value": function() {
-      debouncedCheckOneForm('signup', 'password1', this.formObj);
+      debouncedCheckOneForm("signup", "password1", this.formObj);
     }
-  },
+  }
 };
 </script>
+<style scoped lang="sass">
+.form
+  width: 500px
+
+@media screen and (max-device-width: 480px)
+    .form
+      width: 700px
+    .form-item
+      margin: 30px auto
+</style>

@@ -1,33 +1,51 @@
 <template>
-  <div>
-    <h1>ホーム</h1>
+  <div class="wrapper">
+    <h2 class="font-weight-bold">ホーム</h2>
     <v-divider></v-divider>
-    <h2>機能の紹介</h2>
-    <main>
-      <h2>ノート</h2>
-      <section>
+    <section class="left">
+    <h3>ウォズニアック式勉強</h3>
 
-        <h3>機能</h3>
-        <div></div>
-        
-        <h3>工夫したところ</h3>
-        <div></div>
-        
-        <h3>難しかったところ・苦労したこと</h3>
-        <div></div>
+    </section>
+    <section class="right">
+    <h3>デフォルトボード</h3>
+    <Board></Board>
+    </section>
+    
 
-        <h3>感想</h3>
-        <div></div>
-
-      </section>
-    </main>
-  </div>
+</div>
 </template>
 <script>
+import Board from '@/router/views/Board'
+
+export default {
+  data(){
+    return {
+
+    };
+  },
+  components: {
+    Board,
+  },
+}
 </script>
 <style scoped lang="sass">
-.section-link
+.left
   display: inline-block
-  width: 100%
-  height: 100%
+  width: 49%
+  margin-left: 0px
+  vertical-align: top
+.right
+  display: inline-block
+  width: 49%
+  margin-right: 0px
+.board
+  height: 500px
+  width: 500px
+@media screen and (max-device-width: 480px)
+  .wrapper
+    overflow-x: scroll
+  .left
+    width: 450px
+  .right
+    width: 450px
 </style>
