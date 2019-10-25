@@ -24,13 +24,16 @@ class UserSerializer(serializers.ModelSerializer):
             'icon',
             'introduction',
             'clear_icon',
+            'default_board',
         ]
 
     def get_clear_icon(self, instance):
         initial_data = getattr(self, 'initial_data', None)
-        if initial_data is None: return None
+        if initial_data is None:
+            return None
 
-        if initial_data['clear_icon'] == 'true':
+        clear_icon = initial_data.get('clear_icon', None)
+        if clear_icon == 'true':
             ret = True
         else:
             ret = False
@@ -103,6 +106,7 @@ class ReferenceSerializer(serializers.ModelSerializer):
 
     def get_username(self, instance):
         return instance.user.username
+
 
 class PortfolioSerializer(serializers.ModelSerializer):
     class Meta:

@@ -8,9 +8,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 
-from api.permissions import DetailIsAdminOrWriteOwnOnly
+from api.permissions import DetailIsAdminOrWriteOwnOnly, IsAdminOrWriteOwnOnly
+from helper.viewsets import list_from_username
 from notes.models import Note, Section
-from .serializers import NoteSerializer, SectionSerializer
+from .serializers import NoteSerializer, SectionSerializer, ReviewSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -46,31 +47,13 @@ class NoteViewSet(viewsets.ModelViewSet):
     permission_classes = [DetailIsAdminOrWriteOwnOnly]
     filter_class = NoteFilter
 
-    def handle_exception(self, exc):
-        return super().handle_exception(exc)
-
+    @list_from_username
     def list(self, request, *args, **kwargs):
-        username = kwargs.get('username', None)
-
-        if username:
-            user = get_object_or_404(User, username=username)
-            queryset = self.filter_queryset(self.queryset.filter(user=user))
-        else:
-            queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
         username = kwargs.get('username', None)
         pk = kwargs.get('pk', None)
-        # if not pk:
-        #     self.list(request, *args, **kwargs)
 
         user = get_object_or_404(User, username=username)
         instance = get_object_or_404(Note, id=pk, user=user)
@@ -145,3 +128,19 @@ class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
     permission_classes = [DetailIsAdminOrWriteOwnOnly]
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAdminOrWriteOwnOnly]
+
+    @list_from_username
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        username = kwargs.get('pk', None)
+        user = get_object_or_404(User, username=username)
+        serializer = self.get_serializer(user.notes.all(), many=True)
+        return Response(serializer.data[0])

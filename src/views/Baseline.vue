@@ -62,7 +62,7 @@
 
       <!-- menuDrawer -->
       <div class="text-center mx-2">
-        <v-menu v-model="menuDrawer" offset-y>
+        <v-menu v-model="menuDrawer" offset-y nudge-width="250">
           <template v-slot:activator="{ on }">
             <v-avatar color="orange" v-on="on" class="add-pointer">
               <v-img v-if="getBaselineMyself.icon" :src="getBaselineMyself.icon" alt="icon" />
@@ -212,12 +212,13 @@ export default {
   },
   methods: {
     ...mapActions("accounts", ["apiGetMyself"]),
-    ...mapMutations("accounts", ["setBaselineMyself"]),
+    ...mapMutations("accounts", ["setBaselineMyself", 'setUsername']),
   },
   computed: {
     ...mapGetters("accounts", ["getBaselineMyself"])
   },
   created() {
+    this.setUsername(this.username);
     this.apiGetMyself().then(response => {
       this.setBaselineMyself();
     });

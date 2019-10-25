@@ -45,7 +45,7 @@ class IsAdminOrWriteOwnOnly(IsAdminUser):
         try:
             user = User.Objects.get(id=view.kwargs['pk'])
         except:
-            user = get_object_or_404(username=view.kwargs['pk'])
+            user = get_object_or_404(User, username=view.kwargs['pk'])
 
         is_own_user = request.user == user
         return is_own_user or is_safe_method or is_admin

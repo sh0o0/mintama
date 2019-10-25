@@ -67,7 +67,6 @@ class LogoutView(BaseLogoutView):
 
 class HomeView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'index.html'
-    redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -77,7 +76,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 
 class IndexView(generic.TemplateView):
     template_name = 'index.html'
-    redirect_field_name = 'redirect_to'
+
 
 
 def encrypt_password(target_dict):

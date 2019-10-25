@@ -1,7 +1,17 @@
 <template>
-  <div>
-    <v-row>
-      <h1 class="font-weight-bold ml-5">{{ board.name }}</h1>
+  <div class="wrapper">
+    <v-row class="my-1">
+      <template>
+      <input 
+      v-show="isInputBoardName" 
+      class="font-weight-bold ml-5 headline" 
+      @blur="updateBoardName()"
+      @keydown.enter="updateBoardName()"
+      v-model="board.name" 
+      ref="boardName">
+      <h1 v-show="!(isInputBoardName)" class="font-weight-bold ml-5" @click="readyUpdateBoardName()" >{{ board.name }}</h1>
+      </template>
+
       <span v-show="isAll" class="is-all">（現在、アーカイブを含んでいます。）</span>
       <v-spacer></v-spacer>
 
@@ -22,7 +32,6 @@
               <v-list-item v-else @click="retrieveAll()">
                 <v-list-item-content>アーカイブを含める</v-list-item-content>
               </v-list-item>
-            <v-divider></v-divider>
 
               <v-list-item>
                 <v-list-item-content @click="allAutoSwitch(true)">すべてのリストの自動切換えをON</v-list-item-content>
@@ -31,14 +40,21 @@
               <v-list-item>
                 <v-list-item-content @click="allAutoSwitch(false)">すべてのリストの自動切換えをOFF</v-list-item-content>
               </v-list-item>
-            <v-divider></v-divider>
 
               <v-list-item>
                 <v-list-item-content @click="allCardsNext()">すべてのカードを一つ進める</v-list-item-content>
               </v-list-item>
-            <v-list-item>
-              <v-btn class="red lighten-3" block @click="confirmDialog = true">ボードの削除</v-btn>
-            </v-list-item>
+
+              <template v-if="homeDefaultBoard">
+              <v-divider></v-divider>
+              <v-list-item>
+                <v-list-item-content @click="$emit('show-not-board')">デフォルトボード設定画面</v-list-item-content>
+              </v-list-item>
+              </template>
+
+              <v-list-item>
+                <v-btn class="red lighten-3" block @click="confirmDialog = true">ボードの削除</v-btn>
+              </v-list-item>
             </v-list-item-group>
           </v-list>
         </v-card>
@@ -47,14 +63,15 @@
     <v-divider></v-divider>
 
     <!-- board -->
-    <div class="board amber lighten-4">
+    <div class="board amber lighten-4" :style="{'height': boardHeight}">
       <!-- list -->
       <draggable v-model="board.lists" :options="dragOptions" @update="saveListsOrder(board)">
-        <v-card 
-        v-for="list in board.lists" 
-        :key="list.id" 
-        width="270" 
-        :class="'list grey ' + (list.is_archive ? 'lighten-1' : 'lighten-3')">
+        <v-card
+          v-for="list in board.lists"
+          :key="list.id"
+          width="270"
+          :class="'list grey ' + (list.is_archive ? 'lighten-1' : 'lighten-3')"
+        >
           <v-row>
             <v-col cols="10" class="pa-3">
               <v-card-text class="list-title pa-0">{{ list.name }}</v-card-text>
@@ -76,19 +93,17 @@
               @remove="saveCardsOrder(list)"
               group="board"
             >
-              <v-card 
-              v-for="card in list.cards" 
-              :key="card.id" 
-              :class="'card ' + (card.is_archive ? 'grey lighten-1' : '')"
-              
+              <v-card
+                v-for="card in list.cards"
+                :key="card.id"
+                :class="'card ' + (card.is_archive ? 'grey lighten-1' : '')"
               >
                 <v-row>
                   <v-col cols="10" class="pl-4">
-                  <span>{{ card.name }}</span>
+                    <span>{{ card.name }}</span>
                   </v-col>
                   <v-col cols="2" class="pa-0 mt-3">
-                  <v-icon @click.stop="copyToCardForm(card, list)">mdi-pencil</v-icon>
-
+                    <v-icon @click.stop="copyToCardForm(card, list)">mdi-pencil</v-icon>
                   </v-col>
                 </v-row>
               </v-card>
@@ -115,7 +130,7 @@
     </div>
 
     <!-- low button -->
-    <v-row class="bottom-btns">
+    <v-row class="add-list">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -146,7 +161,7 @@
           </v-btn>
         </v-row>
         <v-card-actions>
-          <v-text-field  label="リスト名" v-model.trim="listForm.copyList.name"></v-text-field>
+          <v-text-field label="リスト名" v-model.trim="listForm.copyList.name"></v-text-field>
         </v-card-actions>
 
         <v-card-actions>
@@ -175,7 +190,12 @@
         <v-divider></v-divider>
         <v-card-actions>
           <template>
-            <v-btn v-if="listForm.list['is_archive']" class="grey lighten-2" text @click="cancelArchiveList()">アーカイブ解除</v-btn>
+            <v-btn
+              v-if="listForm.list['is_archive']"
+              class="grey lighten-2"
+              text
+              @click="cancelArchiveList()"
+            >アーカイブ解除</v-btn>
             <v-btn v-else class="grey lighten-2" text @click="archiveList()">アーカイブ</v-btn>
           </template>
           <v-btn class="red lighten-2" text @click="deleteList()">削除</v-btn>
@@ -215,7 +235,12 @@
 
         <label class="ml-2 grey--text text--darken-1" for="switch-time">切り替え時間</label>
         <v-card-actions>
-          <v-time-picker id="switch-time" :width="switchTimeWidth" landscape v-model="addListForm.switch_time"></v-time-picker>
+          <v-time-picker
+            id="switch-time"
+            :width="switchTimeWidth"
+            landscape
+            v-model="addListForm.switch_time"
+          ></v-time-picker>
         </v-card-actions>
 
         <v-divider></v-divider>
@@ -247,8 +272,13 @@
         <v-divider></v-divider>
         <v-card-actions>
           <template>
-          <v-btn v-if="cardForm.card['is_archive']" class="grey lighten-2" text @click="cancelArchiveCard()">アーカイブ解除</v-btn>
-          <v-btn v-else class="grey lighten-2" text @click="archiveCard()">アーカイブ</v-btn>
+            <v-btn
+              v-if="cardForm.card['is_archive']"
+              class="grey lighten-2"
+              text
+              @click="cancelArchiveCard()"
+            >アーカイブ解除</v-btn>
+            <v-btn v-else class="grey lighten-2" text @click="archiveCard()">アーカイブ</v-btn>
           </template>
           <v-btn class="red lighten-2" text @click="deleteCard()">削除</v-btn>
           <v-spacer></v-spacer>
@@ -262,8 +292,8 @@
         <v-card-title class="headline">このボードを削除しますか？</v-card-title>
         <v-card-actions>
           <div class="flex-grow-1"></div>
-          <v-btn color="gray darken-1" text @click="deleteBoard()">する</v-btn>
-          <v-btn color="gray darken-1" text @click="confirmDialog = false">しない</v-btn>
+          <v-btn color="grey darken-4" text @click="deleteBoard()">する</v-btn>
+          <v-btn color="grey darken-4" text @click="confirmDialog = false">しない</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -283,15 +313,21 @@
 import draggable from "vuedraggable";
 import { Api } from "@/asynchronous/api";
 import { datetimeToJapan } from "@/helper/format";
-import { getDevice } from '@/helper/device'
+import { getDevice } from "@/helper/device";
 
 export default {
+  props: {
+    homeDefaultBoard: Number,
+    homeUsername: String
+  },
   data() {
     return {
       isLoading: false,
       username: this.$route.params.username,
       boardId: this.$route.params.boardId,
       board: {},
+      isInputBoardName: false,
+      beforeBoardName: '',
       isAll: false,
       listForm: {
         list: {},
@@ -311,7 +347,8 @@ export default {
       dragOptions: {
         animation: 200
       },
-      menuDrawer: false
+      menuDrawer: false,
+      boardHeight: "81vh"
     };
   },
   computed: {
@@ -321,7 +358,7 @@ export default {
     switchListItems() {
       if (this.board.lists === undefined) return;
 
-      let items = [{id: null, name: ''}];
+      let items = [{ id: null, name: "" }];
       for (let list of this.board.lists) {
         if (this.listForm.list.id === list.id) continue;
         items.push({ id: list.id, name: list.name });
@@ -329,10 +366,10 @@ export default {
       return items;
     },
     switchTimeWidth() {
-      if (getDevice() === 'other') {
-        return 250
+      if (getDevice() === "other") {
+        return 250;
       } else {
-        return 150
+        return 150;
       }
     }
   },
@@ -346,7 +383,8 @@ export default {
     retrieveBoard(all = false) {
       this.isLoading = true;
       const self = this;
-      const options = "include=id,name,lists,auto_switch,switch_time,next_list,is_archive";
+      const options =
+        "include=id,name,lists,auto_switch,switch_time,next_list,is_archive";
       const method = all ? "all_lists" : null;
       return Api.getJson("boards", this.boardId, this.username, options, method)
         .then(response => {
@@ -363,7 +401,7 @@ export default {
       return this.retrieveBoard(true).then(response => {
         for (let list of self.board.lists) {
           self.loadCards(list, true);
-        };
+        }
         self.isAll = true;
       });
     },
@@ -389,6 +427,33 @@ export default {
       }
       return false;
     },
+
+    readyUpdateBoardName() {
+      this.beforeBoardName = this.board.name;
+      this.isInputBoardName = true;
+      this.$nextTick(() => {
+        this.$refs.boardName.focus();
+      })
+    },
+    updateBoardName(event) {
+      if (event !== undefined && event.keyCode === 229) return
+      const name = this.board.name;
+      if (name === this.beforeBoardName) {
+        this.isInputBoardName = false;
+        return
+      }
+      if (!(name)) {
+        this.board.name = this.beforeBoardName
+        this.isInputBoardName = false;
+        return
+      }
+      const data = {name: name}
+      const self = this;
+      Api.patchJson('boards', this.board.id, data, this.username).then(response => {
+        self.isInputBoardName = false;
+      })
+    },
+
     activateList(list) {
       this.$set(list, "activeList", true);
       this.$set(list, "newCard", {
@@ -398,7 +463,7 @@ export default {
       });
       this.$nextTick(() => {
         this.$refs.addCard[0].focus();
-      })
+      });
     },
     addList() {
       if (this.addListForm.name === "") {
@@ -462,7 +527,7 @@ export default {
       this.isLoading = true;
       const nextListId = this.listForm.copyList.next_list;
       if (nextListId === null) {
-        this.listForm.copyList["next"] = null
+        this.listForm.copyList["next"] = null;
       } else if (typeof nextListId === "number") {
         this.listForm.copyList["next"] = nextListId;
       }
@@ -499,7 +564,7 @@ export default {
 
     eraseList(list) {
       const lists = this.board.lists;
-      const listsLen = lists.length
+      const listsLen = lists.length;
       for (let i = 0; i < listsLen; i++) {
         if (lists[i].id === list.id) {
           lists.splice(i, 1);
@@ -508,7 +573,7 @@ export default {
       }
     },
     eraseCard(card, cards) {
-      const cardsLen = cards.length
+      const cardsLen = cards.length;
       for (let i = 0; i < cardsLen; i++) {
         if (cards[i].id === card.id) {
           cards.splice(i, 1);
@@ -517,33 +582,27 @@ export default {
       }
     },
 
-    extractData(data, include=[]) {
+    extractData(data, include = []) {
       let ret = {};
       for (const target of include) {
         for (let key in data) {
           if (target === key) {
             ret[key] = data[key];
-          };
+          }
         }
-      };
-      return ret
-
+      }
+      return ret;
     },
     archiveList() {
       this.isLoading = true;
       const self = this;
       const lists = this.board.lists;
       this.listForm.list["is_archive"] = true;
-      const data = this.extractData(this.listForm.list, ['is_archive'])
-      Api.patchJson(
-        "lists",
-        this.listForm.list.id,
-        data,
-        this.username
-      )
+      const data = this.extractData(this.listForm.list, ["is_archive"]);
+      Api.patchJson("lists", this.listForm.list.id, data, this.username)
         .then(response => {
           const list = self.listForm.list;
-          if (!(self.isAll)) {
+          if (!self.isAll) {
             self.eraseList(list);
           }
           self.listFormDialog = false;
@@ -557,15 +616,10 @@ export default {
       const self = this;
       this.isLoading = true;
       this.cardForm.card["is_archive"] = true;
-      const data = this.extractData(this.cardForm.card, ['is_archive'])
-      Api.patchJson(
-        "cards",
-        this.cardForm.card.id,
-        data,
-        this.username
-      )
+      const data = this.extractData(this.cardForm.card, ["is_archive"]);
+      Api.patchJson("cards", this.cardForm.card.id, data, this.username)
         .then(response => {
-          if (!(self.isAll)) {
+          if (!self.isAll) {
             const card = self.cardForm.card;
             const cards = self.cardForm.parentList.cards;
             self.eraseCard(card, cards);
@@ -611,7 +665,6 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
-
     },
 
     deleteBoard() {
@@ -619,10 +672,12 @@ export default {
       const self = this;
       Api.delete("boards", this.boardId, this.username)
         .then(response => {
-          this.$router.push({
-            name: "boardList",
-            params: { username: this.username }
-          });
+          if (self.homeDefaultBoard) {
+            self.$emit('delete-default-board');
+            self.confirmDialog = false;
+          } else {
+            this.$router.push({name: "boardList",params: { username: this.username }});
+          }
         })
         .finally(() => {
           this.isLoading = false;
@@ -679,8 +734,8 @@ export default {
 
     moveCards(previousList) {
       const nextList = previousList["next_list"];
-      if (!(nextList)) return;
-      const nextId = nextList.id
+      if (!nextList) return;
+      const nextId = nextList.id;
       for (let list of this.board.lists) {
         if (nextId === list.id) {
           const cardsLen = previousList.cards.length;
@@ -711,10 +766,10 @@ export default {
         .then(response => {
           let intendNextList = [];
           for (const list of self.board.lists) {
-            if (!(list['next_list'])) continue
-            if (!(list['auto_switch'])) continue
+            if (!list["next_list"]) continue;
+            if (!list["auto_switch"]) continue;
 
-            const nextId = list['next_list'].id
+            const nextId = list["next_list"].id;
             for (const nextList of self.board.lists) {
               if (nextList.id === nextId) {
                 const cardsLen = list.cards.length;
@@ -722,10 +777,10 @@ export default {
                 intendNextList.push(nextList);
               }
             }
-          };
+          }
           for (const list of intendNextList) {
             list.cards.push(...list.tempCards);
-            delete list.tempCards
+            delete list.tempCards;
           }
         })
         .finally(() => {
@@ -734,6 +789,11 @@ export default {
     },
 
     init() {
+      if (this.homeDefaultBoard) {
+        this.boardId = this.homeDefaultBoard;
+        this.username = this.homeUsername;
+        this.boardHeight = "75vh";
+      }
       this.isAll = false;
       const self = this;
       this.retrieveBoard().then(response => {
@@ -753,7 +813,6 @@ export default {
 .is-all
   line-height: 3
 .board
-  height: 83vh
   padding-top: 20px
   overflow-y: hidden
   overflow-x: scroll
@@ -776,6 +835,12 @@ export default {
   text-overflow: ellipsis
   overflow: hidden
   border-bottom: solid 2px grey
+.wrapper
+  position: relative
+.add-list
+  position: absolute
+  right: 20px
+  bottom: 20px
 .add-card
   width: 95%
   margin-left: 5px

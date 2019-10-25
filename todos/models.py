@@ -1,18 +1,17 @@
 import datetime
 import logging
 
-from django.contrib.auth import get_user_model
+from django.core.management import settings
 from django.db import models
 from django.utils import timezone
 
-User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
 
 class Board(models.Model):
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name='bords',
         on_delete=models.CASCADE,
     )

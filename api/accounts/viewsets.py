@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -21,12 +22,11 @@ class OwnUserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAdminOrReadOnly]
 
-    def retrieve(self, request, *args, **kwargs):
-        if kwargs['pk'] == 'user':
-            logger.debug('api OwnUser viewset retrieve')
-            user = request.user
-            serializer = self.get_serializer(user)
-
+    @action(methods=['get'], detail=False)
+    def user(self, request, *args, **kwargs):
+        logger.debug('api OwnUser viewset retrieve')
+        user = request.user
+        serializer = self.get_serializer(user)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
@@ -62,7 +62,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.request.user
-
         partial = kwargs.pop('partial', False)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
