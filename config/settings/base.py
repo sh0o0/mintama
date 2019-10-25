@@ -202,7 +202,22 @@ LOGGING = {
             'propagate': False,
         },
         #Add by app bellow.
-        'user': {
+        'accounts': {
+            'handlers': ['debug_console', 'console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'api': {
+            'handlers': ['debug_console', 'console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'notes': {
+            'handlers': ['debug_console', 'console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'todos': {
             'handlers': ['debug_console', 'console', 'file'],
             'level': 'DEBUG',
             'propagate': False,

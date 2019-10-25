@@ -28,7 +28,7 @@
               </template>
             </tbody>
           </v-simple-table>
-          <template v-if="getMyself.username === username">
+          <template v-if="getMyself.username === this.$route.params.username">
             <router-link :to="{name: 'settingsProfile'}" class="deco-none">
               <v-btn link color="orange" absolute bottom right>編集</v-btn>
             </router-link>
@@ -49,7 +49,6 @@ export default {
     return {
       formObj: {},
       exclude: ["icon", "introduction"],
-      username: this.$route.params.username
     };
   },
   computed: {
@@ -59,7 +58,7 @@ export default {
     const that = this;
     FormHelper.createThatFormObjs(that, ...FormOptions.user);
 
-    Api.getJson("users", this.username)
+    Api.getJson("users", this.$route.params.username)
       .then(response => {
         FormHelper.assignDataToThatObj(that, response.data);
       })

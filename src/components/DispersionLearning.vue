@@ -61,6 +61,7 @@ export default {
   font-size: 1.5rem
   font-weight: bold
 .wrapper
+  max-height: 75vh
   padding: 8px
 .days-title
   font-weight: bold

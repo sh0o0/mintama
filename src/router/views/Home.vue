@@ -72,14 +72,11 @@ export default {
   width: 48%
   margin: 0px 0px 0px 3%
   border: solid 1px rgba(192, 192, 192, 0.2)
-  width: 500px
 .fade-enter-active, .fade-leave-active 
   transition: opacity 0.2s
 .fade-enter, .fade-leave-to
   opacity: 0
 @media screen and (max-device-width: 480px)
-  .wrapper
-    overflow-x: scroll
   .left
     width: 100%
   .right

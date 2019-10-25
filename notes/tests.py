@@ -35,7 +35,7 @@ class TestNoteModel(TestCase):
         self.assertEqual(note.count(), 0)
 
     def test_count_one(self):
-        note = Note.objects.create(user=self.user)
+        Note.objects.create(user=self.user)
         saved_notes = Note.objects.all()
         self.assertEqual(saved_notes.count(), 1)
 
@@ -92,7 +92,6 @@ class TestSectionModel(TestCase):
             section.content = content
 
         section.save()
-        print(section.heading)
 
     def test_is_empty(self):
         section = Section.objects.all()

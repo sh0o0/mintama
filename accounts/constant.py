@@ -1,26 +1,3 @@
-import mysql.connector
-
-
-# def get_categories():
-#     conn = mysql.connector.connect(host='localhost', user='nakar0', password='12345', database='mintama_db')
-#     cursor = conn.cursor()
-#
-#     #TODO:
-#     #その他（ユーザー入力）をカウント
-#     #一定数超えたら、登録
-#
-#     cursor.execute('SELECT name, name FROM category')
-#     category_choicies = []
-#     for row in cursor:
-#       category_choicies.append(row)
-#
-#     cursor.close()
-#     conn.close()
-#     return category_choicies
-
-
-# CATEGORY_CHOICIES = get_categories()
-
 RESIDENCE_CHOICIES = [
     ('北海道', '北海道'),
     ('青森県', '青森県'),

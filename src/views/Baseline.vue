@@ -50,7 +50,7 @@
     <v-app-bar app color="blue" dark>
       <v-app-bar-nav-icon @click.stop="sideDrawer = !sideDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="px-3">
-        <a href="/" class="deco-none font-italic font-weight-bold">Mintama</a>
+        <a href="/" class="deco-none font-italic font-weight-bold"><img class="mintama-img" src="http://127.0.0.1:8000/static/mintama/img/white-egg-level-5.png"></a>
       </v-toolbar-title>
       <!-- <v-avatar size="80" width="150">
         <img
@@ -230,3 +230,11 @@ export default {
   }
 };
 </script>
+<style lang="sass">
+.mintama-img
+  height: 80px
+  width: 80px
+  margin-bottom: 10px
+  object-fit: cover
+  opacity: 0.9
+</style>

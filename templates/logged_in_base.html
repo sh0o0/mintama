@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load staticfiles %}
+    <link rel="icon" href="{% static '/mintama/img/mintama-top.png' %}">
+    <link rel="icon" href="{% static '/mintama/img/mintama-top.png' %}" sizes="180x180">
     <title>{% block title %}{% endblock title %}</title>
     {% block style %}{% endblock style %}
   </head>

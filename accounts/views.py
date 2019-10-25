@@ -6,8 +6,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
     LoginView as BaseLoginView,
     LogoutView as BaseLogoutView,
-    PasswordChangeForm,
-    PasswordChangeDoneView
 )
 from django.http.response import JsonResponse
 from django.urls import reverse_lazy
