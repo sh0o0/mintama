@@ -1,27 +1,27 @@
 <template>
-  <v-card class="elevation-12">
+  <v-card class="form">
     <v-toolbar color="primary" dark flat>
       <v-row align="center">
-        <v-col cols="12" md="3">
-          <v-toolbar-title>Login</v-toolbar-title>
+        <v-col>
+          <v-toolbar-title class="font-weight-bold display-1">Login</v-toolbar-title>
         </v-col>
-        <v-col cols="12" md="9">
+        <v-col cols="6" class="text-right">
           <v-btn
             v-for="oauth in oauthBtns"
             :key="oauth.name"
             :href="oauth.href"
+            :class="'ma-2 ' + oauth.class"
             small
             rounded
             light
             color="normal"
-            class="ma-2"
           >{{ oauth.name }}</v-btn>
         </v-col>
       </v-row>
     </v-toolbar>
     <v-card-text>
-      <v-form name="login" method="post">
-        <div v-for="form in formObj" :key="form.name">
+      <v-form>
+        <div v-for="form in formObj" :key="form.name" class="form-item">
           <FormError :name="form.name" :errors="form.errors"></FormError>
           <v-text-field
             v-if="form.name !== 'non_field_errors'"
@@ -32,14 +32,15 @@
             :required="form.required"
             :label="form.label"
             :prepend-icon="form.prependIcon"
+            :id="form.id"
           ></v-text-field>
         </div>
       </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="submit()">ログイン</v-btn>
-      <v-btn outlined color="teal" @click="toggleLoginOrSignup">新規登録</v-btn>
+      <v-btn color="primary" @click="login()" id="login">ログイン</v-btn>
+      <v-btn outlined color="teal" @click="toggleLoginOrSignup" id="move-signup">新規登録</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -67,7 +68,8 @@ export default {
           autofocus: true,
           required: true,
           label: "Username",
-          prependIcon: "person"
+          prependIcon: "person",
+          id: 'username',
         },
         password: {
           name: "password",
@@ -77,7 +79,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Password",
-          prependIcon: "lock"
+          prependIcon: "lock",
+          id: 'password'
         },
         non_field_errors: {
           name: "non_field_errors",
@@ -96,15 +99,24 @@ export default {
     FormError
   },
   methods: {
-    submit() {
+    login() {
       const that = this;
       Api.post('login', this.formObj, this.csrftoken)
-      .then(function(response) {
-        if (FormHelper.isEmpty(response.data)) {
-          location.href = '/';
-        } else {
-          FormHelper.assignErrors(that.formObj, response.data);
-        }
+      .then(response => {
+        let redirectPath = '/';
+        // hrefが#以降を受け付けないため実装不可。history modeにする必要あり。
+        // const query = location.href.split('?').slice(-1)
+        // const hash = location.search.slice(1).split('&')
+        // for (const i in hash) {
+        //   const keyValue = hash[i].split('=');
+        //   if (keyValue[0] === 'next') {
+        //     redirectPath = keyValue[1];
+        //     break;
+        //   }
+        // }
+        location.href = redirectPath;
+      }).catch(err => {
+        FormHelper.assignErrors(that.formObj, err.response.data);
       })
     },
     toggleLoginOrSignup() {
@@ -113,3 +125,13 @@ export default {
   }
 };
 </script>
+<style scoped lang="sass">
+.form
+  width: 500px
+
+@media screen and (max-device-width: 480px)
+    .form
+      width: 700px
+    .form-item
+      margin: 30px auto
+</style>

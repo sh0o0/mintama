@@ -1,26 +1,25 @@
 <template>
   <div>
     <v-dialog v-model="isLoading" persistent width="300">
-      <v-card color="gray" dark>
+      <v-card color="grey" dark>
         <v-card-text>
           Please wait
           <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
         </v-card-text>
       </v-card>
     </v-dialog>
-    <h2 class="font-weight-bold ">{{ note.title }}</h2>
+    <h2 class="font-weight-bold">{{ note.title }}</h2>
 
     <v-row class="pa-2 ma2">
-      <router-link
-      class="deco-none"
-      :to="{name: 'profile', params: {username: user.username}}"
-      >
+      <router-link class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
+        <v-avatar size="40" class="ml-10">
+          <template>
+          <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
+          <v-icon v-else large>mdi-egg</v-icon>
 
-      <v-avatar size="40" class="ml-10">
-        <v-img v-if="user.icon" :src="user.icon" class="mr-2"></v-img>
-        <v-icon v-else large>mdi-egg</v-icon>
-        <span>{{ user.username }}</span>
-      </v-avatar>
+          </template>
+          <span>{{ user.username }}</span>
+        </v-avatar>
       </router-link>
       <v-spacer></v-spacer>
       <router-link
@@ -28,7 +27,7 @@
         tag="div"
         :to="{name: 'updateNote', params: {username: $route.params.username, noteId: $route.params.noteId}}"
       >
-        <v-btn color="amber" link>edit</v-btn>
+        <v-btn color="amber" class="mr-3" link>編集</v-btn>
       </router-link>
     </v-row>
     <v-divider></v-divider>
@@ -43,7 +42,7 @@
         outlined
         elevation="5"
       >
-        <v-card-title class="grey lighten-1">{{ section.heading}}</v-card-title>
+        <v-card-title class="grey lighten-1">{{ section.heading }}</v-card-title>
         <v-card-text class="mb-3">{{ section.content }}</v-card-text>
         <v-row>
           <v-col class="d-inline-flex flex-row mb-2">
@@ -52,17 +51,21 @@
               :key="index"
               class="mx-1 pa-1 blue lighten-4"
               outlined
+              raised
             >{{ category.name }}</v-card>
           </v-col>
         </v-row>
 
-        <v-card class="d-inline-flex flex-row mb-2" flat tile>
-          <v-card
+        <v-col class="d-inline-flex flex-row mb-2 ma-0 pa-0">
+          <router-link
+            class="deco-none add-pointer"
             v-for="(reference, index) in section.references_dict"
             :key="index"
-            class="mx-1"
-          >{{ reference.title }}</v-card>
-        </v-card>
+            :to="{name: 'personalReferenceList', params: {username: user.username}}"
+          >
+            <v-card class="mx-1 pa-1 green lighten-4" outlined raised>{{ reference.title }}</v-card>
+          </router-link>
+        </v-col>
       </v-card>
     </main>
   </div>

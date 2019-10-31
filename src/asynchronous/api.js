@@ -12,27 +12,54 @@ Vue.use(VueAxios, axios);
 Vue.axios.defaults.baseURL = BASE_URL;
 
 
-const formatErrorResponse = error => {
-  let ret = '';
-  const errors = error.response.data
-  for (let errorKey in errors) {
-    ret += `■${errorKey}\n`
-    for (let detail of errors[errorKey]) {
-      ret += `　${detail}\n`
+// const formatErrorResponse = error => {
+//   let ret = '';
+//   const errors = error.response.data
+//   for (let errorKey in errors) {
+//     ret += `■${errorKey}\n`
+//     for (let detail of errors[errorKey]) {
+//       ret += `　${detail}\n`
+//     }
+//   }
+//   return ret
+// }
+
+const generateUrl = ({
+    entries=null, 
+    slug=null,
+    username=null, 
+    options=null, 
+    method=null
+  }) => {
+    if (username) {
+      var url = `api/accounts/${username}/${entries}/`;
+    } else {
+        var url = `api/${entries}/`;
     }
-  }
-  return ret
+
+    if (slug) {
+      url += `${slug}/`
+    }
+
+    if (method) {
+      url += `${method}/`;
+    }
+
+    if (options) {
+      url += `?${options}`
+    }
+
+  return url
 }
+
 
 export const Api = {
   get: (entries, slug = "") => {
-    const url = `${entries}\/${slug + "/" ? slug : ""}`;
-    return Vue.axios.get(url).catch(error => {
-      throw new Error(`Api: ${error}`);
-    });
+    const url = generateUrl({entries: entries, slug: slug});
+    return Vue.axios.get(url)
   },
   post: (entries, formObj, token=null) => {
-    const url = `${entries}\/`;
+    const url = generateUrl({entries: entries});
     let csrftoken = Cookies.get("csrftoken");
     if (!(csrftoken) && token) {
       csrftoken = token;
@@ -48,11 +75,11 @@ export const Api = {
         headers: headers,
       })
       .catch(function(error) {
-        throw new Error(`Api post ${error}`);
+        throw error
       });
   },
   put: (entries, slug, formData) => {
-    const url = `${entries}\/${slug}\/`;
+    const url = generateUrl({entries: entries, slug: slug});
     const csrftoken = Cookies.get("csrftoken");
     const headers = {
       "X-CSRFToken": csrftoken,
@@ -70,7 +97,7 @@ export const Api = {
   },
 
   patch: (entries, slug, formObj) => {
-    const url = `${entries}\/${slug}\/`;
+    const url = generateUrl({entries: entries, slug: slug});
     const csrftoken = Cookies.get("csrftoken");
     const headers = {
       "X-CSRFToken": csrftoken,
@@ -84,18 +111,12 @@ export const Api = {
       })
       .catch(function(error) {
         FormHelper.assignErrors(formObj, error.response.data);
-        throw new Error(`Api ${error}`);
+        throw error
       });
   },
 
   delete: (entries, slug, username=null) => {
-    let url;
-    if (username) {
-      url = `api/accounts/${username}/${entries}/${slug}/`;
-    } else {
-      url = `api/${entries}/${slug}/`;
-    }
-
+    const url = generateUrl({entries: entries, slug: slug, username: username});
     const csrftoken = Cookies.get("csrftoken");
     const headers = { "X-CSRFToken": csrftoken };
 
@@ -103,32 +124,12 @@ export const Api = {
       .delete(url, { headers: headers })
       .then()
       .catch(function(error) {
-        throw new Error(`Api delete${error}`);
+        throw new Error(`Api delete ${error}`);
       });
   },
 
   getJson: (entries, slug=null, username=null, options=null, method=null) => {
-    let url;
-    if (username) {
-      url = `api/accounts/${username}/${entries}/`;
-      if (slug) {
-        url += `${slug}/`
-      }
-    } else {
-      url = `api/${entries}/`;
-      if (slug) {
-        url += `${slug}/`
-      }
-    }
-
-    if (method) {
-      url += `${method}/`
-    }
-
-    if (options) {
-      url += `?${options}`
-    }
-
+    const url = generateUrl({entries: entries, slug: slug, username: username, options: options, method: method});
     return Vue.axios
       .get(url)
       .catch(function(error) {
@@ -136,27 +137,13 @@ export const Api = {
       });
   },
   postJson: (entries, formData, username=null, options=null, method=null) => {
-    let url;
-    if (username) {
-      url = `api/accounts/${username}/${entries}/`;
-    } else {
-      url = `api/${entries}\/`;
-    }
-
-    if (method) {
-      url += `${method}/`
-    }
-
-    if (options) {
-      url += `?${options}`
-    }
-
+    const url = generateUrl({entries: entries, username: username, options: options, method: method})
     const csrftoken = Cookies.get("csrftoken");
     const headers = { 
       "X-CSRFToken": csrftoken ,
       "Content-Type": "application/json"
     };
-    const data = FormHelper.createJsonFormData(formData);
+    const data = formData;
 
     return Vue.axios
       .post(url, data, {
@@ -170,26 +157,13 @@ export const Api = {
       });
   },
   putJson: (entries, slug=null, formData, username=null, method=null) => {
-    if (username) {
-      var url = `api/accounts/${username}/${entries}/`;
-    } else {
-        var url = `api/${entries}/`;
-    }
-
-    if (slug) {
-      url += `${slug}/`
-    }
-
-    if (method) {
-      url += `${method}/`;
-    }
-
+    const url = generateUrl({entries: entries, slug: slug, username: username, method: method});
     const csrftoken = Cookies.get("csrftoken");
     const headers = { 
       "X-CSRFToken": csrftoken ,
       "Content-Type": "application/json"
     };
-    const data = FormHelper.createJsonFormData(formData);
+    const data = formData;
 
     return Vue.axios
       .put(url, data, { headers: headers })
@@ -201,18 +175,13 @@ export const Api = {
   },
 
   patchJson: (entries, slug, formObj, username=null) => {
-    let url;
-    if (username) {
-      url = `api/accounts/${username}/${entries}/${slug}/`;
-    } else {
-      url = `api/${entries}/${slug}/`;
-    }
+    const url = generateUrl({entries: entries, slug: slug, username: username});
     const csrftoken = Cookies.get("csrftoken");
     const headers = { 
       "X-CSRFToken": csrftoken ,
       "Content-Type": "application/json"
     };
-    const data = FormHelper.createJsonFormData(formObj);
+    const data = formObj;
 
     return Vue.axios
       .patch(url, data, { headers: headers })
@@ -237,17 +206,11 @@ const checkOneForm = (entries, formName, checkFormObjs) => {
   Vue.axios
     .post(url, data, { headers: headers })
     .then(function(response) {
-      if (FormHelper.isEmpty(response)) {
         checkFormObj.errors = [];
-      } else {
-        checkFormObj.errors = response.data[formName];
-      }
     })
     .catch(function(error) {
-      throw new Error(`checkOneForm ${error}`);
+      checkFormObj.errors = error.response.data[formName];
     });
 };
 
 export const debouncedCheckOneForm = _.debounce(checkOneForm, 1000);
-
-export const API_MYSELF_URL = 'my!own!info'

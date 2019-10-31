@@ -1,16 +1,26 @@
 <template>
-  <v-card class="elevation-12">
+  <v-card class="form">
     <v-toolbar color="teal" dark flat>
-      <v-toolbar-title>Signup</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-layout wrap>
-        <v-flex v-for="oauth in oauthBtns" :key="oauth.name" xs12 sm6 md4 text-center my-5>
-          <v-btn :href="oauth.href" small rounded light color="normal">{{ oauth.name }}</v-btn>
-        </v-flex>
-      </v-layout>
+      <v-row align="center">
+        <v-col>
+          <v-toolbar-title class="font-weight-bold display-1">Signup</v-toolbar-title>
+        </v-col>
+        <v-col cols="6" class="text-right">
+          <v-btn
+            v-for="oauth in oauthBtns"
+            :key="oauth.name"
+            :href="oauth.href"
+            :class="'ma-2 ' + oauth.class"
+            small
+            rounded
+            light
+            color="normal"
+          >{{ oauth.name }}</v-btn>
+        </v-col>
+      </v-row>
     </v-toolbar>
     <v-card-text>
-      <v-form name="signup" method="post">
+      <v-form>
         <div v-for="formData in formObj" :key="formData.name">
           <FormError :name="formData.name" :errors="formData.errors"></FormError>
           <v-text-field
@@ -22,14 +32,15 @@
             :required="formData.required"
             :label="formData.label"
             :prepend-icon="formData.prependIcon"
+            :id="formData.id"
           ></v-text-field>
         </div>
       </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="teal" @click="submit()">登録</v-btn>
-      <v-btn outlined color="primary" @click="toggleLoginOrSignup">ログイン</v-btn>
+      <v-btn color="teal" @click="signup()" id="signup">登録</v-btn>
+      <v-btn outlined color="primary" @click="toggleLoginOrSignup" id="move-login">ログイン</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -38,13 +49,13 @@
 import { mapMutations } from "vuex";
 import { debouncedCheckOneForm, Api } from "@/asynchronous/api";
 import FormError from "@/components/FormError";
-import FormHelper from '@/helper/form'
+import FormHelper from "@/helper/form";
 import { oauthBtns } from "@/mixins/top";
 
 export default {
   mixins: [oauthBtns],
   props: {
-    csrftoken: String,
+    csrftoken: String
   },
   data() {
     return {
@@ -58,7 +69,8 @@ export default {
           autofocus: true,
           required: true,
           label: "Username",
-          prependIcon: "person"
+          prependIcon: "person",
+          id: 'username',
         },
         email: {
           name: "email",
@@ -68,7 +80,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Email",
-          prependIcon: "email"
+          prependIcon: "email",
+          id: 'email',
         },
         password1: {
           name: "password1",
@@ -78,7 +91,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Password",
-          prependIcon: "lock"
+          prependIcon: "lock",
+          id: 'password1',
         },
         password2: {
           name: "password2",
@@ -88,7 +102,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Confirm Password",
-          prependIcon: "lock"
+          prependIcon: "lock",
+          id: 'password2',
         },
         non_field_errors: {
           name: "non_field_errors",
@@ -98,37 +113,44 @@ export default {
           autofocus: false,
           required: false,
           label: "",
-          prependIcon: "",
+          prependIcon: ""
         }
-      },
+      }
     };
   },
   components: {
     FormError
   },
   methods: {
-    submit() {
+    signup() {
       const that = this;
-      Api.post('signup', this.formObj, this.csrftoken)
-      .then(function(response) {
-        if (FormHelper.isEmpty(response.data)) {
-          location.href = '/';
-        } else {
-          FormHelper.assignErrors(that.formObj, response.data);
-        }
-      })
+      Api.post("signup", this.formObj, this.csrftoken).then(function(response) {
+        location.href = "/";
+      }).catch(err => {
+        FormHelper.assignErrors(that.formObj, err.response.data);
+      });
     },
     toggleLoginOrSignup() {
       this.$emit("toggleLoginOrSignup");
-    },
+    }
   },
   watch: {
     "formObj.username.value": function() {
-      debouncedCheckOneForm('signup', 'username', this.formObj);
+      debouncedCheckOneForm("signup", "username", this.formObj);
     },
     "formObj.password1.value": function() {
-      debouncedCheckOneForm('signup', 'password1', this.formObj);
+      debouncedCheckOneForm("signup", "password1", this.formObj);
     }
-  },
+  }
 };
 </script>
+<style scoped lang="sass">
+.form
+  width: 500px
+
+@media screen and (max-device-width: 480px)
+    .form
+      width: 700px
+    .form-item
+      margin: 30px auto
+</style>

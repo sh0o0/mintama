@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from . import views
 
@@ -6,7 +6,7 @@ from . import views
 app_name = 'accounts'
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
-    path('login-or-signup/', views.LoginOrSignupView.as_view(), name='login-or-signup/'),
+    path('login-or-signup/', views.LoginOrSignupView.as_view(), name='login-or-signup'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('signup/', views.SignupView.as_view(), name='signup'),

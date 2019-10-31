@@ -2,15 +2,8 @@ from collections import OrderedDict
 
 from rest_framework import serializers
 from rest_framework.exceptions import APIException
-from rest_framework.fields import empty
 from rest_framework.fields import SkipField
 from rest_framework.relations import PKOnlyObject
-
-
-class IncludeWithExcludeParamsError(APIException):
-    status_code = 404
-    default_detail = 'includeとexcludeを一緒に指定することはできません。'
-    default_code = 'error'
 
 
 class SkipNoneModelSerializer(serializers.ModelSerializer):

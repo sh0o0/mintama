@@ -27,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 DEBUG = True
 
@@ -202,7 +202,22 @@ LOGGING = {
             'propagate': False,
         },
         #Add by app bellow.
-        'user': {
+        'accounts': {
+            'handlers': ['debug_console', 'console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'api': {
+            'handlers': ['debug_console', 'console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'notes': {
+            'handlers': ['debug_console', 'console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'todos': {
             'handlers': ['debug_console', 'console', 'file'],
             'level': 'DEBUG',
             'propagate': False,

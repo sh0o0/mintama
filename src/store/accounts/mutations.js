@@ -2,6 +2,9 @@ export default {
   setMyself(state, payload) {
     state.myself = payload;
   },
+  setUsername(state, username) {
+    state.username = username;
+  },
   setBaselineMyself(state) {
     state.baselineMyself = Object.assign({}, state.myself)
   },

@@ -3,6 +3,7 @@ import mutations from './mutations'
 
 const state = {
   myself: '',
+  username: '',
   baselineMyself: '',
   myselfOptionsAdded: '',
   userIsLoading: '',
@@ -14,6 +15,9 @@ const state = {
 const getters = {
   getMyself(state) {
     return state.myself
+  },
+  getUsername(state) {
+    return state.username
   },
   getBaselineMyself(state) {
     return state.baselineMyself

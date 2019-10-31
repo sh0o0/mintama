@@ -128,7 +128,6 @@ export default {
       updateDialog: false,
       confirmDialog: false,
       deletedDialog: false,
-      username: this.$route.params.username,
     };
   },
   computed: {
@@ -245,6 +244,9 @@ export default {
     Api.getJson("categories").then(response => {
       that.categoryList = response.data.results;
     });
+    Api.getJson('references', null, this.$route.params.username).then(response =>
+      that.referenceList = response.data.results
+    ) 
   }
 };
 </script>

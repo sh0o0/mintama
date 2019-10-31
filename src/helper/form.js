@@ -9,17 +9,6 @@ const isHasKey = (data, key) => {
 
 const isEmpty = obj => !Object.keys(obj).length;
 
-const arrayToString = array => {
-  let arrayStr = ''; 
-  for (let value of array) {
-    if (isObject(value)) {
-      arrayStr += JSON.stringify(value) + ','
-    } else {
-      arrayStr += value
-    }
-  }
-  return `[${arrayStr}]`
-};
 
 //normalizes
 const normalizesFormObj = formObj => {
@@ -100,16 +89,6 @@ const createFormData = formObj => {
   return formData
 }
 
-const createJsonFormData = jsonData => {
-  // if (formObj[dataKey] instanceof Array) {
-  //   normFormObj[dataKey] = arrayToString(formObj[dataKey])
-  // } else {
-  //   normFormObj[dataKey] = formObj[dataKey];
-  // }
-  return jsonData
-}
-
-
 
 //assign
 function assignThatErrors(that, errors) {
@@ -163,12 +142,12 @@ const clearErrors = (formObj) => {
 
 
 const FormHelper = {
+  isEmpty,
   normalizesFormObj,
   createFormData,
   assignDataToThatObj,
   createThatFormObj,
   createThatFormObjs,
-  createJsonFormData,
   assignErrors,
   clearErrors,
   assignThatErrors,

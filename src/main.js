@@ -7,19 +7,14 @@ import store from '@/store'
 import LoginOrSignup from '@/views/LoginOrSignup'
 import Logout from '@/views/Logout'
 import Baseline from '@/views/Baseline'
-//遅延ローディング
-// const LoginOrSignup = import('@/views/LoginOrSignup') 
-// const Logout = import('@/views/Logout') 
-// const Baseline = import('@/views/Baseline') 
 //css
 import '@/../static/mintama/css/main.sass'
 
-
-//set components
-Vue.component('login-or-signup', LoginOrSignup)
-Vue.component('logout-view', Logout)
-Vue.component('baseline-view', Baseline)
-
+//遅延ローディング：　エラー計上のため保留
+// const LoginOrSignup = import('@/views/LoginOrSignup') 
+// const Logout = import('@/views/Logout') 
+// const Baseline = import('@/views/Baseline') 
+//
 // Vue.config.errorHandler = (err, vm, info) => {
 //     console.log(`Captured in Vue.config.errorHandler: ${info}`, err);
 //   };
@@ -29,6 +24,12 @@ Vue.component('baseline-view', Baseline)
 //   window.addEventListener("unhandledrejection", event => {
 //     console.log("Captured in unhandledrejection EventListener", event.reason);
 //   });
+
+
+//set components
+Vue.component('login-or-signup', LoginOrSignup)
+Vue.component('logout-view', Logout)
+Vue.component('baseline-view', Baseline)
 
 let vm = new Vue({
     el: "#app",

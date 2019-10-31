@@ -2,6 +2,10 @@ a.deco-none
   color: inherit
   text-decoration: none
 
+.clearfix::after 
+  content: ''
+  display: block
+  clear: both
 
 .add-pointer:hover
   cursor: pointer
@@ -16,4 +20,32 @@ tbody
 .bottom-btns
   position: fixed
   right: 20px
-  bottom: 40px
+  bottom: 20px
+
+// # introduction.html
+$main-color: #99FFFF
+$sub-color: #FFCC66
+$strange-font-family: 'Fascinate Inline', cursive
+$sub-font-family: serif, sans-serif
+
+.content
+  background-image: url(/static/mintama/img/mintama-top.png)
+  background-position: center center
+  background-repeat: no-repeat
+  background-attachment: fixed
+  background-size: 100% 10vh
+  background-color: #464646
+  opacity: 0.5
+  margin: -10px
+  // padding: -50px
+  text-align: center
+.heading
+  font-family: $strange-font-family
+  font-size: 3.0rem
+  text-align: inherit
+.section-heading
+  font-size: 1.8rem
+
+@media screen and (max-device-width: 480px)
+  .heading
+    font-size: 2.0rem
