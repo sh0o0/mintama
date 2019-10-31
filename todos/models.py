@@ -36,7 +36,7 @@ class Board(models.Model):
         intend_save_cards = []
         for list in self.lists.all():
             if auto:
-                is_switch = list.is_auto_switch and list.next is not None
+                is_switch = list.is_auto_switch() and list.next is not None
             else:
                 is_switch = list.auto_switch and list.next is not None
 
@@ -118,16 +118,14 @@ class List(models.Model):
             card.list = self.next
             card.save()
 
-    @property
-    def is_auto_switch(self):
+    def is_auto_switch(self, now=datetime.datetime.now()):
         if self.auto_switch == False:
             logger.debug('is auto switch false')
             return False
 
         if len(self.cards.all()) == 0:
             return False
-
-        now = datetime.datetime.now()
+        
         for card in self.cards.all():
             year = card.moved_at.year
             month = card.moved_at.month
@@ -143,12 +141,10 @@ class List(models.Model):
                 if card.moved_at.time() < self.switch_time:
                     point += datetime.timedelta(days=1)
 
-            if point > now:
-                logger.debug('is auto switch false')
-                return False
+            if point <= now:
+                return True
 
-            logger.debug('is auto switch true')
-            return True
+        return False
 
     def __str__(self):
         return self.name
@@ -167,7 +163,9 @@ class Card(models.Model):
         max_length=5000,
         blank=True,
     )
-    order = models.IntegerField()
+    order = models.IntegerField(
+        default=9999
+    )
 
     moved_at = models.DateTimeField(
         auto_now=timezone.datetime.now,
@@ -178,6 +176,3 @@ class Card(models.Model):
 
     def __str__(self):
         return self.name
-
-# class LittleCard(models.Model):
-#     pass

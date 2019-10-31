@@ -29,19 +29,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_clear_icon(self, instance):
         initial_data = getattr(self, 'initial_data', None)
+
         if initial_data is None:
             return None
 
         clear_icon = initial_data.get('clear_icon', None)
         if clear_icon == 'true':
-            ret = True
-        else:
-            ret = False
+            return True
 
-        return ret
+        return False
 
     def update(self, instance, validated_data):
         ret = super().update(instance, validated_data)
+
         is_clear_icon = self.get_clear_icon(instance)
         if is_clear_icon:
             instance.icon.delete(save=True)
@@ -77,8 +77,8 @@ class UserSerializer(serializers.ModelSerializer):
         return ret
 
     #overrideでフィールドを追加できる。
-    def to_internal_value(self, data):
-        return super().to_internal_value(data)
+    # def to_internal_value(self, data):
+    #     return super().to_internal_value(data)
 
 
 class CategorySerializer(serializers.ModelSerializer):

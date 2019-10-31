@@ -163,6 +163,7 @@ const clearErrors = (formObj) => {
 
 
 const FormHelper = {
+  isEmpty,
   normalizesFormObj,
   createFormData,
   assignDataToThatObj,

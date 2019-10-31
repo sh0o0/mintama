@@ -19,7 +19,7 @@ def add_user_id_to_request_data(func):
     return wrapper
 
 
-def list_from_username(func):
+def get_list_for_username(func):
     def wrapper(self, request, *args, **kwargs):
         username = kwargs.get('username', None)
 

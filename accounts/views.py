@@ -29,21 +29,20 @@ class SignupView(generic.CreateView):
     success_url = reverse_lazy('accounts:home')
 
     def form_valid(self, form):
-        logger.debug('signup form valid')
         super().form_valid(form)
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
         auth_user = authenticate(username=username, password=password)
         if auth_user is not None:
             login(self.request, auth_user)
-            logger.info('complete User create and login User:%s', auth_user)
+            logger.info('complete User create and login <%s>', auth_user)
 
         return JsonResponse({})
 
     def form_invalid(self, form):
         errors = dict(form.errors.items())
-        logger.debug('signup form invalid %s', errors)
-        return JsonResponse(errors)
+        logger.debug(errors)
+        return JsonResponse(errors, status=401)
 
 
 class LoginView(BaseLoginView):
@@ -56,7 +55,7 @@ class LoginView(BaseLoginView):
         errors = dict(form.errors.items())
         if errors.get('__all__', None):
             errors['non_field_errors'] = errors.pop('__all__')
-        return JsonResponse(errors)
+        return JsonResponse(errors, status=401)
 
 
 class LogoutView(BaseLogoutView):
@@ -72,18 +71,13 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         return context
 
 
-class IndexView(generic.TemplateView):
-    template_name = 'index.html'
-
-
-
 def encrypt_password(target_dict):
     #keyに"password"が含まれている場合、"*"へ変換
     #暗号化された辞書コピーを返す
     result_dict = {}
     for key, value in target_dict.items():
         if 'password' in key:
-            result_dict[key] = '*' * len(value)
+            result_dict[key] = '*' * 10
         else:
             result_dict[key] = value
 
@@ -92,24 +86,24 @@ def encrypt_password(target_dict):
 
 #Check Form
 def check_form(request, check_form_class, server_form_name, client_form_name=None):
-    logger.debug('start check_form(%s)', server_form_name)
+    logger.debug(server_form_name)
     if client_form_name is None:
         client_form_name = server_form_name
 
     #バイト文字列をutfへ変換
-    request_json= json.loads(request.body)
-
+    request_json = json.loads(request.body)
     data = {server_form_name: request_json[client_form_name]}
     form = check_form_class(data)
+
     if form.is_valid():
-        logger.debug('check_form valid %s', encrypt_password(request_json))
+        logger.debug('valid %s', encrypt_password(request_json))
         return JsonResponse({})
-    else:
-        errors = dict(form.errors.items())
-        if errors.get('password', None):
-            errors['password1'] = errors.pop('password')
-        logger.info('check_form invalid %s', errors)
-        return JsonResponse(errors)
+
+    errors = dict(form.errors.items())
+    if errors.get('password', None):
+        errors['password1'] = errors.pop('password')
+    logger.info('invalid %s', errors)
+    return JsonResponse(errors, status=400)
 
 
 @csrf_exempt

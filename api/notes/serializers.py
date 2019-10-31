@@ -2,6 +2,7 @@ import datetime
 
 from rest_framework import serializers
 from rest_framework.fields import empty
+
 from notes.models import Note, Section
 
 
@@ -79,7 +80,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
     def __init__(self, instance=None, data=empty, **kwargs):
-        super().__init__(instance=None, data=empty, **kwargs)
+        super().__init__(instance=instance, data=data, **kwargs)
         self.set_serializer_method_field()
 
     def extract_fields_days(self):
@@ -88,6 +89,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         for field in fields:
             days = int(field.field_name.split('_')[-1])
             fields_days[field.field_name] = days
+
         return fields_days
 
     def extract_diary_notes(self):
@@ -96,8 +98,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         diary_notes = {}
         for field_name, days in fields_days.items():
             end_days = days - 1
+
             start = today - datetime.timedelta(days=days)
             end = today - datetime.timedelta(days=end_days)
+
             notes = Note.objects.filter(written_at__range=(start, end))
             diary_notes[field_name] = notes
 
@@ -108,7 +112,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         for name, notes in diary_notes.items():
             method_name = 'get_' + name
 
+            # 一つもノートがなかった場合呼び出されない。いつもはどこで呼び出される？
             def get_method(self, notes=notes):
-                return NoteSerializer(notes, many=True).data
+                serializer = NoteSerializer(notes, many=True)
+                return serializer.data
 
             setattr(self, method_name, get_method)
+

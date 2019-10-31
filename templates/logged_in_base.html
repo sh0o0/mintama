@@ -6,7 +6,7 @@
     {% load staticfiles %}
     <link rel="icon" href="{% static '/mintama/img/mintama-top.png' %}">
     <link rel="icon" href="{% static '/mintama/img/mintama-top.png' %}" sizes="180x180">
-    <title>{% block title %}{% endblock title %}</title>
+    <title>{% block title %}みんたま / {{ user.username }}{% endblock title %}</title>
     {% block style %}{% endblock style %}
   </head>
   <body>

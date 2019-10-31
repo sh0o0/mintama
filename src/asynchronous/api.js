@@ -27,9 +27,7 @@ const formatErrorResponse = error => {
 export const Api = {
   get: (entries, slug = "") => {
     const url = `${entries}\/${slug + "/" ? slug : ""}`;
-    return Vue.axios.get(url).catch(error => {
-      throw new Error(`Api: ${error}`);
-    });
+    return Vue.axios.get(url)
   },
   post: (entries, formObj, token=null) => {
     const url = `${entries}\/`;
@@ -48,7 +46,7 @@ export const Api = {
         headers: headers,
       })
       .catch(function(error) {
-        throw new Error(`Api post ${error}`);
+        throw error
       });
   },
   put: (entries, slug, formData) => {
@@ -84,7 +82,7 @@ export const Api = {
       })
       .catch(function(error) {
         FormHelper.assignErrors(formObj, error.response.data);
-        throw new Error(`Api ${error}`);
+        throw error
       });
   },
 
@@ -103,7 +101,7 @@ export const Api = {
       .delete(url, { headers: headers })
       .then()
       .catch(function(error) {
-        throw new Error(`Api delete${error}`);
+        throw new Error(`Api delete ${error}`);
       });
   },
 
@@ -237,14 +235,10 @@ const checkOneForm = (entries, formName, checkFormObjs) => {
   Vue.axios
     .post(url, data, { headers: headers })
     .then(function(response) {
-      if (FormHelper.isEmpty(response)) {
         checkFormObj.errors = [];
-      } else {
-        checkFormObj.errors = response.data[formName];
-      }
     })
     .catch(function(error) {
-      throw new Error(`checkOneForm ${error}`);
+      checkFormObj.errors = error.response.data[formName];
     });
 };
 

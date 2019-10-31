@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h2 class="review-title">今日の復習</h2>
+    <h2 class="this-title">今日の復習</h2>
     <div class="wrapper">
+      <router-link v-if="isEmpty(noteList)" :to="{name: 'createNote'}" class="create-note-btn deco-none">ノートを作成する</router-link>
       <section v-for="(notes, daysKey) in noteList" :key="daysKey" class="notes">
         <h3 class="days-title">{{ daysKey | daysKeyFilter }}</h3>
         <div v-for="note in notes" :key="note.id" class="note">
@@ -24,6 +25,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Api } from '@/asynchronous/api'
+import FormHelper from '@/helper/form'
 
 export default {
   data() {
@@ -46,6 +48,9 @@ export default {
       Api.getJson('reviews', this.getUsername).then(response => {
         self.noteList = response.data;
       })
+    },
+    isEmpty(obj) {
+      return FormHelper.isEmpty(obj)
     }
   },
   created() {
@@ -54,7 +59,7 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-.review-title
+.this-title
   padding: 12px
   text-align: center
   border-bottom: solid 1px #EEEEEE
@@ -63,6 +68,17 @@ export default {
 .wrapper
   max-height: 75vh
   padding: 8px
+.create-note-btn
+  display: block
+  width:  300px
+  height: 100px
+  margin: 10px auto 30px
+  background-color: rgba(192,192, 192, 0.5)
+  border: solid 2px #C0C0C0
+  border-radius: 20px
+  box-shadow: 3px 3px 5px 5px rgba(192, 192,192 ,0.4)
+  line-height: 90px
+  text-align: center
 .days-title
   font-weight: bold
   border-bottom: 1px #555555 double

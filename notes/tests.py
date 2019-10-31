@@ -1,12 +1,7 @@
 from django.test import TestCase
-from django.test import Client
 from django.contrib.auth import get_user_model
-from rest_framework.request import Request
-from mintama.get_outer_model import get_category_model, get_reference_model
 
 from .models import Note, Section
-from api.notes.serializers import NoteSerializer, SectionSerializer
-from api.notes.viewsets import NoteViewSet, SectionViewSet
 from accounts.models import Category, Reference
 
 User = get_user_model()
@@ -16,7 +11,7 @@ class TestNoteModel(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = User.objects.create(username='test_user', password='asdkjfalsfjflas', email="shoutaro425@gmail.com")
+        cls.user = User.objects.create(username='test_user', password='test_password!', email="darekano@mail.com")
 
     @classmethod
     def tearDownClass(cls):
@@ -50,16 +45,12 @@ class TestNoteModel(TestCase):
         self.assertEqual(actual_note.title, title)
         self.assertTrue(actual_note.written_at)
 
-    def test_title_over_length_save(self):
-        title = 'text' * 100
-        self.creating_a_note_and_saving(title)
-
 
 class TestSectionModel(TestCase):
     
     @classmethod
     def setUpClass(cls):
-        cls.user = User.objects.create(username='test_section', password='asdkjfalsfjflas', email="shoutaro425@gmail.com")
+        cls.user = User.objects.create(username='test_section', password='asdkjfalsfjflas', email="darekano@mail.com")
         cls.note = Note.objects.create(user=cls.user, title='test_title')
         cls.category_python = Category.objects.create(name='Python')
         cls.category_javascript = Category.objects.create(name='JavaScript')
@@ -114,28 +105,3 @@ class TestSectionModel(TestCase):
 
         self.assertEqual(actual_section.heading, heading)
         self.assertEqual(actual_section.content, content)
-
-    def test_heading_over_length_save(self):
-        heading = 'text' * 100
-        self.creating_a_section_and_saving(heading)
-
-
-        
-class TestNoteSerializer(TestCase):
-    pass
-
-
-class TestSectionSerialzier(TestCase):
-    pass
-
-
-class TestNoteViewSet(TestCase):
-    pass
-
-
-class TestSectionViewSet(TestCase):
-    pass
-
-
-class TestUrl(TestCase):
-    pass

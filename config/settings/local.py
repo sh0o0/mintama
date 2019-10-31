@@ -2,20 +2,6 @@ from .base import *
 
 DEBUG = True
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'mintama_db',
-#         'USER': 'nakar0',
-#         'PASSWORD': '12345',
-#         'HOST': 'localhost',
-#         'PORT': 3306,
-#         'TEST': {
-#             'NAME': 'test_mintama_db'
-#         }
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

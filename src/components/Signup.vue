@@ -10,17 +10,17 @@
             v-for="oauth in oauthBtns"
             :key="oauth.name"
             :href="oauth.href"
+            :class="'ma-2 ' + oauth.class"
             small
             rounded
             light
             color="normal"
-            class="ma-2"
           >{{ oauth.name }}</v-btn>
         </v-col>
       </v-row>
     </v-toolbar>
     <v-card-text>
-      <v-form name="signup" method="post">
+      <v-form>
         <div v-for="formData in formObj" :key="formData.name">
           <FormError :name="formData.name" :errors="formData.errors"></FormError>
           <v-text-field
@@ -32,14 +32,15 @@
             :required="formData.required"
             :label="formData.label"
             :prepend-icon="formData.prependIcon"
+            :id="formData.id"
           ></v-text-field>
         </div>
       </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="teal" @click="submit()">登録</v-btn>
-      <v-btn outlined color="primary" @click="toggleLoginOrSignup">ログイン</v-btn>
+      <v-btn color="teal" @click="signup()" id="signup">登録</v-btn>
+      <v-btn outlined color="primary" @click="toggleLoginOrSignup" id="move-login">ログイン</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -68,7 +69,8 @@ export default {
           autofocus: true,
           required: true,
           label: "Username",
-          prependIcon: "person"
+          prependIcon: "person",
+          id: 'username',
         },
         email: {
           name: "email",
@@ -78,7 +80,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Email",
-          prependIcon: "email"
+          prependIcon: "email",
+          id: 'email',
         },
         password1: {
           name: "password1",
@@ -88,7 +91,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Password",
-          prependIcon: "lock"
+          prependIcon: "lock",
+          id: 'password1',
         },
         password2: {
           name: "password2",
@@ -98,7 +102,8 @@ export default {
           autofocus: false,
           required: true,
           label: "Confirm Password",
-          prependIcon: "lock"
+          prependIcon: "lock",
+          id: 'password2',
         },
         non_field_errors: {
           name: "non_field_errors",
@@ -117,14 +122,12 @@ export default {
     FormError
   },
   methods: {
-    submit() {
+    signup() {
       const that = this;
       Api.post("signup", this.formObj, this.csrftoken).then(function(response) {
-        if (FormHelper.isEmpty(response.data)) {
-          location.href = "/";
-        } else {
-          FormHelper.assignErrors(that.formObj, response.data);
-        }
+        location.href = "/";
+      }).catch(err => {
+        FormHelper.assignErrors(that.formObj, err.response.data);
       });
     },
     toggleLoginOrSignup() {

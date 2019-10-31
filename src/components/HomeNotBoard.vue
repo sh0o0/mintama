@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="title font-weight-bold">ホームボード設定</h2>
+    <h2 class="this-title font-weight-bold">ホームボード設定</h2>
 
     <div class="wrapper">
       <transition name="slide-fade" mode="out-in">
@@ -79,9 +79,13 @@ export default {
 };
 </script>
 <style scoped lang="sass">
-.wprapper
+.this-title
+  padding: 12px
   text-align: center
-.title
+  border-bottom: solid 1px #EEEEEE
+  font-size: 1.5rem
+  font-weight: bold
+.wprapper
   text-align: center
 a
   transition: 0.8s
