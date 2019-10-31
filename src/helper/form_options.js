@@ -1,4 +1,3 @@
-
 const user = [
   {name: 'icon', type: 'file', label: 'アイコン', clear: false},
   {name: 'username', label: 'ユーザー名', prepenIcon: 'mdi-rename-box'},

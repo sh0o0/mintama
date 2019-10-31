@@ -1,21 +1,28 @@
 <template>
   <div class="wrapper">
     <v-row class="my-1">
-      <template>
-      <input 
-      v-show="isInputBoardName" 
-      class="font-weight-bold ml-5 headline" 
-      @blur="updateBoardName()"
-      @keydown.enter="updateBoardName()"
-      v-model="board.name" 
-      ref="boardName">
-      <h1 v-show="!(isInputBoardName)" class="font-weight-bold ml-5" @click="readyUpdateBoardName()" >{{ board.name }}</h1>
-      </template>
+      <v-col cols="10" class="pa-0 ma-0">
+
+        <input
+          v-model="board.name"
+          v-show="isInputBoardName"
+          @blur="updateBoardName()"
+          @keydown.enter="updateBoardName()"
+          ref="boardName"
+          class="font-weight-bold ml-5 headline"
+        />
+        <h1
+          v-show="!(isInputBoardName)"
+          @click="readyUpdateBoardName()"
+          class="font-weight-bold ml-5"
+        >{{ board.name }}</h1>
 
       <span v-show="isAll" class="is-all">（現在、アーカイブを含んでいます。）</span>
-      <v-spacer></v-spacer>
+      </v-col>
 
       <!-- board menu -->
+      <v-col cols="2" class="pa-0 ma-0 text-right">
+
       <v-menu v-model="menuDrawer" offset-y>
         <template v-slot:activator="{ on }">
           <v-btn class="mr-5" small fab v-on="on">
@@ -46,10 +53,10 @@
               </v-list-item>
 
               <template v-if="homeDefaultBoard">
-              <v-divider></v-divider>
-              <v-list-item>
-                <v-list-item-content @click="$emit('show-not-board')">デフォルトボード設定画面</v-list-item-content>
-              </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item>
+                  <v-list-item-content @click="$emit('show-not-board')">デフォルトボード設定画面</v-list-item-content>
+                </v-list-item>
               </template>
 
               <v-list-item>
@@ -59,6 +66,7 @@
           </v-list>
         </v-card>
       </v-menu>
+      </v-col>
     </v-row>
     <v-divider></v-divider>
 
@@ -77,7 +85,7 @@
               <v-card-text class="list-title pa-0">{{ list.name }}</v-card-text>
             </v-col>
             <v-col cols="2" class="pl-1">
-              <v-icon class="mr-5" @click.stop="copyToListForm(list)">mdi-pencil-outline</v-icon>
+              <v-icon @click.stop="copyToListForm(list)" class="mr-5">mdi-pencil-outline</v-icon>
             </v-col>
           </v-row>
 
@@ -134,11 +142,11 @@
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
+            @click="addListFormDialog = true; addListForm = {}"
+            v-on="on"
             link
             fab
             dark
-            @click="addListFormDialog = true; addListForm = {}"
-            v-on="on"
             class="blue-grey lighten-2 mr-2"
           >
             <v-icon dark>mdi-plus</v-icon>
@@ -153,10 +161,10 @@
       <v-card>
         <v-row class="mx-5 pt-2">
           <template v-if="listForm.list['next_list']">
-            <v-btn class="grey lighten-2" text @click="cardsNext()">このリストのカードを次に移動</v-btn>
+            <v-btn text @click="cardsNext()" class="grey lighten-2" >このリストのカードを次に移動</v-btn>
           </template>
           <v-spacer></v-spacer>
-          <v-btn fab dark color="grey" @click="listFormDialog = false" x-small>
+          <v-btn @click="listFormDialog = false" fab dark color="grey" x-small>
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-row>
@@ -166,25 +174,25 @@
 
         <v-card-actions>
           <v-select
-            label="切り替え先リスト"
             v-model="listForm.copyList.next_list"
             :items="switchListItems"
             item-value="id"
             item-text="name"
+            label="切り替え先リスト"
           ></v-select>
         </v-card-actions>
 
         <v-card-actions>
-          <v-checkbox label="自動切換え" v-model="listForm.copyList.auto_switch"></v-checkbox>
+          <v-checkbox v-model="listForm.copyList.auto_switch" label="自動切換え" ></v-checkbox>
         </v-card-actions>
 
-        <label class="ml-2 grey--text text--darken-1" for="switch-time">切り替え時間</label>
+        <label for="switch-time" class="ml-2 grey--text text--darken-1">切り替え時間</label>
         <v-card-actions>
           <v-time-picker
-            id="switch-time"
-            :width="switchTimeWidth"
-            landscape
             v-model="listForm.copyList.switch_time"
+            :width="switchTimeWidth"
+            id="switch-time"
+            landscape
           ></v-time-picker>
         </v-card-actions>
         <v-divider></v-divider>
@@ -192,11 +200,11 @@
           <template>
             <v-btn
               v-if="listForm.list['is_archive']"
+              @click="cancelArchiveList()"
               class="grey lighten-2"
               text
-              @click="cancelArchiveList()"
             >アーカイブ解除</v-btn>
-            <v-btn v-else class="grey lighten-2" text @click="archiveList()">アーカイブ</v-btn>
+            <v-btn v-else  @click="archiveList()" text class="grey lighten-2" >アーカイブ</v-btn>
           </template>
           <v-btn class="red lighten-2" text @click="deleteList()">削除</v-btn>
           <v-spacer></v-spacer>
@@ -327,7 +335,7 @@ export default {
       boardId: this.$route.params.boardId,
       board: {},
       isInputBoardName: false,
-      beforeBoardName: '',
+      beforeBoardName: "",
       isAll: false,
       listForm: {
         list: {},
@@ -383,8 +391,7 @@ export default {
     retrieveBoard(all = false) {
       this.isLoading = true;
       const self = this;
-      const options =
-        "include=id,name,lists,auto_switch,switch_time,next_list,is_archive";
+      const options = "include=id,name,lists,auto_switch,switch_time,next_list,is_archive";
       const method = all ? "all_lists" : null;
       return Api.getJson("boards", this.boardId, this.username, options, method)
         .then(response => {
@@ -433,25 +440,27 @@ export default {
       this.isInputBoardName = true;
       this.$nextTick(() => {
         this.$refs.boardName.focus();
-      })
+      });
     },
     updateBoardName(event) {
-      if (event !== undefined && event.keyCode === 229) return
+      if (event !== undefined && event.keyCode === 229) return;
       const name = this.board.name;
       if (name === this.beforeBoardName) {
         this.isInputBoardName = false;
-        return
+        return;
       }
-      if (!(name)) {
-        this.board.name = this.beforeBoardName
+      if (!name) {
+        this.board.name = this.beforeBoardName;
         this.isInputBoardName = false;
-        return
+        return;
       }
-      const data = {name: name}
+      const data = { name: name };
       const self = this;
-      Api.patchJson('boards', this.board.id, data, this.username).then(response => {
-        self.isInputBoardName = false;
-      })
+      Api.patchJson("boards", this.board.id, data, this.username).then(
+        response => {
+          self.isInputBoardName = false;
+        }
+      );
     },
 
     activateList(list) {
@@ -673,10 +682,13 @@ export default {
       Api.delete("boards", this.boardId, this.username)
         .then(response => {
           if (self.homeDefaultBoard) {
-            self.$emit('delete-default-board');
+            self.$emit("delete-default-board");
             self.confirmDialog = false;
           } else {
-            this.$router.push({name: "boardList",params: { username: this.username }});
+            this.$router.push({
+              name: "boardList",
+              params: { username: this.username }
+            });
           }
         })
         .finally(() => {

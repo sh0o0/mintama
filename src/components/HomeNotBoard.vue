@@ -134,11 +134,8 @@ a:hover
 .under
   margin-top: 100px
 .slide-fade-enter-active, .slide-fade-leave-active 
-  // transform: translate(0px, 0px)
   transition: opacity 225ms
-  // transition: transform 225ms opacity 225ms cubic-bezier(0, 0, 0.2, 1) 0ms
 .slide-fade-enter, .slide-fade-leave-to
-  // transform: translateY(-5vh)
   opacity: 0
 
 </style>

@@ -2,61 +2,73 @@
   <div>
     <h2 class="this-title">今日の復習</h2>
     <div class="wrapper">
-      <router-link v-if="isEmpty(noteList)" :to="{name: 'createNote'}" class="create-note-btn deco-none">ノートを作成する</router-link>
+      <router-link
+        v-if="isEmpty(noteList)"
+        :to="{name: 'createNote'}"
+        class="create-note-btn deco-none"
+      >ノートを作成する</router-link>
       <section v-for="(notes, daysKey) in noteList" :key="daysKey" class="notes">
         <h3 class="days-title">{{ daysKey | daysKeyFilter }}</h3>
         <div v-for="note in notes" :key="note.id" class="note">
           <div class="note-title-bar clearfix">
-          <h4 class="note-title">{{ note.title }}</h4>
-          <router-link class="note-btn deco-none" :to="{name: 'note', params: {noteId: note.id, username: getUsername}}">ノートを見に行く</router-link>
+            <h4 class="note-title">{{ note.title }}</h4>
+            <router-link
+              class="note-btn deco-none"
+              :to="{name: 'note', params: {noteId: note.id, username: getUsername}}"
+            >ノートを見に行く</router-link>
           </div>
           <ul class="section-group">
-          <li v-for="section in note.sections" :key="section.id" class="section">
-            {{ section.heading }}
-          </li>
-
+            <li
+              v-for="section in note.sections"
+              :key="section.id"
+              class="section"
+            >{{ section.heading }}</li>
           </ul>
         </div>
       </section>
-      <a class="link" href="http://www.singakukai.com/column/8610.html" target="_blank">復習期間について（ウォズニアック式）</a>
+      <a
+        class="link"
+        href="http://www.singakukai.com/column/8610.html"
+        target="_blank"
+      >復習期間について（ウォズニアック式）</a>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import { Api } from '@/asynchronous/api'
-import FormHelper from '@/helper/form'
+import { mapGetters } from "vuex";
+import { Api } from "@/asynchronous/api";
+import FormHelper from "@/helper/form";
 
 export default {
   data() {
     return {
       noteList: []
-    }
+    };
   },
   computed: {
-    ...mapGetters('accounts', ['getUsername']),
+    ...mapGetters("accounts", ["getUsername"])
   },
   filters: {
     daysKeyFilter(daysKey) {
-      const days =  daysKey.trim().split('_')[1]
-      return `${days} days ago`
-    },
+      const days = daysKey.trim().split("_")[1];
+      return `${days} days ago`;
+    }
   },
   methods: {
     retrieveNoteList() {
       const self = this;
-      Api.getJson('reviews', this.getUsername).then(response => {
+      Api.getJson("reviews", this.getUsername).then(response => {
         self.noteList = response.data;
-      })
+      });
     },
     isEmpty(obj) {
-      return FormHelper.isEmpty(obj)
+      return FormHelper.isEmpty(obj);
     }
   },
   created() {
-    this.retrieveNoteList()
-  },
-}
+    this.retrieveNoteList();
+  }
+};
 </script>
 <style scoped lang="sass">
 .this-title

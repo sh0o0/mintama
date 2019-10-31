@@ -4,7 +4,6 @@ import Router from 'vue-router'
 import Home from './views/Home'
 
 import Profile from './views/Profile'
-import PortfolioList from './views/PortfolioList'
 import UpdateProfile from './views/UpdateProfile'
 
 import Note from './views/Note'
@@ -27,28 +26,7 @@ export default new Router({
       name: 'home',
       component: Home,
     },
-    //settings
-    // {
-    //   path: '/settings',
-    //   name: 'settings',
-    //   component: Settings,
-    // },
-    {
-      path: '/settings/profiles',
-      name: 'settingsProfile',
-      component: UpdateProfile,
-    },
-    // {
-    //   path: '/settings/password',
-    //   name: 'settingsPassword',
-    //   component: SettingsPassword,
-    // },
-    //app list
-    // {
-    //   path: '/portfolios',
-    //   name: 'portfolioList',
-    //   component: PortfolioList,
-    // },
+    //list
     {
       path: '/references',
       name: 'referenceList',
@@ -59,22 +37,12 @@ export default new Router({
       name: 'noteList',
       component: NoteList,
     },
-    //personal app list
+    //personal list
     {
       path: '/:username',
       name: 'profile',
       component: Profile,
     },
-    // {
-    //   path: '/:username/portfolios',
-    //   name: 'personalPortfolioList',
-    //   component: PersonalPortfolioList,
-    // },
-    // {
-    //   path: '/:username/references',
-    //   name: 'personalReferenceList',
-    //   component: PersonalReferenceList,
-    // },
     {
       path: '/:username/notes',
       name: 'personalNoteList',
@@ -90,17 +58,7 @@ export default new Router({
       name: 'boardList',
       component: BoardList,
     },
-    //app info
-    // {
-    //   path: '/:username/portfolios/:portfolioId',
-    //   name: 'portfolio',
-    //   component: Portfolio,
-    // },
-    // {
-    //   path: '/:username/references/:referenceId',
-    //   name: 'reference',
-    //   component: Reference,
-    // },
+    //specific
     {
       path: '/:username/notes/:noteId',
       name: 'note',
@@ -111,33 +69,18 @@ export default new Router({
       name: 'board',
       component: Board,
     },
-    //app create
-    // {
-    //   path: '/portfolio/create',
-    //   name: 'createPortfolio',
-    //   component: CreatePortfolio,
-    // },
-    // {
-    //   path: '/reference/create',
-    //   name: 'createReference',
-    //   component: CreateReference,
-    // },
+    //create
     {
       path: '/notes/create',
       name: 'createNote',
       component: CreateNote,
     },
-    //app update
-    // {
-    //   path: '/:username/portfolios/:portfolioId/update',
-    //   name: 'updatePortfolio',
-    //   component: UpdatePortfolio,
-    // },
-    // {
-    //   path: '/:username/references/:referenceId/update',
-    //   name: 'updateReference',
-    //   component: UpdateReference,
-    // },
+    //update
+    {
+      path: '/settings/profiles',
+      name: 'settingsProfile',
+      component: UpdateProfile,
+    },
     {
       path: '/:username/notes/:noteId/update',
       name: 'updateNote',

@@ -14,7 +14,7 @@ export default {
   },
   apiPutMyself(context, username) {
     context.commit("fetchStart");
-    return Api.put("api/users", username, context.state.myself)
+    return Api.put("users", username, context.state.myself)
       .then(response => {
         context.commit("fetchEnd");
       })
@@ -24,7 +24,7 @@ export default {
   },
   apiPatchMyself(context, {username, formObj}) {
     context.commit("fetchStart");
-    return Api.patch("api/users", username, formObj)
+    return Api.patch("users", username, formObj)
       .then(response => {
         context.commit("fetchEnd");
       })

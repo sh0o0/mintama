@@ -16,8 +16,8 @@
             <v-spacer></v-spacer>
             <div v-if="$route.params.username === getBaselineMyself.username">
               <v-btn
+                @click.stop="referenceFormDialog = true; referenceForm.origin = reference; referenceForm.form = Object.assign({}, reference)"
                 class="deco-none mx-2 amber"
-                @click.stop="referenceFormDialog = true; referenceForm = reference"
                 small
               >編集</v-btn>
               <v-btn
@@ -28,10 +28,14 @@
             </div>
           </v-row>
         </template>
-        
+
         <v-list-item class="pl-2">
-          <router-link class="deco-none" :to="{name: 'profile', params: {username: reference.username}}">
-            <v-icon>mdi-egg</v-icon><span class="amber--text">{{ reference.username }}</span>
+          <router-link
+            class="deco-none"
+            :to="{name: 'profile', params: {username: reference.username}}"
+          >
+            <v-icon>mdi-egg</v-icon>
+            <span class="amber--text">{{ reference.username }}</span>
           </router-link>
         </v-list-item>
         <v-list-item>
@@ -45,8 +49,8 @@
 
     <v-row class="bottom-btns">
       <v-btn
+        @click="referenceFormDialog = true; referenceForm.form = {}"
         link
-        @click="referenceFormDialog = true; referenceForm = {}"
         class="mr-2 grey"
         fab
         dark
@@ -59,21 +63,21 @@
       <v-card class="pa-2">
         <v-card-title class="headline">新しいリファレンスの作成</v-card-title>
         <v-card-actions>
-          <v-text-field label="名前" v-model.trim="referenceForm.title"></v-text-field>
+          <v-text-field label="名前" v-model.trim="referenceForm.form.title"></v-text-field>
         </v-card-actions>
 
         <v-card-actions>
-          <v-textarea label="内容" v-model.trim="referenceForm.content"></v-textarea>
+          <v-textarea label="内容" v-model.trim="referenceForm.form.content"></v-textarea>
         </v-card-actions>
 
         <v-card-actions>
-          <v-text-field type="url" label="リンク" v-model.trim="referenceForm.link"></v-text-field>
+          <v-text-field type="url" label="リンク" v-model.trim="referenceForm.form.link"></v-text-field>
         </v-card-actions>
 
         <v-card-actions>
           <v-row class="mx-1">
             <v-spacer></v-spacer>
-            <v-btn v-if="referenceForm.id" text @click="updateReference()">変更</v-btn>
+            <v-btn v-if="referenceForm.form.id" text @click="updateReference()">変更</v-btn>
             <v-btn v-else text @click="createReference()">作成</v-btn>
             <v-btn text @click="referenceFormDialog = false">キャンセル</v-btn>
           </v-row>
@@ -81,7 +85,6 @@
       </v-card>
     </v-dialog>
 
-    
     <v-dialog v-model="deleteReferenceDialog" width="400">
       <v-card>
         <v-card-title>"{{ deleteTargetReference.title }}"を削除しますか？</v-card-title>
@@ -106,7 +109,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 import { Api } from "@/asynchronous/api";
 
 export default {
@@ -115,13 +118,13 @@ export default {
       isLoading: false,
       references: [],
       referenceFormDialog: false,
-      referenceForm: {},
+      referenceForm: {origin: {}, form: {}},
       deleteReferenceDialog: false,
-      deleteTargetReference: {},
+      deleteTargetReference: {}
     };
   },
   computed: {
-    ...mapGetters('accounts', ['getBaselineMyself']),
+    ...mapGetters("accounts", ["getBaselineMyself"])
   },
   methods: {
     retrieveReferences() {
@@ -138,7 +141,11 @@ export default {
     createReference() {
       this.isLoading = true;
       const self = this;
-      Api.postJson("references", this.referenceForm, this.$route.params.username)
+      Api.postJson(
+        "references",
+        this.referenceForm.form,
+        this.$route.params.username
+      )
         .then(response => {
           self.references.push(response.data);
           self.referenceFormDialog = false;
@@ -152,11 +159,15 @@ export default {
       const self = this;
       Api.putJson(
         "references",
-        this.referenceForm.id,
-        this.referenceForm,
+        this.referenceForm.origin.id,
+        this.referenceForm.form,
         this.$route.params.username
       )
         .then(response => {
+          const resData = response.data;
+          for (const key in resData) {
+            self.referenceForm.origin[key] = resData[key];
+          };
           self.referenceFormDialog = false;
         })
         .finally(() => {
@@ -166,13 +177,18 @@ export default {
     deleteReference() {
       this.isLoading = true;
       const self = this;
-      Api.delete('references', this.deleteTargetReference.id, this.$route.params.username).then(response => {
-        self.eraseReference(self.deleteTargetReference);
-        self.deleteReferenceDialog = false;
-      })
-      .finally(() => {
-        this.isLoading = false;
-      });
+      Api.delete(
+        "references",
+        this.deleteTargetReference.id,
+        this.$route.params.username
+      )
+        .then(response => {
+          self.eraseReference(self.deleteTargetReference);
+          self.deleteReferenceDialog = false;
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
     eraseReference(reference) {
       const referencesLen = this.references.length;
@@ -182,7 +198,7 @@ export default {
           return;
         }
       }
-    },
+    }
   },
   watch: {
     "$route.params.username": function() {

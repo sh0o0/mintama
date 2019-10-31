@@ -63,7 +63,7 @@ export default {
         FormHelper.assignDataToThatObj(that, response.data);
       })
       .catch(error => {
-        console.log(error.response.data);
+        alert(error.response.data);
       });
   }
 };

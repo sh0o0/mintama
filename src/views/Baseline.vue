@@ -52,12 +52,14 @@
       <v-toolbar-title class="px-3">
         <a href="/" class="deco-none font-italic font-weight-bold"><img class="mintama-img" src="http://127.0.0.1:8000/static/mintama/img/white-egg-level-5.png"></a>
       </v-toolbar-title>
-      <!-- <v-avatar size="80" width="150">
+      
+      <!-- crack levelが実装できていないため保留
+      <v-avatar size="80" width="150">
         <img
           v-if="getBaselineMyself"
           :src="`/static/mintama/img/white-egg-level-${getBaselineMyself.crack_level}.png`"
         />
-      </v-avatar>-->
+      </v-avatar> -->
       <v-spacer></v-spacer>
 
       <!-- menuDrawer -->

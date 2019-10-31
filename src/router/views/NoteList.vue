@@ -51,7 +51,7 @@
     </main>
     <v-row align="center" justify="center">
       <template>
-        <v-btn v-if="next" link @click="fetch" class="gray lighten-2">more</v-btn>
+        <v-btn v-if="next" link @click="fetch()" class="gray lighten-2">more</v-btn>
         <span v-else>no more</span>
       </template>
     </v-row>

@@ -82,7 +82,7 @@
           <Dialog 
           heading="変更が完了しました。"
           :dialog="dialog"
-          @dialog-to-false="dialogToFalse"
+          @dialog-to-false="dialog = false"
           ></Dialog>
 
         </v-col>
@@ -141,9 +141,6 @@ export default {
     inputFile(file) {
       FormHelper.setFileToThatFormObj(this.formObj['icon'], file)
     },
-    dialogToFalse() {
-      this.dialog = false
-    }
   },
   created() {
     const that = this;
