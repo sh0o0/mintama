@@ -14,7 +14,7 @@
         <h1
           v-show="!(isInputBoardName)"
           @click="readyUpdateBoardName()"
-          class="font-weight-bold ml-5"
+          class="font-weight-bold ml-5 board-title"
         >{{ board.name }}</h1>
 
       <span v-show="isAll" class="is-all">（現在、アーカイブを含んでいます。）</span>
@@ -224,7 +224,7 @@
         </v-row>
 
         <v-card-actions>
-          <v-text-field class="heading" label="リスト名（必須）" v-model.trim="addListForm.name"></v-text-field>
+          <v-text-field label="リスト名（必須）" v-model.trim="addListForm.name"></v-text-field>
         </v-card-actions>
 
         <v-card-actions>
@@ -829,6 +829,8 @@ export default {
   overflow-y: hidden
   overflow-x: scroll
   white-space: nowrap
+.board-title
+  display: inline-block
 .list
   display: inline-block
   vertical-align: top

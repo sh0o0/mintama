@@ -29,12 +29,18 @@ const generateUrl = ({
     slug=null,
     username=null, 
     options=null, 
-    method=null
+    method=null,
+    isApi=true,
   }) => {
+    let url = '';
+    if (isApi) {
+      url = 'api/';
+    }
+
     if (username) {
-      var url = `api/accounts/${username}/${entries}/`;
+      url += `accounts/${username}/${entries}/`;
     } else {
-        var url = `api/${entries}/`;
+      url += `${entries}/`;
     }
 
     if (slug) {
@@ -58,8 +64,8 @@ export const Api = {
     const url = generateUrl({entries: entries, slug: slug});
     return Vue.axios.get(url)
   },
-  post: (entries, formObj, token=null) => {
-    const url = generateUrl({entries: entries});
+  post: (entries, formObj, token=null, isApi=true) => {
+    const url = generateUrl({entries: entries, isApi: isApi});
     let csrftoken = Cookies.get("csrftoken");
     if (!(csrftoken) && token) {
       csrftoken = token;

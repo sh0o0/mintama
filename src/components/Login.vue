@@ -101,7 +101,7 @@ export default {
   methods: {
     login() {
       const that = this;
-      Api.post('login', this.formObj, this.csrftoken)
+      Api.post('login', this.formObj, this.csrftoken, false)
       .then(response => {
         let redirectPath = '/';
         // hrefが#以降を受け付けないため実装不可。history modeにする必要あり。

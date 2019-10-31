@@ -124,7 +124,7 @@ export default {
   methods: {
     signup() {
       const that = this;
-      Api.post("signup", this.formObj, this.csrftoken).then(function(response) {
+      Api.post("signup", this.formObj, this.csrftoken, false).then(function(response) {
         location.href = "/";
       }).catch(err => {
         FormHelper.assignErrors(that.formObj, err.response.data);
