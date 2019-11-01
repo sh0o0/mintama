@@ -50,7 +50,7 @@
     <v-app-bar app color="blue" dark>
       <v-app-bar-nav-icon @click.stop="sideDrawer = !sideDrawer" id="side-drawer-btn"></v-app-bar-nav-icon>
       <v-toolbar-title class="px-3">
-        <a href="/" class="deco-none font-italic font-weight-bold"><img class="mintama-img" src="http://127.0.0.1:8000/static/mintama/img/white-egg-level-5.png"></a>
+        <a href="/" class="deco-none font-italic font-weight-bold"><img class="mintama-img" src="https://static.mintama.work/static/mintama/img/white-egg-level-5.png"></a>
       </v-toolbar-title>
       
       <!-- crack levelが実装できていないため保留

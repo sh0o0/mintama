@@ -2,7 +2,7 @@ export const backgroundStyle = {
   data() {
     return {
       topStyle: {
-        backgroundImage: 'url(/static/mintama/img/mintama-top.png)',
+        backgroundImage: `url(http://static.mintama.work/static/mintama/img/mintama-top.png)`,
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed',

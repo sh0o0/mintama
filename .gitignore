@@ -5,10 +5,8 @@ __pycache__/
 /logfile/*
 /node_modules
 /media
-/static/bundles
 
 /.idea/workspace.xml
-/webpack-stats.json
 
 mintama_db
 
