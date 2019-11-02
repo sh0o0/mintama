@@ -117,7 +117,7 @@ class TestUserViewSet(TestCase):
         crack_level = 2
         learning_started_date = datetime.date(year=2019, month=10, day=20)
         default_board = board.id
-        icon = Image.open(os.path.join(settings.BASE_DIR, 'static\\mintama\\img\\mintama-top.png'))
+        icon = Image.open(os.path.join(settings.BASE_DIR, 'static/mintama/img/mintama-top.png'))
         clear_icon = True
 
         content_username = self.patch_variable_and_return_content(url, *self.disassemble_var_to_key_value(username))

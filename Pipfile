@@ -47,3 +47,8 @@ python_version = "3.7"
 
 [scripts]
 dev-start = "python3 manage.py runserver"
+start-local = "python manage.py runserver 0.0.0.0:8000"
+#start = "uwsgi --socket :8001 --module config.wsgi --enable-threads"
+start = "uwsgi --ini mintama_uwsgi.ini"
+stop = "uwsgi --stop uwsgi/uwsgi.pid"
+test = "python3 manage.py test --exclude-tag=web"
