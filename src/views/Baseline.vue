@@ -232,7 +232,7 @@ export default {
   }
 };
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
 .mintama-img
   height: 80px
   width: 80px

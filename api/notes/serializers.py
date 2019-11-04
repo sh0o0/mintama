@@ -81,7 +81,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def __init__(self, instance=None, data=empty, **kwargs):
         super().__init__(instance=instance, data=data, **kwargs)
-        self.set_serializer_method_field()
+        self.set_serializer_method_field(instance)
 
     def extract_fields_days(self):
         fields = self._readable_fields
@@ -92,7 +92,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
         return fields_days
 
-    def extract_diary_notes(self):
+    def extract_diary_notes(self, instance):
         today = datetime.datetime.combine(datetime.date.today(), datetime.time())
         fields_days = self.extract_fields_days()
         diary_notes = {}
@@ -102,13 +102,13 @@ class ReviewSerializer(serializers.ModelSerializer):
             start = today - datetime.timedelta(days=days)
             end = today - datetime.timedelta(days=end_days)
 
-            notes = Note.objects.filter(written_at__range=(start, end))
+            notes = instance.filter(written_at__range=(start, end))
             diary_notes[field_name] = notes
 
         return diary_notes
 
-    def set_serializer_method_field(self):
-        diary_notes = self.extract_diary_notes()
+    def set_serializer_method_field(self, instance):
+        diary_notes = self.extract_diary_notes(instance)
         for name, notes in diary_notes.items():
             method_name = 'get_' + name
 

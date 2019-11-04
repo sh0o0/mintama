@@ -32,7 +32,6 @@ class Board(models.Model):
         return board
 
     def all_switch(self, auto=True):
-        logger.debug('all switch')
         intend_save_cards = []
         for list in self.lists.all():
             if auto:
@@ -46,9 +45,10 @@ class Board(models.Model):
             for card in list.cards.all():
                 card.list = list.next
                 intend_save_cards.append(card)
-
-        for card in intend_save_cards:
-            card.save()
+        if len(intend_save_cards):
+            logger.debug('is next')
+            for card in intend_save_cards:
+                card.save()
 
     def __str__(self):
         return self.name
@@ -88,11 +88,11 @@ class List(models.Model):
     def create_default_lists(cls, board):
         logger.debug('create default lists')
 
-        todo_list = cls(board=board, name='することすべて', order=1, auto_switch=True)
+        todo_list = cls(board=board, name='することすべて', order=1, auto_switch=False)
         today_list = cls(board=board, name='今日すること', order=2, auto_switch=True)
         complete_list = cls(board=board, name='今日完了したこと', order=3, auto_switch=True)
         exceed_list = cls(board=board, name='前からの持ち越し', order=4, auto_switch=True)
-        completed_list = cls(board=board, name='完了したことすべて', order=5, auto_switch=True)
+        completed_list = cls(board=board, name='完了したことすべて', order=5, auto_switch=False)
 
         todo_list.save()
         today_list.save()
@@ -120,10 +120,11 @@ class List(models.Model):
 
     def is_auto_switch(self, now=datetime.datetime.now()):
         if self.auto_switch == False:
-            logger.debug('is auto switch false')
+            logger.debug('false')
             return False
 
         if len(self.cards.all()) == 0:
+            logger.debug('false')
             return False
         
         for card in self.cards.all():
@@ -138,12 +139,14 @@ class List(models.Model):
                 hour = self.switch_time.hour
                 minute = self.switch_time.minute
                 point = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute)
-                if card.moved_at.time() < self.switch_time:
+                if card.moved_at.time() > self.switch_time:
                     point += datetime.timedelta(days=1)
 
             if point <= now:
+                logger.debug('true point: %s', point)
                 return True
 
+        logger.debug('false')
         return False
 
     def __str__(self):
