@@ -124,11 +124,6 @@ class TestReviewViewSet(TestCase):
         self.rest_client = client
         self.sub_client = sub_client
 
-    def test_public_list(self):
-        res = self.rest_client.get(self.public_url)
-        content = json.loads(res.content)
-        self.assertEqual(content['count'], 5)
-
     def test_list(self):
         days_ago_1 = datetime.datetime.now() - datetime.timedelta(days=1)
         days_ago_7 = datetime.datetime.now() - datetime.timedelta(days=7)

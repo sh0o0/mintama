@@ -29,13 +29,13 @@
             :prepend-icon="formObj.username.prependIcon"
           />
 
-          <FormError :formName="formObj.email.name" :errors="formObj.email.errors"></FormError>
+          <!-- <FormError :formName="formObj.email.name" :errors="formObj.email.errors"></FormError>
           <v-text-field
             :label="formObj.email.label"
             v-model.trim="formObj.email.value"
             :type="formObj.email.type"
             :prepend-icon="formObj.email.prependIcon"
-          />
+          /> -->
 
           <FormError :formName="formObj.gender.name" :errors="formObj.gender.errors"></FormError>
           <v-select

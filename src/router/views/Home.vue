@@ -64,13 +64,11 @@ export default {
 .left
   display: inline-block
   width: 47%
-  margin: 0px auto 0px 0px
   vertical-align: top
   border: solid 1px rgba(192, 192, 192, 0.2)
 .right
   display: inline-block
   width: 48%
-  margin: 0px 0px 0px 3%
   border: solid 1px rgba(192, 192, 192, 0.2)
 .fade-enter-active, .fade-leave-active 
   transition: opacity 0.2s

@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 from accounts.models import Category, Reference, Portfolio
 from api.permissions import IsAdminOrReadOnly, DetailIsAdminOrWriteOwnOnly
@@ -16,6 +17,11 @@ from .serializers import UserSerializer, CategorySerializer, ReferenceSerializer
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
+
+
+class LargeResultsSetPagination(PageNumberPagination):
+    page_size = 1000
+    max_page_size = 10000
 
 
 class OwnUserViewSet(viewsets.ModelViewSet):
@@ -80,6 +86,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = LargeResultsSetPagination
 
 
 class ReferenceViewSet(viewsets.ModelViewSet):

@@ -44,7 +44,9 @@
             </v-list-item>
           </router-link>
         </v-list-group>
+
       </v-list>
+      <v-btn block href="https://github.com/nakar0/mintama" class="app-detail">みんたま詳細（Github）</v-btn>
     </v-navigation-drawer>
 
     <v-app-bar app color="blue" dark>
@@ -239,4 +241,7 @@ export default {
   margin-bottom: 10px
   object-fit: cover
   opacity: 0.9
+.app-detail
+  position: absolute
+  bottom: 10px
 </style>

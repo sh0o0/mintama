@@ -126,10 +126,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [IsAdminOrWriteOwnOnly]
 
-    @get_list_for_username
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
     def retrieve(self, request, *args, **kwargs):
         username = kwargs.get('pk', None)
         user = get_object_or_404(User, username=username)

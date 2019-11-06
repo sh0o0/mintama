@@ -1,10 +1,15 @@
 <template>
   <div>
     <h2 class="font-weight-bold">{{ $route.params.username }} ノート一覧</h2>
+
+
     <router-link v-if="user" class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
-        <v-img v-if="user.icon" :src="user.icon" class="mr-2"></v-img>
-        <v-icon v-else large>mdi-egg</v-icon>
-        <span>{{ user.username }}</span>
+        <v-avatar size="40" class="ml-10 mb-2">
+          <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
+          <v-icon v-else large>mdi-egg</v-icon>
+
+          <span>{{ user.username }}</span>
+        </v-avatar>
     </router-link>
     <v-divider></v-divider>
 

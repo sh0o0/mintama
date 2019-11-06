@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             'unique': _("A user with that username already exists."),
         },
     )
-    email = models.EmailField(_('email address'), blank=False)
+    email = models.EmailField(_('email address'), blank=True)
 
     gender = models.CharField(
         max_length=6,
@@ -124,7 +124,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    # REQUIRED_FIELDS = ['email']
 
     class Meta:
         verbose_name = _('user')
@@ -158,7 +158,7 @@ class Reference(models.Model):
         related_name='references',
     )
     title = models.CharField(
-        max_length=100,
+        max_length=500,
     )
     evaluation = models.FloatField(
         choices=REFERENCE_EVALUATION_CHOICIES,
@@ -166,11 +166,12 @@ class Reference(models.Model):
         null=True,
     )
     content = models.CharField(
-        max_length=500,
+        max_length=10000,
         blank=True,
         null=True,
     )
-    link = models.URLField(
+    link = models.CharField(
+        max_length=2500,
         blank=True,
         null=True,
     )
