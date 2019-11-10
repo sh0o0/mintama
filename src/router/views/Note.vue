@@ -12,14 +12,10 @@
 
     <v-row class="pa-2 ma2">
       <router-link class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
-        <v-avatar size="40" class="ml-10">
-          <template>
           <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
           <v-icon v-else large>mdi-egg</v-icon>
 
-          </template>
           <span>{{ user.username }}</span>
-        </v-avatar>
       </router-link>
       <v-spacer></v-spacer>
       <router-link
@@ -43,7 +39,7 @@
         elevation="5"
       >
         <v-card-title class="grey lighten-1">{{ section.heading }}</v-card-title>
-        <v-card-text class="mb-3">{{ section.content }}</v-card-text>
+        <v-card-text class="mb-3" v-html="parseSection(section.content)"></v-card-text>
         <v-row>
           <v-col class="d-inline-flex flex-row mb-2">
             <v-card
@@ -93,12 +89,15 @@ export default {
         return 0;
       }
       return count;
+    },
+    parseSection(text) {
+      return text.replace(/\r?\n/g, '<br>')
     }
   },
   computed: {
     ...mapGetters("accounts", ["getMyself"])
   },
-  created() {
+    created() {
     this.isLoading = true;
     const that = this;
     const noteId = this.$route.params.noteId;

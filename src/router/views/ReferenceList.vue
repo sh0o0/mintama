@@ -2,7 +2,7 @@
   <div>
     <h2 class="font-weight-bold">{{ $route.params.username }} 参考資料</h2>
     <v-divider></v-divider>
-
+    <input type="text" v-model="searchValue" @input="searchRetrieveReferences" class="search-input" placeholder="Search">
     <v-list>
       <v-list-group
         v-for="reference in references"
@@ -42,7 +42,7 @@
           <v-list-item-content>{{ reference.content }}</v-list-item-content>
         </v-list-item>
         <v-list-item>
-          <a :href="reference.link" target="_brank">{{ reference.link }}</a>
+          <a :href="reference.link" target="_brank">リンク</a>
         </v-list-item>
       </v-list-group>
     </v-list>
@@ -110,7 +110,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { Api } from "@/asynchronous/api";
+import { Api, debounceGetJson } from "@/asynchronous/api";
 
 export default {
   data() {
@@ -119,6 +119,7 @@ export default {
       references: [],
       referenceFormDialog: false,
       referenceForm: {origin: {}, form: {}},
+      searchValue: '',
       deleteReferenceDialog: false,
       deleteTargetReference: {}
     };
@@ -137,6 +138,14 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
+    },
+    searchRetrieveReferences() {
+      let options = null;
+      if (this.searchValue) {
+        options = `q=${this.searchValue}`
+      }
+      const self = this;
+      debounceGetJson('references', this, 'references', null, this.$route.params.username, options)
     },
     createReference() {
       this.isLoading = true;
@@ -213,4 +222,20 @@ export default {
 <style scoped lang="sass">
 .reference
   border: 1px solid orange
+.search-input
+  display: block
+  width: 400px
+  height: 50px
+  margin-top: 5px
+  padding: 3px
+  border-radius: 20px
+  border: 1px solid #000080
+  outline: none
+  font-size: 1.2rem
+  transition: 0.4s
+.search-input:focus,
+.search-input:hover
+  opacity: 0.8
+  border: 2px solid #0099FF
+  box-shadow: 2px 2px 2px 2px rgba(192, 192, 192, 0.5)
 </style>

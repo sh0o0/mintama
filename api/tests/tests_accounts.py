@@ -263,3 +263,11 @@ class TestReferenceViewSet(TestCase):
         self.assertEqual(data['title'], content['title'])
         self.assertEqual(data['content'], content['content'])
         self.assertEqual(data['link'], content['link'])
+
+    def test_all_column_search(self):
+        url = self.public_url + '?q={}'.format('1')
+        res = self.rest_client.get(url)
+        content = json.loads(res.content)
+        print(content)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(content['count'], 1)

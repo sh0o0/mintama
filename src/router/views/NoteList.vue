@@ -4,12 +4,10 @@
 
 
     <router-link v-if="user" class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
-        <v-avatar size="40" class="ml-10 mb-2">
-          <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
-          <v-icon v-else large>mdi-egg</v-icon>
+      <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
+      <v-icon v-else large>mdi-egg</v-icon>
 
-          <span>{{ user.username }}</span>
-        </v-avatar>
+      <span>{{ user.username }}</span>
     </router-link>
     <v-divider></v-divider>
 

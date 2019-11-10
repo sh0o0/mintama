@@ -65,6 +65,15 @@
           :form="formObj.crack_level"
           ></crack-level-form>
 
+          
+          <form method="get" action="/socials/login/twitter" ref="twitter">
+            <button @click="twitterDisconnect()">twitter連携</button>
+          </form>
+
+          <form method="get" action="/socials/login/google-oauth2" ref="google">
+            <button @click="googleDisconnect()">google連携</button>
+          </form>
+
           <FormError :formName="formObj.introduction.name" :errors="formObj.introduction.errors"></FormError>
           <v-textarea
           :label="formObj.introduction.label"
@@ -91,6 +100,7 @@
 </template>
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import { Api } from '@/asynchronous/api'
 
 import CrackLevelForm from "@/components/CrackLevelForm";
 import LearningStartedDateForm from "@/components/LearningStartedDateForm";
@@ -140,6 +150,12 @@ export default {
     },
     inputFile(file) {
       FormHelper.setFileToThatFormObj(this.formObj['icon'], file)
+    },
+    twitterConnect() {
+      this.$refs.twitter.submit()
+    },
+    googleConnect() {
+      this.$refs.google.submit()
     },
   },
   created() {

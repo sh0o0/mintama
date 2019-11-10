@@ -59,7 +59,7 @@ const generateUrl = ({
 }
 
 
-export const Api = {
+const Api = {
   get: (entries, slug = "") => {
     const url = generateUrl({entries: entries, slug: slug});
     return Vue.axios.get(url)
@@ -219,4 +219,13 @@ const checkOneForm = (entries, formName, checkFormObjs) => {
     });
 };
 
+const beforeDebounceGetJson = (entries, receiveObj, key, slug=null, username=null, options=null, method=null) => {
+  Api.getJson(entries, slug=slug, username=username, options=options, method=method)
+    .then(response => {
+      receiveObj[key] = response.data.results;
+    })
+}
+
+export { Api }
 export const debouncedCheckOneForm = _.debounce(checkOneForm, 1000);
+export const debounceGetJson = _.debounce(beforeDebounceGetJson, 1000)

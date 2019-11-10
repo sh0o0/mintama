@@ -1,16 +1,39 @@
 from collections import OrderedDict
+import json
 
 from rest_framework import serializers
 from rest_framework.fields import SkipField
 from rest_framework.relations import PKOnlyObject
+from social_django.models import UserSocialAuth
 
 from accounts.models import User, Category, Portfolio, Reference
 
+
+class SocialAuthSerializer(serializers.ModelSerializer):
+    extra_data = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserSocialAuth
+        fields = [
+            'provider',
+            'extra_data',
+        ]
+
+    def get_extra_data(self, instance):
+        provider = instance.provider
+        data = instance.extra_data
+        if provider == 'twitter':
+            data['access_token'].pop('oauth_token')
+            data['access_token'].pop('oauth_token_secret')
+        elif provider == 'google-oauth2':
+            data.pop('access_token')
+        return data
 
 class UserSerializer(serializers.ModelSerializer):
     clear_icon = serializers.SerializerMethodField()
     introduction = serializers.CharField(allow_blank=True, allow_null=True, trim_whitespace=True)
     icon = serializers.ImageField(max_length=None, allow_empty_file=True, required=False)
+    social_auth = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -25,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
             'introduction',
             'clear_icon',
             'default_board',
+            'social_auth',
         ]
 
     def get_clear_icon(self, instance):
@@ -38,6 +62,11 @@ class UserSerializer(serializers.ModelSerializer):
             return True
 
         return False
+    
+    def get_social_auth(self, instance):
+        social_auth_list = UserSocialAuth.objects.filter(user=instance)
+        serializer = SocialAuthSerializer(social_auth_list, many=True)
+        return serializer.data
 
     def update(self, instance, validated_data):
         ret = super().update(instance, validated_data)

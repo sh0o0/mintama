@@ -80,16 +80,16 @@ class TestSignupView(TestCase):
         self.assertEqual(res.status_code, 401)
         self.assertEqual(user_num, 0)
 
-    def test_cannot_register_email_nothing(self):
-        username = 'test'
-        password = 'test_password!'
-        data = {'username': username, 'email': '', 'password1': password, 'password2': password}
+    # def test_cannot_register_email_nothing(self):
+    #     username = 'test'
+    #     password = 'test_password!'
+    #     data = {'username': username, 'email': '', 'password1': password, 'password2': password}
 
-        res = self.client.post(self.url, data)
-        user_num = len(User.objects.all())
+    #     res = self.client.post(self.url, data)
+    #     user_num = len(User.objects.all())
 
-        self.assertEqual(res.status_code, 401)
-        self.assertEqual(user_num, 0)
+    #     self.assertEqual(res.status_code, 401)
+    #     self.assertEqual(user_num, 0)
 
     def test_cannot_register_password_nothing(self):
         username = 'test'

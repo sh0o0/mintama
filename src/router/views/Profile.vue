@@ -8,11 +8,11 @@
             <v-row>
               <v-col cols="4" md="12">
                 <v-avatar color="grey" size="170" tile>
-                  <v-img v-if="getMyself.icon" :src="getMyself.icon" alt="USER ICON"></v-img>
+                  <v-img v-if="formObj['icon'].value" :src="formObj['icon'].value" alt="USER ICON"></v-img>
                 </v-avatar>
               </v-col>
               <v-col cols="8" md="12">
-                <v-card-text>{{ getMyself.introduction }}</v-card-text>
+                <v-card-text>{{ formObj['introduction'].value }}</v-card-text>
               </v-col>
             </v-row>
           </v-card>
@@ -61,6 +61,12 @@ export default {
     Api.getJson("users", this.$route.params.username)
       .then(response => {
         FormHelper.assignDataToThatObj(that, response.data);
+        const gender = that.formObj['gender'].value;
+        if (gender === 'male') {
+          that.formObj['gender'].value = 'オス';
+        } else if (gender === 'female') {
+          that.formObj['gender'].value = 'メス';
+        }
       })
       .catch(error => {
         alert(error.response.data);
