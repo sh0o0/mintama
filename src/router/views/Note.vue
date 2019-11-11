@@ -1,17 +1,18 @@
 <template>
   <div>
+    <h2 class="font-weight-bold">{{ note.title }}</h2>
     <v-row class="pa-2 ma2">
       <router-link class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
-          <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
-          <v-icon v-else large>mdi-egg</v-icon>
+        <v-img v-if="user.icon" :src="user.icon" class="mr-2 user-icon" width="100" />
+        <v-icon v-else large>mdi-egg</v-icon>
 
-          <span>{{ user.username }}</span>
+        <span>{{ user.username }}</span>
       </router-link>
       <v-spacer></v-spacer>
       <router-link
         v-if="$route.params.username === getMyself.username"
-        tag="div"
         :to="{name: 'updateNote', params: {username: $route.params.username, noteId: $route.params.noteId}}"
+        class="deco-none add-pointer"
       >
         <v-btn color="amber" class="mr-3" link>編集</v-btn>
       </router-link>
@@ -68,7 +69,7 @@ export default {
       note: {},
       user: "",
       isLoading: false,
-      sectionsNum: 0,
+      sectionsNum: 0
     };
   },
   methods: {
@@ -81,13 +82,13 @@ export default {
       return count;
     },
     parseSection(text) {
-      return text.replace(/\r?\n/g, '<br>')
-    },
+      return text.replace(/\r?\n/g, "<br>");
+    }
   },
   computed: {
     ...mapGetters("accounts", ["getMyself"])
   },
-    created() {
+  created() {
     this.isLoading = true;
     const that = this;
     const noteId = this.$route.params.noteId;

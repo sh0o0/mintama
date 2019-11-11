@@ -2,10 +2,10 @@
   <div>
     <h2 class="font-weight-bold">{{ $route.params.username }} ノート一覧</h2>
     <router-link v-if="user" class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
-      <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
+      <div class="avatar">
+      <v-img v-if="user.icon" :src="user.icon" class="mr-2 user-icon" width="100"/>
       <v-icon v-else large>mdi-egg</v-icon>
-
-      <span>{{ user.username }}</span>
+      </div>
     </router-link>
     <v-divider></v-divider>
 
@@ -135,5 +135,4 @@ export default {
   transition: opacity 0.5s
 .fade-enter, .fade-leave-to
   opacity: 0
-
 </style>
