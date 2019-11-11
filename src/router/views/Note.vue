@@ -1,15 +1,5 @@
 <template>
   <div>
-    <v-dialog v-model="isLoading" persistent width="300">
-      <v-card color="grey" dark>
-        <v-card-text>
-          Please wait
-          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <h2 class="font-weight-bold">{{ note.title }}</h2>
-
     <v-row class="pa-2 ma2">
       <router-link class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
           <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
@@ -78,7 +68,7 @@ export default {
       note: {},
       user: "",
       isLoading: false,
-      sectionsNum: 0
+      sectionsNum: 0,
     };
   },
   methods: {
@@ -92,7 +82,7 @@ export default {
     },
     parseSection(text) {
       return text.replace(/\r?\n/g, '<br>')
-    }
+    },
   },
   computed: {
     ...mapGetters("accounts", ["getMyself"])

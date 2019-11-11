@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import QueryDict
 from django_filters import rest_framework as filters
 from rest_framework import status
@@ -27,9 +28,32 @@ class NoteFilter(filters.FilterSet):
         ]
     )
     squeeze = filters.NumberFilter(field_name='squeeze', method='get_squeeze')
+    q = filters.CharFilter(field_name='q', method='get_q')
 
     def get_squeeze(self, queryset, name, value):
         return queryset.all()[:value]
+
+    def create_conditions(self, keywords):
+        conditions = None
+        for key in keywords:
+            if conditions is None:
+                conditions = Q(title__icontains=key)
+
+            conditions |= Q(title__icontains=key)
+            conditions |= Q(written_at__icontains=key)
+            conditions |= Q(user__username__icontains=key)
+            conditions |= Q(note_sections__heading__icontains=key)
+            conditions |= Q(note_sections__content__icontains=key)
+            conditions |= Q(note_sections__categories__name__icontains=key)
+            conditions |= Q(note_sections__references__title__icontains=key)
+
+        return conditions
+
+    def get_q(self, queryset, name, value):
+        keywords = value.strip().split(',')
+        conditions = self.create_conditions(keywords)
+        queryset = queryset.select_related().filter(conditions)
+        return queryset
 
     class Meta:
         model = Note
@@ -38,6 +62,7 @@ class NoteFilter(filters.FilterSet):
             'written_at',
             'squeeze',
             'order_by',
+            'q',
         ]
 
 

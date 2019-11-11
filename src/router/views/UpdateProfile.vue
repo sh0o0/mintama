@@ -64,16 +64,7 @@
           <crack-level-form
           :form="formObj.crack_level"
           ></crack-level-form>
-
           
-          <form method="get" action="/socials/login/twitter" ref="twitter">
-            <button @click="twitterDisconnect()">twitter連携</button>
-          </form>
-
-          <form method="get" action="/socials/login/google-oauth2" ref="google">
-            <button @click="googleDisconnect()">google連携</button>
-          </form>
-
           <FormError :formName="formObj.introduction.name" :errors="formObj.introduction.errors"></FormError>
           <v-textarea
           :label="formObj.introduction.label"
@@ -133,7 +124,7 @@ export default {
     },
     RESIDENCE_CHOICIES() {
       return RESIDENCE_CHOICIES;
-    }
+    },
   },
   methods: {
     ...mapActions("accounts", ["apiGetMyself", "apiPatchMyself"]),
@@ -150,12 +141,6 @@ export default {
     },
     inputFile(file) {
       FormHelper.setFileToThatFormObj(this.formObj['icon'], file)
-    },
-    twitterConnect() {
-      this.$refs.twitter.submit()
-    },
-    googleConnect() {
-      this.$refs.google.submit()
     },
   },
   created() {

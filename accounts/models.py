@@ -86,6 +86,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         on_delete=models.SET_NULL,
     )
 
+    temp_data = models.CharField(
+        max_length=20000,
+        blank=True
+    )
+
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,

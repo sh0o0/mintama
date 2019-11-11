@@ -2,50 +2,62 @@
   <div>
     <h2 class="font-weight-bold">{{ $route.params.username }} 参考資料</h2>
     <v-divider></v-divider>
-    <input type="text" v-model="searchValue" @input="searchRetrieveReferences" class="search-input" placeholder="Search">
+    <input
+      type="text"
+      v-model="searchValue"
+      @input="searchRetrieveReferences"
+      class="search-input"
+      placeholder="Search"
+    />
     <v-list>
-      <v-list-group
-        v-for="reference in references"
-        :key="reference.id"
-        :value="false"
-        class="reference"
-      >
-        <template v-slot:activator>
-          <v-row>
-            <h3 class="font-weight-bold">{{ reference.title }}</h3>
-            <v-spacer></v-spacer>
-            <div v-if="$route.params.username === getBaselineMyself.username">
-              <v-btn
-                @click.stop="referenceFormDialog = true; referenceForm.origin = reference; referenceForm.form = Object.assign({}, reference)"
-                class="deco-none mx-2 amber"
-                small
-              >編集</v-btn>
-              <v-btn
-                class="deco-none mx-2 red"
-                @click.stop="deleteReferenceDialog = true; deleteTargetReference = reference"
-                small
-              >削除</v-btn>
-            </div>
-          </v-row>
-        </template>
+        <v-list-group
+          v-for="reference in references"
+          :key="reference.id"
+          :value="false"
+          class="reference"
+        >
+          <template v-slot:activator>
+            <v-row>
+              <h3 class="font-weight-bold">{{ reference.title }}</h3>
+              <v-spacer></v-spacer>
+              <div v-if="$route.params.username === getBaselineMyself.username">
+                <v-btn
+                  @click.stop="referenceFormDialog = true; referenceForm.origin = reference; referenceForm.form = Object.assign({}, reference)"
+                  class="deco-none mx-2 amber"
+                  small
+                >編集</v-btn>
+                <v-btn
+                  class="deco-none mx-2 red"
+                  @click.stop="deleteReferenceDialog = true; deleteTargetReference = reference"
+                  small
+                >削除</v-btn>
+              </div>
+            </v-row>
+          </template>
 
-        <v-list-item class="pl-2">
-          <router-link
-            class="deco-none"
-            :to="{name: 'profile', params: {username: reference.username}}"
-          >
-            <v-icon>mdi-egg</v-icon>
-            <span class="amber--text">{{ reference.username }}</span>
-          </router-link>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>{{ reference.content }}</v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <a :href="reference.link" target="_brank">リンク</a>
-        </v-list-item>
-      </v-list-group>
+          <v-list-item class="pl-2">
+            <router-link
+              class="deco-none"
+              :to="{name: 'profile', params: {username: reference.username}}"
+            >
+              <v-icon>mdi-egg</v-icon>
+              <span class="amber--text">{{ reference.username }}</span>
+            </router-link>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>{{ reference.content }}</v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <a v-if="reference.link" :href="reference.link" target="_brank">リンク</a>
+          </v-list-item>
+        </v-list-group>
     </v-list>
+    <v-row align="center" justify="center">
+      <template>
+        <v-btn v-if="next" link @click="retrieveMore()" class="gray lighten-2">MORE!</v-btn>
+        <span v-else>NO MORE</span>
+      </template>
+    </v-row>
 
     <v-row class="bottom-btns">
       <v-btn
@@ -118,10 +130,11 @@ export default {
       isLoading: false,
       references: [],
       referenceFormDialog: false,
-      referenceForm: {origin: {}, form: {}},
-      searchValue: '',
+      referenceForm: { origin: {}, form: {} },
+      searchValue: "",
       deleteReferenceDialog: false,
-      deleteTargetReference: {}
+      deleteTargetReference: {},
+      next: ""
     };
   },
   computed: {
@@ -134,18 +147,46 @@ export default {
       Api.getJson("references", null, this.$route.params.username)
         .then(response => {
           self.references = response.data.results;
+          self.next = response.data.next;
         })
         .finally(() => {
           this.isLoading = false;
         });
     },
-    searchRetrieveReferences() {
-      let options = null;
-      if (this.searchValue) {
-        options = `q=${this.searchValue}`
-      }
+    retrieveMore() {
+      if (!this.next) return;
+
+      this.isLoading = true;
       const self = this;
-      debounceGetJson('references', this, 'references', null, this.$route.params.username, options)
+      Api.normalGetJson(this.next)
+        .then(res => {
+          self.references.push(...res.data.results);
+          self.next = res.data.next;
+        })
+        .finally(() => {
+          self.isLoading = false;
+        });
+    },
+    searchRetrieveReferences() {
+      const username = this.$route.params.username;
+
+      const splitedComma = this.searchValue
+        .trim()
+        .split(/\s+/)
+        .join(",");
+      let options = null;
+      if (splitedComma) {
+        options = `q=${splitedComma}`;
+      }
+
+      debounceGetJson(
+        "references",
+        this,
+        "references",
+        null,
+        username,
+        options
+      );
     },
     createReference() {
       this.isLoading = true;
@@ -176,7 +217,7 @@ export default {
           const resData = response.data;
           for (const key in resData) {
             self.referenceForm.origin[key] = resData[key];
-          };
+          }
           self.referenceFormDialog = false;
         })
         .finally(() => {
@@ -211,6 +252,8 @@ export default {
   },
   watch: {
     "$route.params.username": function() {
+      this.references = [];
+      this.user = "";
       this.retrieveReferences();
     }
   },
@@ -222,20 +265,8 @@ export default {
 <style scoped lang="sass">
 .reference
   border: 1px solid orange
-.search-input
-  display: block
-  width: 400px
-  height: 50px
-  margin-top: 5px
-  padding: 3px
-  border-radius: 20px
-  border: 1px solid #000080
-  outline: none
-  font-size: 1.2rem
-  transition: 0.4s
-.search-input:focus,
-.search-input:hover
-  opacity: 0.8
-  border: 2px solid #0099FF
-  box-shadow: 2px 2px 2px 2px rgba(192, 192, 192, 0.5)
+.fade-enter-active, .fade-leave-active 
+  transition: opacity 0.5s
+.fade-enter, .fade-leave-to
+  opacity: 0
 </style>

@@ -50,8 +50,6 @@ class TestLoginAndSignup(BaseTestWeb):
 
         username_input = self.selenium.find_element_by_id('username')
         username_input.send_keys(username)
-        email_input = self.selenium.find_element_by_id('email')
-        email_input.send_keys(self.email)
         password_input = self.selenium.find_element_by_id('password1')
         password_input.send_keys(self.password)
         password_input = self.selenium.find_element_by_id('password2')

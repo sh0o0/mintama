@@ -6,12 +6,12 @@
         <v-col align-self="start" class="p-2" cols="12" md="3">
           <v-card class="pa-2">
             <v-row>
-              <v-col cols="4" md="12">
+              <v-col cols="6" md="12">
                 <v-avatar color="grey" size="170" tile>
                   <v-img v-if="formObj['icon'].value" :src="formObj['icon'].value" alt="USER ICON"></v-img>
                 </v-avatar>
               </v-col>
-              <v-col cols="8" md="12">
+              <v-col cols="6" md="12">
                 <v-card-text>{{ formObj['introduction'].value }}</v-card-text>
               </v-col>
             </v-row>

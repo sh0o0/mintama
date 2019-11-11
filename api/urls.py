@@ -5,7 +5,6 @@ from .accounts.viewsets import OwnUserViewSet, UserViewSet, CategoryViewSet, Ref
 from .notes.viewsets import NoteViewSet, SectionViewSet, ReviewViewSet
 from .todos.viewsets import BoardViewSet, ListViewSet, CardViewSet
 
-
 general_router = routers.DefaultRouter()
 detail_router = routers.DefaultRouter()
 
@@ -27,5 +26,5 @@ app_name = 'api'
 urlpatterns = [
     path('', include(general_router.urls)),
     path('', include(detail_router.urls)),
-    path('accounts/<slug:username>/', include(detail_router.urls))
+    path('accounts/<slug:username>/', include(detail_router.urls)),
 ]

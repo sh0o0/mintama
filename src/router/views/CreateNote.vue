@@ -63,20 +63,27 @@
       <v-btn link @click="post" class="orange darken-2" fab dark>作成</v-btn>
     </v-row>
 
-    <v-dialog v-model="dialog" @click="dialog = false" width="300">
+    <v-dialog v-model="dialog" @click="dialog = false" width="500">
       <v-card>
-        <v-card-title class="headline">作成しました。</v-card-title>
+        <v-card-title class="headline">作成しました。Twitterに投稿しますか？</v-card-title>
+          <form method="post" action="/socials/login/twitter/" ref="twitter" class="ma-2">
+            <v-textarea name="content" v-model="twitterContent" />
+          </form>
         <v-card-actions>
           <div class="flex-grow-1"></div>
-          <v-btn color="amber darken-1" text @click="dialog = false">OK</v-btn>
+          <template>
+            <v-btn v-if="isLinkedTwitter" color="blue lighten-1" text @click="postTwitter()">する</v-btn>
+            <v-btn v-else color="blue lighten-1" text @click="connectAndPostTwitter()">する / Twitter連携</v-btn>
+          </template>
+          <v-btn text @click="dialog = false">しない</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { dateToJapan } from "@/helper/format";
 import { Api } from "@/asynchronous/api";
 import moment from "moment";
@@ -100,7 +107,12 @@ export default {
       categoryList: [],
       referenceList: [],
       dialog: false,
+      twitterContent: "",
+      isLinkedTwitter: false,
     };
+  },
+  computed: {
+    ...mapGetters('accounts', ['getMyself']),
   },
   methods: {
     sectionCount() {
@@ -142,17 +154,24 @@ export default {
       if (this.validateFormObj()) {
         Api.postJson("notes", this.formObj)
           .then(response => {
+            that.makeTwitterContent();
+            that.checkLinkedTwitter();
             that.dialog = true;
-            that.$router.push({name: 'personalNoteList', params: {username: this.$route.params.username}})
+            // that.$router.push({
+            //   name: "personalNoteList",
+            //   params: { username: this.$route.params.username }
+            // });
           })
           .catch(error => {
-            alert('作成に失敗しました。')
+            alert("作成に失敗しました。");
           });
       }
     },
     validateFormObj() {
       if (this.formObj.title === "") {
-        this.formObj.title = moment().utc().format("YYYY年MM月DD日");
+        this.formObj.title = moment()
+          .utc()
+          .format("YYYY年MM月DD日");
       }
 
       const sections = this.formObj.sections;
@@ -172,6 +191,47 @@ export default {
       const count = this.sectionCount();
       if (count in [0, 1]) return;
       this.formObj.sections.splice(index, 1);
+    },
+
+    checkLinkedTwitter() {
+      const oauths = this.getMyself['social_auth'];
+      for (const oauth of oauths) {
+        if (oauth['provider'] === 'twitter') {
+          this.isLinkedTwitter = true;
+          return;
+        }
+      }
+      this.isLinkedTwitter = false;
+    },
+
+    makeTwitterContent() {
+      let content = "今日の学習\n";
+      for (const section of this.formObj.sections) {
+        content += `\n■ ${section.heading}`;
+      }
+      this.twitterContent = content;
+    },
+
+    postTwitter() {
+      this.makeTwitterContent();
+      const username = this.$route.params.username;
+      const data = {content: this.twitterContent}
+      const self = this;
+      Api.postJson("socials/twitter", data, null, null, null, false)
+        .then(res => {
+          alert('投稿しました')
+        })
+        .catch(error => {
+          alert("投稿に失敗しました");
+        })
+        .finally(() => {
+          self.dialog = false;
+          self.$router.push({name: 'home'})
+        });
+    },
+    connectAndPostTwitter() {
+      this.$refs.twitter.submit();
+      alert('投稿しました');
     }
   },
   created() {
@@ -179,9 +239,9 @@ export default {
     Api.getJson("categories").then(response => {
       that.categoryList = response.data.results;
     });
-    Api.getJson('references', null, this.$route.params.username).then(response =>
-      that.referenceList = response.data.results
-    ) 
+    Api.getJson("references", null, this.$route.params.username).then(
+      response => (that.referenceList = response.data.results)
+    );
   }
 };
 </script>

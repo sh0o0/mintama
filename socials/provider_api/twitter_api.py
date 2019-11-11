@@ -1,15 +1,34 @@
-import requests
-from requests_oauthlib import OAuth1
 from django.conf import settings
+from social_django.models import UserSocialAuth
+import twitter
 
 
-auth = OAuth1(
-    client_key=settings.SOCIAL_AUTH_TWITTER_KEY,
-    client_secret=settings.SOCIAL_AUTH_TWITTER_SECRET,
-    resource_owner_key=settings.SOCIAL_AUTH_TWITTER_TOKEN,
-    resource_owner_secret=settings.SOCIAL_AUTH_TWITTER_TOKEN_SECRET,
-)
-user_id = '1146720903956324352'
-url = 'https://api.twitter.com/1.1/users/show.json?user_id={user_id}&include_entities=true'.format(user_id=user_id)
-res = requests.get(url, auth=auth)
-print(res.json())
+# def post_twitter(client_key, client_secret, content):
+#     auth = twitter.OAuth(
+#         consumer_key=settings.SOCIAL_AUTH_TWITTER_KEY,
+#         consumer_secret=settings.SOCIAL_AUTH_TWITTER_SECRET,
+#         token=client_key,
+#         token_secret=client_secret
+#     )
+#     t = twitter.Twitter(auth=auth)
+#     status_update = t.statuses.update(status=content)
+#     return status_update
+
+
+def post_twitter(user, content):
+    social_auth = UserSocialAuth.objects.get(user=user, provider='twitter')
+
+    client_key = social_auth.extra_data['access_token']['oauth_token']
+    client_secret = social_auth.extra_data['access_token']['oauth_token_secret']
+
+    auth = twitter.OAuth(
+        consumer_key=settings.SOCIAL_AUTH_TWITTER_KEY,
+        consumer_secret=settings.SOCIAL_AUTH_TWITTER_SECRET,
+        token=client_key,
+        token_secret=client_secret
+    )
+    t = twitter.Twitter(auth=auth)
+    status_update = t.statuses.update(status=content)
+
+    return status_update
+

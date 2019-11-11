@@ -1,8 +1,6 @@
 <template>
   <div>
     <h2 class="font-weight-bold">{{ $route.params.username }} ノート一覧</h2>
-
-
     <router-link v-if="user" class="deco-none" :to="{name: 'profile', params: {username: user.username}}">
       <v-img v-if="user.icon" :src="user.icon" class="mr-2"/>
       <v-icon v-else large>mdi-egg</v-icon>
@@ -20,16 +18,15 @@
       </v-card>
     </v-dialog>
 
-    <v-row>
-      <v-col cols="6" md="3"></v-col>
-    </v-row>
-    <main>
+    <input type="text" v-model="searchValue" @input="searchRetrieveReferences" class="search-input" placeholder="Search">
+    <main class="mt-2">
       <router-link
         class="deco-none"
-        v-for="(note, index) in notes"
-        :key="index"
+        v-for="note in notes"
+        :key="note.id"
         :to="{name: 'note', params: {username: note.username, noteId: note.id}}"
       >
+      <transition name="fade" appear>
         <v-card class="mb-5 mx-2" outlined elevation="5">
           <v-card-title class="amber">{{ note.title }}</v-card-title>
           <v-card-text>
@@ -50,12 +47,13 @@
             </v-row>
           </v-card-actions>
         </v-card>
+      </transition>
       </router-link>
     </main>
     <v-row align="center" justify="center">
       <template>
-        <v-btn v-if="next" link @click="fetch()" class="gray lighten-2">more</v-btn>
-        <span v-else>no more</span>
+        <v-btn v-if="next" link @click="fetchMore" class="gray lighten-2">MORE!</v-btn>
+        <span v-else>NO MORE</span>
       </template>
     </v-row>
   </div>
@@ -63,16 +61,16 @@
 
 <script>
 import { dateToJapan, datetimeToJapan } from "@/helper/format";
-import { Api } from "@/asynchronous/api";
+import { Api, debounceGetJson } from "@/asynchronous/api";
 
 export default {
   data() {
     return {
       notes: {},
       isLoading: false,
-      offset: 0,
-      next: null,
-      user: ""
+      next: '',
+      user: "",
+      searchValue: '',
     };
   },
   filters: {
@@ -84,7 +82,6 @@ export default {
   },
   watch: {
     "$route.params.username": function() {
-      this.offset = 0;
       this.notes = [];
       this.user = '';
       this.fetch();
@@ -96,24 +93,47 @@ export default {
       const that = this;
       const username = this.$route.params.username;
 
-      Api.getJson("notes", null, username, `offset=${this.offset}`).then(
-        response => {
-          if (that.offset === 0) {
-            that.notes = response.data.results;
-          } else {
-            that.notes.push(...response.data.results);
-          }
-          that.offset += 10;
-          that.next = response.data.next;
-          that.isLoading = false;
-          if (username) {
-            Api.getJson("users", username).then(response => {
-              that.user = response.data;
-            });
-          }
-        }
-      );
-    }
+      if (username) {
+        Api.getJson("users", username).then(response => {
+          that.user = response.data;
+        });
+      };
+
+      Api.getJson("notes", null, username).then(response => {
+        that.notes = response.data.results;
+        that.next = response.data.next;
+      }).finally(() => {
+        that.isLoading = false;
+      });
+    },
+    fetchMore() {
+      if (!(this.next)) return
+
+      this.isLoading = true;
+      const that = this;
+      Api.normalGetJson(this.next).then(res => {
+        that.notes.push(...res.data.results);
+        that.next = res.data.next;        
+      }).finally(() => {
+        that.isLoading = false;
+      });
+    },
+    searchRetrieveReferences() {
+      const username = this.$route.params.username;
+      const splitedComma = this.searchValue.trim().split(/\s+/).join(',')
+      let options = null;
+      if (splitedComma) {
+        options = `q=${splitedComma}`
+      }
+      debounceGetJson('notes', this, 'notes', null, username, options)
+    },
   }
 };
 </script>
+<style scoped lang="sass">
+.fade-enter-active, .fade-leave-active 
+  transition: opacity 0.5s
+.fade-enter, .fade-leave-to
+  opacity: 0
+
+</style>

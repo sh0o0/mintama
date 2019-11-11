@@ -268,6 +268,5 @@ class TestReferenceViewSet(TestCase):
         url = self.public_url + '?q={}'.format('1')
         res = self.rest_client.get(url)
         content = json.loads(res.content)
-        print(content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(content['count'], 1)

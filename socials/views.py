@@ -1,58 +1,43 @@
-# import logging
+import json
+import logging
 
-# from django.conf import settings
-# from django.contrib.auth import login, get_user_model
-# from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect
-# from django.shortcuts import redirect
-# from django.urls import reverse
-# from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
+from django.http.response import JsonResponse
+from social_django.views import auth as social_auth, complete as social_complete
 
-# from . import github_api
-# from .models import Social
-
-# logger = logging.getLogger('slidepress.social')
+from .provider_api import twitter_api
 
 
-# @never_cache
-# def complete(request, provider):
-#     social = None
-#     uid = None
-#     username = None
-#     email = None
-#     if provider == "github":
-#         access_token = github_api.get_access_token(request)
-#         user_info = github_api.get_github_user_info(access_token)
+@csrf_exempt
+def auth(request, backend):
+    ret = social_auth(request, backend)
+    if request.method == 'POST':
+        user = request.user
+        user.temp_data = request.POST['content']
+        user.save()
 
-#         uid = user_info.get('id')
-#         email = user_info.get('email')
-#         username = user_info.get('login')
-#         if not uid:
-#             return HttpResponseBadRequest('"id" fields must not be empty'.encode('utf-8'))
-#     else:
-#         raise Http404('Unsupported provider')
-
-#     social, created = Social.objects.get_or_create(provider=provider, uid=uid)
-#     if created:
-#         logger.info(f"new social account registered: {uid} {provider} {username} {email}")
-
-#     if social.user_id is None:
-#         request.session['social_uid'] = uid
-#         request.session['social_provider'] = provider
-#         request.session['social_username'] = username
-#         request.session['social_email'] = email
-#         return redirect(reverse('signup'))
-
-#     user = get_user_model().objects.get(id=social.user_id)
-#     login(request, user, 'django.contrib.auth.backends.ModelBackend')
-#     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+    return ret
 
 
-# @never_cache
-# def disconnect(request, provider):
-#     try:
-#         Social.objects.get(user_id=request.user.id, provider=provider).delete()
-#     except Social.ObjectDoesNotExist:
-#         raise Http404('Unsupported provider')
-#     return HttpResponseRedirect("/")
+@csrf_exempt
+def complete(request, backend):
+    ret = social_complete(request, backend)
 
-f炉
+    user = request.user
+    temp_data = user.temp_data
+    if temp_data and backend == 'twitter':
+        twitter_api.post_twitter(user, temp_data)
+        user.temp_data = ''
+        user.save()
+
+    return ret
+
+
+def twitter(request, *args, **kwargs):
+    if request.method == 'POST':
+        user = request.user
+        data = json.loads(request.body)
+        content = data['content']
+        twitter_res = twitter_api.post_twitter(user, content)
+
+    return JsonResponse(twitter_res)

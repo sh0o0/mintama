@@ -72,7 +72,7 @@ class BaseTestWeb(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.selenium = Chrome(executable_path=os.path.join(settings.BASE_DIR, 'chromedriver.exe'))
+        cls.selenium = Chrome(executable_path=os.path.join(settings.BASE_DIR, 'chromedriver'))
 
     @classmethod
     def tearDownClass(cls):

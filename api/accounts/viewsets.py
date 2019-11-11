@@ -90,7 +90,7 @@ class ReferenceFilter(filters.FilterSet):
         return conditions
     
     def get_q(self, queryset, name, value):
-        keywords = value.strip().split()
+        keywords = value.strip().split(',')
         conditions = self.create_conditions(keywords)
         queryset = queryset.select_related().filter(conditions)
         return queryset
