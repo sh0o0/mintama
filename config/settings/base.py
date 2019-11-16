@@ -11,13 +11,23 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-try:
-    from .secret_keys import *
-except ImportError:
-    raise ImportError('Please set secret_keys.py')
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+# Secret keys
+
+SECRET_KEY = os.environ.get('MINTAMA_SECRET_KEY')
+
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get('MINTAMA_SOCIAL_AUTH_TWITTER_KEY')
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get('MINTAMA_SOCIAL_AUTH_TWITTER_SECRET')
+SOCIAL_AUTH_TWITTER_TOKEN = os.environ.get('MINTAMA_SOCIAL_AUTH_TWITTER_TOKEN')
+SOCIAL_AUTH_TWITTER_TOKEN_SECRET = os.environ.get('MINTAMA_SOCIAL_AUTH_TWITTER_TOKEN_SECRET')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('MINTAMA_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('MINTAMA_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 
 # Quick-start development settings - unsuitable for production

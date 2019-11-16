@@ -5,6 +5,12 @@ import sys
 
 
 def main():
+    # 環境変数設定
+    try:
+        from config.settings import set_secret_keys
+    except ImportError:
+        pass
+    
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
     try:
         from django.core.management import execute_from_command_line
