@@ -7,7 +7,8 @@ __pycache__/
 /media
 /config/settings/secret_keys.py
 /config/settings/set_secret_keys.py
-/.DS_Store
+
+.DS_Store
 
 mintama_db
 chromedriver
