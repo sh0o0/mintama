@@ -6,10 +6,7 @@ import _ from "lodash";
 
 import FormHelper from "@/helper/form";
 
-const BASE_URL = "http://127.0.0.1:8000/";
-
 Vue.use(VueAxios, axios);
-Vue.axios.defaults.baseURL = BASE_URL;
 
 // const formatErrorResponse = error => {
 //   let ret = '';

@@ -75,7 +75,7 @@
             <v-btn v-if="isLinkedTwitter" color="blue lighten-1" text @click="postTwitter()">する</v-btn>
             <v-btn v-else color="blue lighten-1" text @click="connectAndPostTwitter()">する / Twitter連携</v-btn>
           </template>
-          <v-btn text @click="dialog = false">しない</v-btn>
+          <v-btn text @click="dialog = false; goNoteList()">しない</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -157,10 +157,6 @@ export default {
             that.makeTwitterContent();
             that.checkLinkedTwitter();
             that.dialog = true;
-            // that.$router.push({
-            //   name: "personalNoteList",
-            //   params: { username: this.$route.params.username }
-            // });
           })
           .catch(error => {
             alert("作成に失敗しました。");
@@ -211,6 +207,12 @@ export default {
       }
       this.twitterContent = content;
     },
+    goNoteList() {
+      this.$router.push({
+        name: "personalNoteList",
+        params: { username: this.$route.params.username }
+      });
+    },
 
     postTwitter() {
       this.makeTwitterContent();
@@ -220,6 +222,7 @@ export default {
       Api.postJson("socials/twitter", data, null, null, null, false)
         .then(res => {
           alert('投稿しました')
+          self.goNoteList()
         })
         .catch(error => {
           alert("投稿に失敗しました");

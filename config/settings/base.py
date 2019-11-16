@@ -175,8 +175,9 @@ LOGGING = {
         'console': {
             'level': 'INFO',
             'filters': ['require_debug_false'],
-            'class': 'logging.StreamHandler',
+            'class': 'logging.FileHandler',
             'formatter': 'verbose',
+            'filename': os.path.join(BASE_DIR, 'logfile/logger.log'),
         },
         'debug_console': {
             'level': 'DEBUG',
@@ -196,7 +197,7 @@ LOGGING = {
             'level': 'INFO',
         },
         'django.server': {
-            'handlers': ['django.server'],
+            'handlers': ['django.server', 'console'],
             'level': 'INFO',
             'propagate': False,
         },

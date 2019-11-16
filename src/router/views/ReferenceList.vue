@@ -45,7 +45,7 @@
             </router-link>
           </v-list-item>
           <v-list-item>
-            <v-list-item-content>{{ reference.content }}</v-list-item-content>
+            <v-list-item-content v-if="reference.content" v-html="parseContent(reference.content)"></v-list-item-content>
           </v-list-item>
           <v-list-item>
             <a v-if="reference.link" :href="reference.link" target="_brank">リンク</a>
@@ -248,6 +248,9 @@ export default {
           return;
         }
       }
+    },
+    parseContent(text) {
+      return text.replace(/\r?\n/g, "<br>");
     }
   },
   watch: {
