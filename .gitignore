@@ -5,11 +5,11 @@ __pycache__/
 /logfile/*
 /node_modules
 /media
-/config/settings/secret_keys.py
 /config/settings/set_secret_keys.py
 
 .DS_Store
 
+env_file
 mintama_db
 chromedriver
 
