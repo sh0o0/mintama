@@ -49,8 +49,12 @@ python_version = "3.7"
 start-local = "python3 manage.py runserver"
 start-dev = "python manage.py runserver 0.0.0.0:8000"
 start = "uwsgi --ini uwsgi/mintama_uwsgi.ini"
+start2 = "uwsgi --socket :8001 --module config.wsgi --py-autoreload 1 --logto logfile/uwsgi.log"
+
 stop = "uwsgi --stop uwsgi/uwsgi.pid"
+
 test = "python3 manage.py test --exclude-tag=web"
+
 makemigrations = "python3 manage.py makemigrations"
 migrate = "python3 manage.py migrate"
 collectstatic = "python3 manage.py collectstatic"
