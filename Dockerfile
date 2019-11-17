@@ -5,3 +5,4 @@ WORKDIR /mintama
 ADD ./Pipfile /mintama/
 RUN pip install pipenv
 RUN pipenv install
+ADD . /mintama/
