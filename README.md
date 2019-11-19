@@ -257,4 +257,11 @@ Djangoでは、データの保存にオブジェクト思考のModelを使用す
 2. 各カラムに対して、キーワード検索し当てはまるものを抽出
 3. GROUP BYで重複をなくす
 
+### ■　Twitter自動投稿
+ノート作成時、自動でTwitterに投稿できる仕様にしています。
+実装についてはQiitaにまとめたので、そちらを見てください。
+
+[DjangoとTwitterを連携させ、Twitterへ自動投稿する](https://qiita.com/nakar0/items/b51261a4b7862d1cab0e)
+
+
 

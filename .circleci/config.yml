@@ -1,0 +1,22 @@
+versions: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python3.7
+       
+      steps:
+        - checkout
+        - run: docker build -t nakar0/mintama:latest .
+
+  # build:
+
+  # migrate:
+
+  # test:
+
+  # collectstatic:
+
+
+  # push:
+
+  # ssh:
