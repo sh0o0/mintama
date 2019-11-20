@@ -57,4 +57,4 @@ test = "python3 manage.py test --exclude-tag=web"
 
 makemigrations = "python3 manage.py makemigrations"
 migrate = "python3 manage.py migrate"
-collectstatic = "python3 manage.py collectstatic"
+collectstatic = "python3 manage.py collectstatic --noinput"
