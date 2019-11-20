@@ -6,3 +6,4 @@ ADD ./Pipfile /mintama/
 RUN pip install pipenv
 RUN pipenv install
 ADD . /mintama/
+RUN mkdir logfile

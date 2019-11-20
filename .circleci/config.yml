@@ -1,22 +1,35 @@
-versions: 2
+version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python3.7
-       
+      - image: docker
     steps:
       - checkout
+      - setup_remote_docker
       - run: docker build -t nakar0/mintama:latest .
+      - run: docker run --name mintama -itd -e DOCKER_PASSWORD -e DOCKER_USERNAME -e MINTAMA_SECRET_KEY nakar0/mintama:latest
 
-  # build:
+      - run: docker exec mintama pipenv run migrate
+      - run: docker exec mintama pipenv run test
 
-  # migrate:
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - run: docker push nakar0/mintama:latest
+  deploy:
+    machine:
+      image: circleci/classic:latest
+    steps:
+      - checkout
+      - run: ssh $HOST_USER@$HOST_NAME 
+            'docker pull nakar0/mintama:latest &&
+            docker-compose up -d &&
+            docker-compose run web pipenv run migrate &&
+            docker-compose run web pipenv run collectstatic'
 
-  # test:
-
-  # collectstatic:
-
-
-  # push:
-
-  # ssh:
+workflows:
+  version: 2
+  mintama_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
