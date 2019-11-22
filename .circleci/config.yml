@@ -22,8 +22,8 @@ jobs:
       - run: ssh $HOST_USER@$HOST_NAME 
             'docker pull nakar0/mintama:latest &&
             docker-compose run web pipenv run migrate &&
-            docker-compose run web pipenv run collectstatic'
-            docker-compose up -d &&
+            docker-compose run web pipenv run collectstatic &&
+            docker-compose up -d'
 
 workflows:
   version: 2
